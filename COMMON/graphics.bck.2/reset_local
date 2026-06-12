@@ -1,0 +1,9 @@
+#
+ps -ax|awk '{print $1, $5}'|grep ma_server|awk '{print "kill ",$1}'>kill_local
+ps -ax|awk '{print $1, $5}'|grep st_server|awk '{print "kill ",$1}'>>kill_local
+ps -ax|awk '{print $1, $5}'|grep alpi|awk '{print "kill ",$1}'>>kill_local
+ps -ax|awk '{print $1, $5}'|grep netm|awk '{print "kill ", $1}'>>kill_local
+chmod 755  kill_local
+kill_local
+rm kill_local
+echo "done"

@@ -1,0 +1,10 @@
+buncher 5 MHz
+5MHZ.AND
+870.0 1100.0 9900.0 20.0
+localhost 6102
+localhost 6200 2
+localhost 6200 7 3
+9 30 300 1.000000
+8 1
+10 1
+160 0.006000

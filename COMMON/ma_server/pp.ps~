@@ -1,0 +1,2250 @@
+%!PS-Adobe-3.0
+%%Title: exec_command.c
+%%For: magneti alpi
+%%Creator: a2ps version 4.13
+%%CreationDate: Mon Sep 18 12:10:55 2006
+%%BoundingBox: 24 24 588 768
+%%DocumentData: Clean7Bit
+%%Orientation: Portrait
+%%Pages: 7
+%%PageOrder: Ascend
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: font Courier
+%%+ font Courier-Bold
+%%+ font Helvetica
+%%+ font Helvetica-Bold
+%%+ font Symbol
+%%+ font Times-Bold
+%%+ font Times-Roman
+%%DocumentProcessColors: Black Blue Green Red 
+%%DocumentSuppliedResources: procset a2ps-color-prolog
+%%+ encoding ISO-8859-1Encoding
+%%EndComments
+/a2psdict 200 dict def
+a2psdict begin
+%%BeginProlog
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+
+% EPSF import as in the Red Book
+/BeginInclude {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack 
+  userdict begin
+    0 setgray 0 setlinecap
+    1 setlinewidth 0 setlinejoin
+    10 setmiterlimit [ ] 0 setdash newpath
+    gs_languagelevel 1 ne {
+      false setstrokeadjust false setoverprint 
+    } if
+} bind def
+
+/EndInclude {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+/BeginEPSF {
+  BeginInclude
+  /showpage { } def
+} bind def
+
+/EndEPSF {
+  EndInclude
+} bind def
+
+% Page prefeed
+/page_prefeed {         % bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} bind def
+
+/deffont {
+  findfont exch scalefont def
+} bind def
+
+/reencode_font {
+  findfont reencode 2 copy definefont pop def
+} bind def
+
+% Function c-show (str => -)
+% centers text only according to x axis.
+/c-show { 
+  dup stringwidth pop
+  2 div neg 0 rmoveto
+  show
+} bind def
+
+% Function l-show (str => -)
+% prints texts so that it ends at currentpoint
+/l-show {
+  dup stringwidth pop neg 
+  0 
+  rmoveto show
+} bind def
+
+% center-fit show (str w => -)
+% show centered, and scale currentfont so that the width is less than w
+/cfshow {
+  exch dup stringwidth pop
+  % If the title is too big, try to make it smaller
+  3 2 roll 2 copy
+  gt
+  { % if, i.e. too big
+    exch div
+    currentfont exch scalefont setfont
+  } { % ifelse
+    pop pop 
+  }
+  ifelse
+  c-show			% center title
+} bind def
+
+% Return the y size of the current font
+% - => fontsize
+/currentfontsize {
+  currentfont /FontType get 0 eq {
+    currentfont /FontMatrix get 3 get
+  }{
+    currentfont /FontMatrix get 3 get 1000 mul
+  } ifelse
+} bind def
+
+% reencode the font
+% <encoding-vector> <fontdict> -> <newfontdict>
+/reencode { %def
+  dup length 5 add dict begin
+    { %forall
+      1 index /FID ne 
+      { def }{ pop pop } ifelse
+    } forall
+    /Encoding exch def
+
+    % Use the font's bounding box to determine the ascent, descent,
+    % and overall height; don't forget that these values have to be
+    % transformed using the font's matrix.
+    % We use `load' because sometimes BBox is executable, sometimes not.
+    % Since we need 4 numbers an not an array avoid BBox from being executed
+    /FontBBox load aload pop
+    FontMatrix transform /Ascent exch def pop
+    FontMatrix transform /Descent exch def pop
+    /FontHeight Ascent Descent sub def
+
+    % Define these in case they're not in the FontInfo (also, here
+    % they're easier to get to.
+    /UnderlinePosition 1 def
+    /UnderlineThickness 1 def
+    
+    % Get the underline position and thickness if they're defined.
+    currentdict /FontInfo known {
+      FontInfo
+      
+      dup /UnderlinePosition known {
+	dup /UnderlinePosition get
+	0 exch FontMatrix transform exch pop
+	/UnderlinePosition exch def
+      } if
+      
+      dup /UnderlineThickness known {
+	/UnderlineThickness get
+	0 exch FontMatrix transform exch pop
+	/UnderlineThickness exch def
+      } if
+      
+    } if
+    currentdict 
+  end 
+} bind def
+
+% composite fonts for ASCII-EUC mixed string
+% Version 1.2 1/31/1990
+% Orignal Ken'ichi HANDA (handa@etl.go.jp)
+% Modified Norio Katayama (katayama@rd.nacsis.ac.jp),1998
+% Extend & Fix Koji Nakamaru (maru@on.cs.keio.ac.jp), 1999
+% Anyone can freely copy, modify, distribute this program.
+
+/copyfont {	% font-dic extra-entry-count  copyfont  font-dic
+	1 index maxlength add dict begin
+	{	1 index /FID ne 2 index /UniqueID ne and
+		{def} {pop pop} ifelse
+	} forall
+	currentdict
+	end
+} bind def
+
+/compositefont { % ASCIIFontName EUCFontName RomanScale RomanOffset Rot(T/F) compositefont font
+    /RomanRotation exch def
+    /RomanOffset exch def
+    /RomanScale exch def
+    userdict /fixeucfont_dict known not {
+	userdict begin
+	    /fixeucfont_dict 2 dict begin
+		/UpperByteEncoding [
+		    16#00 1 16#20 { pop 0 } for
+		    16#21 1 16#28 { 16#20 sub } for
+		    16#29 1 16#2F { pop 0 } for
+		    16#30 1 16#74 { 16#27 sub } for
+		    16#75 1 16#FF { pop 0 } for
+		] def
+	        /LowerByteEncoding [
+		    16#00 1 16#A0 { pop /.notdef } for
+		    16#A1 1 16#FE { 16#80 sub 16 2 string cvrs
+				    (cXX) dup 1 4 -1 roll
+				    putinterval cvn } for
+		    /.notdef
+		] def
+		currentdict
+	    end def
+	end
+    } if
+    findfont dup /FontType get 0 eq {
+	14 dict begin
+	    %
+	    % 7+8 bit EUC font
+	    %
+	    12 dict begin
+		/EUCFont exch def
+		/FontInfo (7+8 bit EUC font) readonly def
+		/PaintType 0 def
+		/FontType 0 def
+		/FontMatrix matrix def
+		% /FontName
+		/Encoding fixeucfont_dict /UpperByteEncoding get def
+		/FMapType 2 def
+		EUCFont /WMode known
+		{ EUCFont /WMode get /WMode exch def }
+		{ /WMode 0 def } ifelse
+		/FDepVector [
+		    EUCFont /FDepVector get 0 get
+		    [ 16#21 1 16#28 {} for 16#30 1 16#74 {} for ]
+		    {
+			13 dict begin
+			    /EUCFont EUCFont def
+			    /UpperByte exch 16#80 add def	
+			    % /FontName
+			    /FontInfo (EUC lower byte font) readonly def
+			    /PaintType 0 def
+			    /FontType 3 def
+			    /FontMatrix matrix def
+			    /FontBBox {0 0 0 0} def
+			    /Encoding
+				fixeucfont_dict /LowerByteEncoding get def
+			    % /UniqueID
+			    % /WMode
+			    /BuildChar {
+				gsave
+				exch dup /EUCFont get setfont
+				/UpperByte get
+				2 string
+				dup 0 4 -1 roll put
+				dup 1 4 -1 roll put
+				dup stringwidth setcharwidth
+				0 0 moveto show
+				grestore
+			    } bind def
+			    currentdict
+			end
+			/lowerbytefont exch definefont
+		    } forall
+		] def
+		currentdict
+	    end
+	    /eucfont exch definefont
+	    exch
+	    findfont 1 copyfont dup begin
+		RomanRotation {
+			/FontMatrix FontMatrix
+			[ 0 RomanScale neg RomanScale 0 RomanOffset neg 0 ]
+			matrix concatmatrix def
+		}{
+			/FontMatrix FontMatrix
+			[ RomanScale 0 0 RomanScale 0 RomanOffset ] matrix concatmatrix
+			def
+			/CDevProc
+			    {pop pop pop pop 0 exch -1000 exch 2 div 880} def
+		} ifelse
+	    end
+	    /asciifont exch definefont
+	    exch
+	    /FDepVector [ 4 2 roll ] def
+	    /FontType 0 def
+	    /WMode 0 def
+	    /FMapType 4 def
+	    /FontMatrix matrix def
+	    /Encoding [0 1] def
+	    /FontBBox {0 0 0 0} def
+%	    /FontHeight 1.0 def % XXXX
+	    /FontHeight RomanScale 1.0 ge { RomanScale }{ 1.0 } ifelse def
+	    /Descent -0.3 def   % XXXX
+	    currentdict
+	end
+	/tmpfont exch definefont
+	pop
+	/tmpfont findfont
+    }{
+	pop findfont 0 copyfont
+    } ifelse
+} def	
+
+/slantfont {	% FontName slant-degree  slantfont  font'
+    exch findfont 1 copyfont begin
+    [ 1 0 4 -1 roll 1 0 0 ] FontMatrix exch matrix concatmatrix
+    /FontMatrix exch def
+    currentdict
+    end
+} def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul neg 2 div 0 rmoveto
+    f# setfont
+    c-show
+  grestore
+} bind def
+
+% -------- Some routines to enlight plain b/w printings ---------
+
+% Underline
+% width --
+/dounderline {
+  currentpoint
+  gsave
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    0 rlineto
+    stroke
+  grestore
+} bind def
+
+% Underline a string
+% string --
+/dounderlinestring {
+  stringwidth pop
+  dounderline
+} bind def
+
+/UL {
+  /ul exch store
+} bind def
+
+% Draw a box of WIDTH wrt current font
+% width --
+/dobox {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    stroke
+  grestore
+} bind def
+
+/BX {
+  /bx exch store
+} bind def
+
+% Box a string
+% string --
+/doboxstring {
+  stringwidth pop
+  dobox
+} bind def
+
+%
+% ------------- Color routines ---------------
+%
+/FG /setrgbcolor load def
+
+% Draw the background
+% width --
+/dobackground {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    bgcolor aload pop setrgbcolor
+    fill
+  grestore
+} bind def
+
+% Draw bg for a string
+% string --
+/dobackgroundstring {
+  stringwidth pop
+  dobackground
+} bind def
+
+
+/BG {
+  dup /bg exch store
+  { mark 4 1 roll ] /bgcolor exch store } if
+} bind def
+
+
+/Show {
+  bg { dup dobackgroundstring } if
+  ul { dup dounderlinestring } if
+  bx { dup doboxstring } if
+  show
+} bind def
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T {
+  cw mul x0 add
+  bg { dup currentpoint pop sub dobackground } if
+  ul { dup currentpoint pop sub dounderline } if
+  bx { dup currentpoint pop sub dobox } if
+  y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n {
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+/S {
+  Show
+} bind def
+
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Function title: prints page header.
+% <ct> <rt> <lt> are passed as argument
+/title { 
+  % 1. Draw the background
+  x v get y v get moveto
+  0 setgray
+  gsave
+    0 th 2 div neg rmoveto 
+    th setlinewidth
+    0.5 0.5 1 setrgbcolor
+    pw 0 rlineto stroke
+  grestore
+  % 2. Border it
+  gsave
+    0.7 setlinewidth
+    pw 0 rlineto
+    0 th neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+  % stk: ct rt lt
+  x v get y v get th sub 1 add moveto
+%%IncludeResource: font Helvetica
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  % 3. The left title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    fnfs 0.8 mul hm rmoveto
+    show			% left title
+  grestore
+  exch
+  % stk: ct ltw rt
+  % 4. the right title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    dup
+    pw exch stringwidth pop fnfs 0.8 mul add sub
+    hm
+    rmoveto
+    show			% right title
+  grestore
+  % stk: ct ltw rtw
+  % 5. the center title
+  gsave
+    pw 3 1 roll
+    % stk: ct pw ltw rtw
+    3 copy 
+    % Move to the center of the left room
+    sub add 2 div hm rmoveto
+    % What is the available space in here?
+    add sub fnfs 0.8 mul sub fnfs 0.8 mul sub
+    % stk: ct space_left
+%%IncludeResource: font Helvetica-Bold
+  fHelvetica-Bold fnfs scalefont setfont
+    1 setgray
+    cfshow
+  grestore
+} bind def
+
+% Function border: prints virtual page border
+/border { %def
+  gsave				% print four sides
+    0 setgray
+    x v get y v get moveto
+    0.7 setlinewidth		% of the square
+    pw 0 rlineto
+    0 ph neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+} bind def
+
+% Function water: prints a water mark in background
+/water { %def
+  gsave
+    scx scy moveto rotate
+%%IncludeResource: font Times-Bold
+  fTimes-Bold 100 scalefont setfont
+    .97 setgray
+    dup stringwidth pop 2 div neg -50 rmoveto
+    show
+  grestore
+} bind def
+
+% Function rhead: prints the right header
+/rhead {  %def
+  lx ly moveto
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  l-show
+} bind def
+
+% Function footer (cf rf lf -> -)
+/footer {
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  dx dy moveto
+  show
+
+  snx sny moveto
+  l-show
+  
+  fnx fny moveto
+  c-show
+} bind def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul neg 2 div 0 rmoveto
+    f# setfont
+    c-show
+  grestore
+} bind def
+%%BeginResource: procset a2ps-color-prolog 2.0 1
+
+%% Definition of the color faces.
+/p {
+  0 0 0 FG
+  false BG
+  false UL
+  false BX
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/sy {
+  0 0 0 FG
+  false BG
+  fSymbol bfs scalefont setfont
+  Show
+} bind def
+
+/k {
+  false BG
+  false UL
+  false BX
+  0 0 0.9 FG
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/K {
+  false BG
+  false UL
+  false BX
+  0 0 0.8 FG
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/c {
+  false BG
+  false UL
+  false BX
+  0.8 0 0 FG
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/C {
+  false BG
+  false UL
+  false BX
+  0.8 0 0 FG
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/l {
+  0 0 0 FG
+  0.8 0.8 0 true BG
+  false UL
+  false BX
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/L {
+  0 0 0 FG
+  1 1 0 true BG
+  false UL
+  false BX
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/str {
+  false BG
+  false UL
+  false BX
+  0 0.5 0 FG
+  fTimes-Roman bfs scalefont setfont
+  Show
+} bind def
+
+/e{
+  1 0 0 true BG
+  false UL
+  true BX
+  1 1 1 FG
+  fHelvetica-Bold bfs scalefont setfont
+  Show
+} bind def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul 2 div neg 0 rmoveto
+    f# setfont
+    0.8 0.1 0.1 FG
+    c-show
+  grestore
+} bind def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Symbol
+%%BeginResource: encoding ISO-8859-1Encoding
+/ISO-8859-1Encoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright 
+/parenleft /parenright /asterisk /plus /comma /minus /period /slash 
+/zero /one /two /three /four /five /six /seven 
+/eight /nine /colon /semicolon /less /equal /greater /question 
+/at /A /B /C /D /E /F /G 
+/H /I /J /K /L /M /N /O 
+/P /Q /R /S /T /U /V /W 
+/X /Y /Z /bracketleft /backslash /bracketright /asciicircum /underscore 
+/quoteleft /a /b /c /d /e /f /g 
+/h /i /j /k /l /m /n /o 
+/p /q /r /s /t /u /v /w 
+/x /y /z /braceleft /bar /braceright /asciitilde /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclamdown /cent /sterling /currency /yen /brokenbar /section 
+/dieresis /copyright /ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron 
+/degree /plusminus /twosuperior /threesuperior /acute /mu /paragraph /bullet 
+/cedilla /onesuperior /ordmasculine /guillemotright /onequarter /onehalf /threequarters /questiondown 
+/Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla 
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis 
+/Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply 
+/Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls 
+/agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla 
+/egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis 
+/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide 
+/oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis 
+] def
+%%EndResource
+% Initialize page description variables.
+/sh 792 def
+/sw 612 def
+/llx 24 def
+/urx 588 def
+/ury 768 def
+/lly 24 def
+/#copies 1 def
+/th 0.000000 def
+/fnfs 11 def
+/bfs 7.742998 def
+/cw 4.645799 def
+
+% Dictionary for ISO-8859-1 support
+/iso1dict 6 dict begin
+  /fCourier ISO-8859-1Encoding /Courier reencode_font
+  /fCourier-Bold ISO-8859-1Encoding /Courier-Bold reencode_font
+  /fHelvetica ISO-8859-1Encoding /Helvetica reencode_font
+  /fHelvetica-Bold ISO-8859-1Encoding /Helvetica-Bold reencode_font
+  /fTimes-Bold ISO-8859-1Encoding /Times-Bold reencode_font
+  /fTimes-Roman ISO-8859-1Encoding /Times-Roman reencode_font
+currentdict end def
+/bgcolor [ 0 0 0 ] def
+/bg false def
+/ul false def
+/bx false def
+% The font for line numbering
+/f# /Helvetica findfont bfs .6 mul scalefont def
+/fSymbol /Symbol findfont def
+/hm fnfs 0.25 mul def
+/pw
+   cw 121.400000 mul
+def
+/ph
+   741.004920 th add
+def
+/pmw 0 def
+/pmh 0 def
+/v 0 def
+/x [
+  0
+] def
+/y [
+  pmh ph add 0 mul ph add
+] def
+/scx sw 2 div def
+/scy sh 2 div def
+/snx urx def
+/sny lly 2 add def
+/dx llx def
+/dy sny def
+/fnx scx def
+/fny dy def
+/lx snx def
+/ly ury fnfs 0.8 mul sub def
+/sx 0 def
+/tab 8 def
+/x0 0 def
+/y0 0 def
+%%EndSetup
+
+%%Page: (1) 1
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 0 add translate
+/v 0 store
+/x0 x v get 3.252059 add sx cw mul add store
+/y0 y v get bfs  sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(server.h) str
+(") p n
+(#include) K
+( ") p
+(server_const.h) str
+(") p n
+(#include) K
+( <unistd.h>) p n
+() N
+(#define) K
+( VERBOSE 1) p n
+() N
+(extern) K
+( ) p
+(int) k
+( fildes;) p n
+(static) K
+( ) p
+(int) k
+( timeout_flag = 0 ;) p n
+(extern) K
+( ) p
+(int) k
+( giorno_corrente;) p n
+(extern) K
+( ) p
+(FILE) k
+( *log_file;) p n
+(static) K
+( ) p
+(int) k
+( primavolta = 1 ;) p n
+(static) K
+( ) p
+(int) k
+( nonscattato = 1 ;) p n
+(static) K
+( ) p
+(int) k
+( on_error = 1 ;) p n
+(int) k
+( charcnt;) p n
+(int) k
+( chi;) p n
+(int) k
+( alarm_flag ;) p n
+() N
+(/***********************************************************************) c n
+() N
+(    SERVER DEPENDENT) N
+(    This is the function performing local command execution) N
+(    if \( *mode \) then normal mode, else stub mode) N
+() N
+(***********************************************************************/) N
+() p n
+(read_data\(\)) N
+({) N
+() N
+(int) k
+( i ;) p n
+(char) k
+( c;) p n
+(extern) K
+( ) p
+(FILE) k
+( *rs232r, *rs232w ;) p n
+(extern) K
+( ) p
+(char) k
+( client_msg[ BUF_SIZE ], device_msg[ BUF_SIZE ] ;) p n
+(i=0;) N
+(do) K
+( ) p n
+() S 8 T ({) N
+() S 8 T (c = fgetc\( rs232r \) ;) N
+() S 8 T (device_msg[i] = c ;) N
+() S 8 T (charcnt = i ;) N
+() S 8 T (i++ ;) N
+() S 8 T (} ) S
+(while) K
+( \( c != ') p
+(\\r) str
+(' && on_error != 1 \) ;) p n
+(device_msg[i] = 0 ;) N
+(device_msg[i-1] = 0 ;) N
+(device_msg[i-2] = 0 ;) N
+(}) N
+() N
+() N
+() N
+() N
+() N
+(int) k
+( ps_do_read\(\)) p n
+({) N
+(    ) S
+(int) k
+( i ;) p n
+(    ) S
+(char) k
+( c ;) p n
+() N
+(    ) S
+(extern) K
+( ) p
+(char) k
+( client_msg[ BUF_SIZE ], device_msg[ BUF_SIZE ],) p n
+(                myname[ NCHARS ] ;) N
+(    ) S
+(extern) K
+( ) p
+(FILE) k
+( *rs232r, *rs232w ;) p n
+(    ) S
+(extern) K
+( ) p
+(int) k
+( alarm_flag ;) p n
+() N
+(    ) S
+(extern) K
+( ) p
+(int) k
+( verbose, fildes;) p n
+(    ) S
+(static) K
+( ) p
+(struct) k
+( timeval timeout = {\() p
+(long) k
+(\)3, \() p
+(long) k
+(\)0};) p n
+(    fd_set ready;) N
+(    ) S
+(int) k
+( return_val;) p n
+() N
+(    ) S
+(/* system call che serve per la gestione del TIMEOUT */) c n
+(    FD_ZERO\(&ready\);) p n
+() N
+(//printf\("in ps_do_read\\n"\);) c n
+() p n
+(    ) S
+(if) K
+( \(alarm_flag\){) p n
+(        i = 0 ;) N
+(        ) S
+(do) K
+( {) p n
+(            ) S
+(if) K
+( \(alarm_flag\) {) p n
+() N
+(                FD_SET\(fildes, &ready\);) N
+(                timeout.tv_sec = 2 ;) N
+(                timeout.tv_usec = 0 ;) N
+(printf\(") S
+(*1*\\n) str
+("\);) p n
+(                ) S
+(if) K
+( \( return_val = select\( getdtablesize\(\), &ready,) p n
+(                                          \(fd_set *\)) S
+(NULL) K
+(, \(fd_set *\)) p
+(NULL) K
+(,) p n
+(                                          &timeout\) > 0 \) {) N
+(                    device_msg[i] = \() S
+(char) k
+(\)) p
+(NULL) K
+( ;) p n
+(                    c = fgetc\( rs232r \) ;) N
+(printf\(") S
+(*2*\\n) str
+("\);) p n
+(                    ) S
+(if) K
+( \( c != ') p
+(\\r) str
+(' && c!= ') p
+(\\0) str
+(' \)) p n
+(                        device_msg[i] = c ;) N
+(                    ) S
+(else) K n
+(                        device_msg[i] = ') p
+( ) str
+(';) p n
+(                    FD_CLR\(fildes, &ready\);) N
+(                    }) N
+(                ) S
+(else) K
+( {) p n
+(                    alarm_flag = FALSE ;) N
+(                    printf\( ") S
+(\\n%s timeout occured ^G\\n) str
+(", myname \) ;) p n
+(                    system\(") S
+(date) str
+("\) ;) p n
+(printf\(") S
+(*3*\\n) str
+("\);) p n
+border
+grestore
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 2
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 0 add translate
+/v 0 store
+/x0 x v get 3.252059 add sx cw mul add store
+/y0 y v get bfs  sub store
+x0 y0 moveto
+(                    }) p n
+() N
+(                }) N
+(             ) S
+(//printf\( "PSD i=%d c=%c=\\n", i, c \) ; ) c n
+(            i++ ;) p n
+(printf\(") S
+(*4*\\n) str
+("\);) p n
+(            } ) S
+(while) K
+( \( \(c != ') p
+(\\r) str
+('\) && \(alarm_flag > 0\) \) ;) p n
+(        ) S
+(//device_msg[i] = '\\0' ;) c n
+(        ) p
+(//device_msg[i-1] = '\\0' ;) c n
+() p 8 T () S
+(//strcpy\(device_msg, device_msg+1\);) c n
+() p n
+(        }) N
+(    ) S
+(return) K
+( \(alarm_flag\) ;) p n
+() N
+(}) N
+() N
+() N
+(exec_command\( mode, flag_pointer \)) N
+(int) k
+( *mode, *flag_pointer ;) p n
+({) N
+(extern) K
+( ) p
+(int) k
+( fildes ;) p n
+(extern) K
+( ) p
+(int) k
+( main_socket;) p n
+(extern) K
+( ) p
+(int) k
+( verbose, alarm_enabled, alarm_allowed ;) p n
+(extern) K
+( ) p
+(char) k
+( client_msg[ BUF_SIZE ], device_msg[ BUF_SIZE ] ;) p n
+(extern) K
+( ) p
+(char) k
+( myname[ NCHARS ], alarm_headmsg[ NCHARS ] ;) p n
+(extern) K
+( ) p
+(char) k
+( tty_name[ NCHARS ] ;) p n
+(extern) K
+( ) p
+(FILE) k
+( *rs232r, *rs232w ;) p n
+(extern) K
+( ) p
+(struct) k
+( supply_data supply[100];) p n
+(extern) K
+( ) p
+(int) k
+( address[100];) p n
+(extern) K
+( ) p
+(int) k
+( alim_mode[100];) p n
+(extern) K
+( ) p
+(int) k
+( supply_number;) p n
+(extern) K
+( ) p
+(char) k
+( *message;) p n
+(int) k
+( return_val;) p n
+(time_t t;) N
+(struct) k
+( tm *tempo;) p n
+() N
+(int) k
+( i ;) p n
+(char) k
+( c;) p n
+() N
+(static) K
+( ) p
+(int) k
+( out_cur = 0, tesla = 0, out_volt = 0,) p n
+(               ) S
+(int) k
+(15pos = 0, ) p
+(int) k
+(15neg = 0, ) p
+(int) k
+(5pos = 0, ) p n
+(    delta_t = 0, vce = 0, opt_iout = 0, aux_iout = 0;) N
+() N
+(/* for stub mode */) c n
+(static) K
+( ) p
+(int) k
+( a = 0, p = 2048, kf = 1024, f = 25 ;) p n
+() N
+(static) K
+( ) p
+(struct) k
+( timeval timeout = {\() p
+(long) k
+(\)1, \() p
+(long) k
+(\)0};) p n
+(static) K
+( ) p
+(struct) k
+( timeval timeout1 = {\() p
+(long) k
+(\)0, \() p
+(long) k
+(\)10000};) p n
+(fd_set ready;) N
+() N
+(int) k
+( status, loop_power, locked ;) p n
+(char) k
+( command, answer[ BUF_SIZE ] ;) p n
+() N
+(extern) K
+( ) p
+(int) k
+( timeout_flag ;) p n
+(extern) K
+( ) p
+(void) k
+( on_timeout\(\) ;) p n
+() N
+(int) k
+( rem_loc, retry;) p n
+() N
+(int) k
+( line_ok;) p n
+() N
+(char) k
+( risp[100];) p n
+(char) k
+( file_daaprire[100];) p n
+() N
+() N
+() N
+() N
+(FD_ZERO\(&ready\);) N
+() N
+(//    if \( verbose \)) c n
+(//printf\( "\\n%s: command is %s", myname, client_msg \) ;) N
+() p n
+(message = client_msg + 10;) N
+() N
+(sscanf \( client_msg, ") S
+(ALIM = %d) str
+(", &supply_number\);) p n
+() N
+(sscanf\( message, ") S
+(%c) str
+(", &command \) ;) p n
+() N
+() N
+(switch) K
+( \( command \) ) p n
+() S 8 T ({) N
+() S 8 T () S
+(case) K
+( EOC :) p n
+() S 8 T (*flag_pointer = FALSE ;) N
+() S 8 T () S
+(break) K
+(;) p n
+() N
+() N
+() S 8 T () S
+(case) K
+( ALARMS_ON :) p n
+() S 8 T () S
+(if) K
+( \( alarm_allowed \)) p n
+(            alarm_enabled = TRUE ;) N
+() S 8 T () S
+(else) K n
+(            strcpy\( device_msg, NEG_ANSWER \) ;) p n
+() S 8 T () S
+(break) K
+(;) p n
+() N
+() S 8 T () S
+(case) K
+( ALARMS_OFF :) p n
+() S 8 T (alarm_enabled = FALSE ;) N
+() S 8 T () S
+(break) K
+(;) p n
+border
+grestore
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3) 3
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 0 add translate
+/v 0 store
+/x0 x v get 3.252059 add sx cw mul add store
+/y0 y v get bfs  sub store
+x0 y0 moveto
+() p n
+() S 8 T () S
+(case) K
+( ALLADCS:) p n
+() N
+() S 8 T (device_msg[0] = 0 ;) N
+(        ) S
+(if) K
+( \( alim_mode[supply_number]\)) p n
+() S 8 T () S 16 T (read_alladcs\(\) ;) N
+(        ) S
+(else) K
+( ) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T (strcpy\( device_msg, ") S
+(AD 0 = 999 ) str
+(" \) ;) p n
+() S 8 T () S 16 T (strcat\( device_msg, ") S
+(AD 2 = 999 ) str
+(" \) ;) p n
+() S 8 T () S 16 T (strcat\( device_msg, ") S
+(AD 3 = 999 ) str
+(" \) ;) p n
+() S 8 T () S 16 T (strcat\( device_msg, ") S
+(AD 4 = 999 ) str
+(" \) ;) p n
+() S 8 T () S 16 T (strcat\( device_msg, ") S
+(AD 5 = 999 ) str
+(" \) ;) p n
+() S 8 T () S 16 T (strcat\( device_msg, ") S
+(AD 6 = 999 ) str
+(" \) ;) p n
+() S 8 T () S 16 T (strcat\( device_msg, ") S
+(AD 7 = 999 ) str
+(" \) ;) p n
+() S 8 T () S 16 T (}) N
+(        ) S
+(break) K
+( ;) p n
+() N
+(        ) S
+(case) K
+( RESET:) p n
+(        ) S
+(if) K
+( \( *mode \)) p n
+() S 8 T () S 16 T (tty_reset\(\) ;) N
+(        ) S
+(else) K n
+() p 8 T () S 16 T (strcpy\( device_msg, ") S
+( stub device reset ) str
+(" \) ;) p n
+(        ) S
+(break) K
+( ;) p n
+() N
+(        ) S
+(case) K
+( DOIT:) p n
+() N
+(        ) S
+(/* ma server specific message execution: first char must) c n
+(           be '!' */) N
+(        ) p
+(/* send the message */) c n
+() p n
+() N
+(        ) S
+(if) K
+( \( alim_mode[supply_number] \)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T (t = time\( \() S
+(long) k
+(*\) 0\);) p n
+() S 8 T () S 16 T (tempo = localtime \(&t\);) N
+() S 8 T () S 16 T () S
+(if) K
+( \( giorno_corrente != tempo->tm_yday \)) p n
+() S 8 T () S 16 T () S 24 T ({) N
+() S 8 T () S 16 T (        fflush\(log_file\);) N
+() S 8 T () S 16 T (        fclose\(log_file\);) N
+() S 8 T () S 16 T () S 24 T (sprintf\(file_daaprire, ") S
+(./logs/server%d_%d.log) str
+(", main_socket, tempo->tm_yday\);) p n
+() S 8 T () S 16 T (        giorno_corrente = tempo->tm_yday;) N
+() S 8 T () S 16 T (        log_file = fopen \(file_daaprire, ") S
+(a) str
+("\);) p n
+() S 8 T () S 16 T (        }) N
+(               ) S 16 T (fprintf\(log_file,") S
+(%s\\n) str
+(", message+1 \);) p n
+() N
+() N
+() N
+() N
+() N
+() N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T (fprintf\( rs232w, ") S
+(ADR %d\\r) str
+(",address[supply_number]\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (fflush\( rs232w \) ; ) N
+() N
+() N
+() S 8 T () S 16 T () S
+(if) K
+( \() p n
+() S 8 T () S 16 T (\( \( strncmp \( message , ") S
+(!WA) str
+(", 3 \) == 0 \) || ) p n
+() S 8 T () S 16 T (\( strncmp \( message , ") S
+(!N) str
+(", 2 \) == 0 \) ||) p n
+() S 8 T () S 16 T (\( strncmp \( message , ") S
+(!RS) str
+(", 3 \) == 0 \) ||) p n
+() S 8 T () S 16 T (\( strncmp \( message , ") S
+(!F) str
+(", 2 \) == 0 \) \)) p n
+() S 8 T () S 16 T (\)) N
+() S 8 T () S 16 T () S 24 T ({) N
+() S 8 T () S 16 T () S 24 T (on_error = 0 ;) N
+(            ) S 16 T () S 24 T (i = 0 ;) N
+() S 8 T () S 16 T () S 24 T (primavolta = 1 ;) N
+() N
+() S 8 T () S 16 T () S 24 T () S
+(do) K n
+() p 8 T () S 16 T () S 24 T () S 32 T ({) S 40 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(for) K
+( \( i = 0 ; i < BUF_SIZE ; i++ \) device_msg[i] = 0 ;) p n
+() S 8 T () S 16 T () S 24 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T (on_error = 0 ;) N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \( alim_mode[supply_number] == 0\) ) p
+(break) K
+(;) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (fprintf\( rs232w, ") S
+(CMDSTATE\\r) str
+("\) ; ) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (fflush\( rs232w \) ; ) N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(for) K
+( \( i = 0 ; i < BUF_SIZE ; i++ \) device_msg[i] = 0 ;) p n
+(            ) S 16 T () S 24 T () S 32 T (i = 0 ;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T (usleep \( 50000 \) ;) N
+() S 8 T () S 16 T () S 24 T () S 32 T (alarm_flag = TRUE;) N
+() S 8 T () S 16 T () S 24 T () S 32 T (ps_do_read\(\);) N
+() S 8 T () S 16 T () S 24 T () S 32 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T (i = -1 ;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(do) K
+( ) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (i++;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(if) K
+( \( device_msg[i] == ') p
+(\\n) str
+(' \) line_ok = 1 ;) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(else) K
+( line_ok = 0 ;) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (} ) S
+(while) K
+( \(device_msg[i] != ') p
+(\\n) str
+(' &&  \( i != BUF_SIZE - 1 \) \) ;) p n
+(        ) S 16 T () S 24 T () S 32 T (device_msg[i] = ') S
+(\\0) str
+(' ;) p n
+(        ) S 16 T () S 24 T () S 32 T (device_msg[i+1] = ') S
+(\\0) str
+(' ;) p n
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \( line_ok == 0 \)  on_timeout\(\);) p n
+border
+grestore
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (4) 4
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 0 add translate
+/v 0 store
+/x0 x v get 3.252059 add sx cw mul add store
+/y0 y v get bfs  sub store
+x0 y0 moveto
+() p n
+() S 8 T () S 16 T () S 24 T () S 32 T (} ) S
+(while) K
+( \( on_error \) ;) p n
+() N
+() N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \( strncmp \( device_msg , ") p
+(LOCAL) str
+(", 5 \) == 0 \) rem_loc = LOCAL ;) p n
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \( strncmp \( device_msg , ") p
+(REMOTE) str
+(", 6 \) == 0 \) rem_loc = REMOTE ;) p n
+() N
+() S 8 T () S 16 T () S 24 T (}) N
+() N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \() p n
+() S 8 T () S 16 T () S 24 T (\( \( strncmp \( message , ") S
+(!WA) str
+(", 3 \) != 0 \) && ) p n
+() S 8 T () S 16 T () S 24 T (\( strncmp \( message , ") S
+(!N) str
+(", 2 \) != 0 \) &&) p n
+() S 8 T () S 16 T () S 24 T (\( strncmp \( message , ") S
+(!RS) str
+(", 3 \) != 0 \) &&) p n
+() S 8 T () S 16 T () S 24 T (\( strncmp \( message , ") S
+(!F) str
+(", 2 \) != 0 \) \) ||) p n
+() S 8 T () S 16 T () N
+() S 8 T () S 16 T () S 24 T (\(  \( \( strncmp \( message , ") S
+(!WA) str
+(", 3 \) == 0 \) || ) p n
+() S 8 T () S 16 T () S 24 T (\( strncmp \( message , ") S
+(!N) str
+(", 2 \) == 0 \) ||) p n
+() S 8 T () S 16 T () S 24 T (\( strncmp \( message , ") S
+(!RS) str
+(", 3 \) == 0 \) ||) p n
+() S 8 T () S 16 T () S 24 T (\( strncmp \( message , ") S
+(!F) str
+(", 2 \) == 0 \) \) && \(rem_loc == REMOTE\)  \)) p n
+() S 8 T () S 16 T () S 24 T (\)) N
+() N
+() S 8 T () S 16 T () S 24 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(// sono le domande che prevedono una risposta) c n
+() p n
+() N
+() N
+(// =====================================================================================================) c n
+() p n
+() N
+() S 8 T () S 16 T () S 24 T (primavolta = 1 ;) N
+() S 8 T () S
+(do) K n
+() p 8 T () S 16 T () S 24 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(for) K
+( \( i = 0 ; i < BUF_SIZE ; i++ \) device_msg[i] = 0 ;) p n
+() N
+() N
+() N
+(            ) S 16 T () S 24 T (i = 0 ;) N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T (on_error = 0 ;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \( alim_mode[supply_number] == 0\) ) p
+(break) K
+(;) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(//if \( VERBOSE \) printf\("2 ** primavolta = %d on_error = %d, mode = %d, addr = %d\\n", ) c n
+(//) S 8 T () S 16 T () S 24 T () S 32 T (primavolta, on_error, alim_mode[supply_number], address[supply_number]\);) N
+() p 8 T () S 16 T () S 24 T () S 32 T (fflush\( rs232w \) ; ) N
+() S 8 T () S 16 T () S 24 T () S 32 T (fflush\( rs232r \) ; ) N
+() S 8 T () S 16 T () S 24 T () S 32 T (fprintf\( rs232w, ") S
+(ADR %d\\r) str
+(",address[supply_number]\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (fflush\( rs232w \) ; ) N
+() S 8 T () S 16 T () S 24 T () S 32 T (fprintf\( rs232w, ") S
+(%s\\r) str
+(", \( message + 1 \) \) ; ) p
+(/* per saltare il ! */) c n
+() p 8 T () S 16 T () S 24 T () S 32 T (fflush\( rs232w \) ; ) N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \( \( strncmp \( message , ") p
+(!AD) str
+(", 3 \) == 0 \)||) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (\( strncmp \( message , ") S
+(!RA) str
+(", 3 \) == 0 \) ||) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (\( strncmp \( message , ") S
+(!WA) str
+(", 3 \) == 0 \) ||) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (\( strncmp \( message , ") S
+(!CMDSTATE) str
+(", 9 \) == 0 \) ||) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (\( strncmp \( message , ") S
+(!S1) str
+(", 3 \) == 0 \) \) ) p n
+() N
+(                                ) S 40 T ({) N
+(                                ) S 40 T () S
+(/* get the answer */) c n
+(            ) p 16 T () S 24 T () S 32 T () S 40 T (i = 0 ;) N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(for) K
+( \( i = 0 ; i < BUF_SIZE ; i++ \) device_msg[i] = 0 ;) p n
+(            ) S 16 T () S 24 T () S 32 T () S 40 T (i = 0 ;) N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (usleep \( 50000 \) ;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (alarm_flag = TRUE;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (ps_do_read\(\);) N
+() S 8 T () S 16 T () S 24 T () S 32 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T (i = -1 ;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(do) K
+( ) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (i++;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(if) K
+( \( device_msg[i] == ') p
+(\\n) str
+(' \) alim_mode[supply_number] = 1 ;) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(else) K
+( alim_mode[supply_number] = 0 ;) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (} ) S
+(while) K
+( \(device_msg[i] != ') p
+(\\n) str
+(' \) ;) p n
+(        ) S 16 T () S 24 T () S 32 T (device_msg[i] = ') S
+(\\0) str
+(' ;) p n
+(        ) S 16 T () S 24 T () S 32 T (device_msg[i+1] = ') S
+(\\0) str
+(' ;) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () N
+(                                ) S 40 T (}) N
+() N
+() N
+() S 8 T () S 16 T () S 24 T (} ) S
+(while) K
+( \( on_error \);) p n
+() N
+(// =====================================================================================================================) c n
+(=) N
+() p 8 T () S 16 T () S 24 T (}) N
+() N
+() S 8 T () S 16 T () S
+(else) K
+( ) p n
+() S 8 T () S 16 T () S 24 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(// domande che non prevedono risposta) c n
+() p 8 T () S 16 T () S 24 T () S
+(if) K
+( \( VERBOSE \) printf\(") p
+(--------in else !!\\n) str
+("\);) p n
+() S 8 T () S 16 T () S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+() S 8 T () S 16 T () S 24 T (}) N
+() S 8 T () S 16 T (}) N
+(        ) S
+(else) K
+( ) p n
+(        ) N
+(        ) S 16 T ({) N
+border
+grestore
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (5) 5
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 0 add translate
+/v 0 store
+/x0 x v get 3.252059 add sx cw mul add store
+/y0 y v get bfs  sub store
+x0 y0 moveto
+() p n
+(        ) S 16 T () S
+(/* DO IT  STUB MODE  */) c n
+() p n
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!AD 0) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%3d) str
+(", out_cur \) ;) p n
+(                ) S 24 T (out_cur++;) N
+(                ) S 24 T () S
+(if) K
+( \( out_cur > 999 \) out_cur = 0 ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!AD 1) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%3d) str
+(", tesla \) ;) p n
+(                ) S 24 T (tesla++;) N
+(                ) S 24 T () S
+(if) K
+( \( tesla > 999 \) tesla = 0 ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!AD 2) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%3d) str
+(", out_volt \) ;) p n
+(                ) S 24 T (out_volt++;) N
+(                ) S 24 T () S
+(if) K
+( \( out_volt > 999 \) out_volt = 0 ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!AD 3) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%3d) str
+(", ) p
+(int) k
+(15pos \) ;) p n
+(                ) S 24 T () S
+(int) k
+(15pos++;) p n
+(                ) S 24 T () S
+(if) K
+( \( ) p
+(int) k
+(15pos > 999 \) ) p
+(int) k
+(15pos = 0 ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!AD 4) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%3d) str
+(", ) p
+(int) k
+(15neg \) ;) p n
+(                ) S 24 T () S
+(int) k
+(15neg++;) p n
+(                ) S 24 T () S
+(if) K
+( \( ) p
+(int) k
+(15neg > 999 \) ) p
+(int) k
+(15neg = 0 ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!AD 5) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%3d) str
+(", ) p
+(int) k
+(5pos \) ;) p n
+(                ) S 24 T () S
+(int) k
+(5pos++;) p n
+(                ) S 24 T () S
+(if) K
+( \( ) p
+(int) k
+(5pos > 999 \) ) p
+(int) k
+(5pos = 0 ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!AD 6) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(+%2d) str
+(", delta_t \) ;) p n
+(                ) S 24 T (delta_t++;) N
+(                ) S 24 T () S
+(if) K
+( \( delta_t > 99 \) delta_t = 0 ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!AD 7) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%3d) str
+(", vce \) ;) p n
+(                ) S 24 T (vce++;) N
+(                ) S 24 T () S
+(if) K
+( \( vce > 999 \) vce = 0 ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!AD 8) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%5d) str
+(", opt_iout \) ;) p n
+(                ) S 24 T (opt_iout++;) N
+(                ) S 24 T () S
+(if) K
+( \( opt_iout > 99999 \) opt_iout = 0 ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!AD 9) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%3d) str
+(", aux_iout \) ;) p n
+(                ) S 24 T (aux_iout++;) N
+(                ) S 24 T () S
+(if) K
+( \( aux_iout > 999 \) aux_iout = 0 ;) p n
+(                ) S 24 T (}) N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!ADR) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%d) str
+(", 255 \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!ASW) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%s) str
+(", ") p
+(R) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!BAUD) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%d) str
+(", 9600 \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!CMD) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%s) str
+(", ") p
+(REM) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!CMDSTATE) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%s) str
+(", ") p
+(STUB) str
+(" \) ;) p n
+border
+grestore
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (6) 6
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 0 add translate
+/v 0 store
+/x0 x v get 3.252059 add sx cw mul add store
+/y0 y v get bfs  sub store
+x0 y0 moveto
+(                ) p 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!ERRC) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!ERRT) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!F) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!LALL) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!LOC) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!LOCK) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!N) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!NASW) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!NERR) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!PO) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(+) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!PO +) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!PO -) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!RA) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(%6d) str
+(", 999999 \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!REM) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+() S 8 T () S 16 T () S 24 T (alim_mode[supply_number] = 1 ;) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!RS) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!S1) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(STUB) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strcmp \( message , ") p
+(!UNLOCK) str
+(" \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(MA SERVER DONE) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strncmp \( message , ") p
+(!WA) str
+(", 3 \) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T (sprintf \( device_msg, ") S
+(STUB) str
+(" \) ;) p n
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( verbose \) printf\( ") p
+(%s -> %24s\\n) str
+(", tty_name, device_msg \) ;) p n
+(        }) N
+border
+grestore
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (7) 7
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 0 add translate
+/v 0 store
+/x0 x v get 3.252059 add sx cw mul add store
+/y0 y v get bfs  sub store
+x0 y0 moveto
+(        ) p
+(break) K
+( ;) p n
+(        ) S
+(default) K
+(:) p n
+(        printf\( ") S
+(\\n%s: unknown command\\n) str
+(", myname \) ;) p n
+(        strcpy\( device_msg, NEG_ANSWER \) ;) N
+(        ) S
+(break) K
+( ;) p n
+(    }) N
+(}) N
+() N
+(/***********************************************************************) c n
+() N
+(   SERVER DEPENDENT) N
+(   This is the function performing timeout actions when /dev/tty does) N
+(   not answer.) N
+() N
+(***********************************************************************/) N
+() p n
+(void) k
+( on_timeout\(\)) p n
+({) N
+() N
+() N
+(extern) K
+( ) p
+(char) k
+( tty_name[ NCHARS ] ;) p n
+(extern) K
+( ) p
+(int) k
+( main_socket;) p n
+(extern) K
+( ) p
+(int) k
+( address[100];) p n
+(char) k
+( filename[20];) p n
+(char) k
+( comando[20];) p n
+() N
+() N
+(extern) K
+( ) p
+(int) k
+( fildes ;) p n
+(extern) K
+( ) p
+(FILE) k
+( *rs232r, *rs232w ;) p n
+(    ) S
+(extern) K
+( ) p
+(int) k
+( verbose ;) p n
+(    ) S
+(extern) K
+( ) p
+(char) k
+( client_msg[ BUF_SIZE ], device_msg[ BUF_SIZE ] ;) p n
+(    ) S
+(extern) K
+( ) p
+(char) k
+( myname[ NCHARS ] ;) p n
+(    ) S
+(extern) K
+( ) p
+(char) k
+( *message;) p n
+(    ) S
+(extern) K
+( ) p
+(int) k
+( timeout_flag, mode ;) p n
+(    ) S
+(extern) K
+( ) p
+(int) k
+( supply_number;) p n
+(    ) S
+(extern) K
+( ) p
+(int) k
+( alim_mode[100];) p n
+(    ) S
+(FILE) k
+( *timeout_file;) p n
+() N
+(fflush\( stdout \) ;) N
+(timeout_file = fopen\(") S
+(timeout_file) str
+(",") p
+(a) str
+("\);) p n
+(//printf\("IN TIMEOUT: primavolta = %d on_error = %d, mode = %d, addr = %d\\n", primavolta, on_error, alim_mode[supply_num) c n
+(ber], address[supply_number]\) ;) N
+(fflush\( stdout \) ;) p n
+(timeout_flag = 1 ;) N
+(if) K
+( \( primavolta \) ) p n
+() S 8 T ({) N
+() S 8 T (primavolta = 0 ;) N
+() S 8 T (on_error = 1 ;) N
+() S 8 T (fprintf\(timeout_file, ") S
+(S K I P %s alim = %d ** %s ** i = %d %d  ) str
+(", tty_name,  address[supply_number], device_msg,  charcnt,) p n
+( chi\);) N
+() S 8 T (printf\(") S
+(errore skippato su %s alim = -sk-%d-\\n\\n\\n\\n) str
+(", tty_name,  address[supply_number]\);) p n
+() S 8 T (fclose\(timeout_file\);) N
+(        system\(") S
+(date >> timeout_file) str
+("\);) p n
+() N
+() S 8 T (fprintf\( rs232w, ") S
+(\\r) str
+("\) ; ) p n
+() S 8 T (fflush\( rs232w \) ; ) N
+() S 8 T (sleep\(1\);) N
+() S 8 T (fprintf\( rs232w, ") S
+(\\r) str
+("\) ; ) p n
+() S 8 T (fflush\( rs232w \) ; ) N
+() S 8 T (sleep\(1\);) N
+() S 8 T (close\(fildes\);) N
+() S 8 T (sleep\(1\);) N
+() S 8 T (tty_init\(\);) N
+() S 8 T (}) N
+(else) K n
+() p 8 T ({) N
+(        alim_mode[supply_number] = 0 ;) N
+() S 8 T (on_error = 1 ;) N
+() S 8 T (fprintf\(timeout_file, ") S
+(S T U B %s alim = %d ** %s ** i = %d %d  ) str
+(", tty_name,  address[supply_number], device_msg,  charcnt) p n
+(, chi\);) N
+() S 8 T (printf\(") S
+(S T U B : nlim= %d, addr= -S-%d- line is %s ** %s **\\n\\n\\n\\n) str
+(", supply_number, address[supply_number],  tty_name, device_) p n
+(msg\);) N
+() S 8 T (fclose\(timeout_file\);) N
+(        system\(") S
+(date >> timeout_file) str
+("\);) p n
+(        sprintf \( device_msg, ") S
+(STUB) str
+(" \) ;) p n
+() S 8 T (}) N
+(}) N
+() N
+border
+grestore
+end % of iso1dict
+pagesave restore
+showpage
+
+%%Trailer
+end
+%%EOF

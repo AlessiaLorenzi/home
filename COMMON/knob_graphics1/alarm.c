@@ -1,0 +1,391 @@
+
+#include "alpi.h"
+#include "ma_const.h"
+#include "ma_ext_vars.h"
+
+#define MA_TIMEOUT    1500 /* intervallo tra i controlli, era 1500 */
+
+int steerer_stub;
+int allarme_steerer;
+int bp;
+int steerer_presente;
+FILE *file_da_leggere;
+
+interroga(al)
+int al;
+{
+int nl;
+float ci, cl, vl;
+char s1[20], s2[20] ,s3[20];
+extern agg_etich();
+sprintf ( to_server ,"st comm : ALIM = %2d #", al);
+if ( verbose )
+    printf ("ALPI send: %s\n", to_server);
+write( server_channel, to_server, BUF_SIZE ) ;
+read( server_channel, from_server, BUF_SIZE ) ;
+
+if ( strncmp ( from_server, "STUB", 4 ) != 0 )
+    {
+    sscanf (from_server+2, "%s %f %s %f %s %f",
+            s1, &ci, s2, &cl, s3, &vl);
+
+    if ( ( ( ci > 0.3 ) &&
+           ( ( (cl-ci) / ci ) * 100.0 >  10.0 ||
+             ( (cl-ci) / ci ) * 100.0 < -10.0 ) ) ||
+         ( ( ci <= 0.3 ) && ( cl-ci > 0.15 || cl-ci < -0.15 ) ) )
+
+        {
+        allarme_steerer = 1;
+        printf("\007\007\007[01;35malimentatore steerers numero %d fuori specifiche ! c.i. = %4.2f c.l. = %4.2f [0m\n", al, ci, cl);
+        steerer_supply[al].mode = 2;
+        if (pagina_steerers && (bp == bottone_premuto))
+                agg_etich_alarm(al, 1);
+        }
+    else
+        {
+        if (pagina_steerers && (bp == bottone_premuto))
+                agg_etich_alarm(al, 0);
+        steerer_supply[al].mode = 1;
+        }
+
+    }
+
+    if (strncmp(from_server, "STUB", 4) == 0)
+        steerer_supply[al].mode = 0 ;
+
+}
+
+
+
+/* STEFANIA2 (il ritorno: tentativo di ottimizz. la proc) */
+ma_alarm_timeout_proc()
+{
+extern Widget wid_array[100];
+
+static int ma_mc = 1;
+
+int supply_number;
+Arg args[2];
+int malim1, malim2, on_1, on_2, al_1, al_2, stub_1, stub_2, num_ps;
+int semop_retval;
+
+
+
+struct sembuf semaphore_struct ;
+
+
+
+/* structure used to clear the semaphore (red light) */
+semaphore_struct.sem_num = 0 ;
+semaphore_struct.sem_op = -1 ;
+semaphore_struct.sem_flg = 0 ;
+
+
+
+allarme_steerer = 0;
+steerer_stub = 0;
+steerer_presente = 0;
+
+bp=ma_mc;
+
+masave_data("ma_saved"); /* salva i dati ad ogni giro*/
+file_da_leggere = fopen("/home/magnets/dati_fascio/ma_sett","r");
+
+if ( file_da_leggere != NULL )
+        {
+	fclose(file_da_leggere);
+	maread_data("ma_sett");
+	if ( page_type != -1 )
+		{
+		mag_page_refresh();
+		if ( button[ numero_bottone ].type == 2 || button[ numero_bottone ].type == 4 ) ma2q3q_refresh() ;
+			if ( pagina_steerers == 1 )
+				{
+				st_refresh_a();
+				st_refresh_b();
+				}
+		}
+	system("rm -f /home/magnets/dati_fascio/ma_sett");
+	}
+
+
+
+
+//=========================================
+
+
+
+
+
+                semop_retval = semop( semaphore_id, &semaphore_struct, 1 ) ;
+                if( semop_retval == -1 )
+                        printf( "*1* error in semaphore operation\n" ) ;
+                else
+                        {
+
+
+/* check degli steerer (se presenti) */
+if ( ( button[ma_mc].type == 2 ) ||
+     ( button[ma_mc].type == 7 ) ||
+     ( button[ma_mc].type == 8 ) ) /* pulsanti 2,7,8 => steerer */
+    {
+
+    if ( button[ma_mc].obj1 != 9999 &&
+         button[ma_mc].obj1 != 999999 ) /* se c'e' lo steerer 1 */
+        {
+        steerer_presente = 1;
+        supply_number = steerer[button[ma_mc].obj1].alim1;
+        interroga(supply_number);
+        if ( steerer_supply[supply_number].mode == 0 ) steerer_stub = 1;
+        supply_number = steerer[button[ma_mc].obj1].alim2;
+        interroga(supply_number);
+        if ( steerer_supply[supply_number].mode == 0 ) steerer_stub = 1;
+        }
+    
+    if ( button[ma_mc].obj3 != 9999 &&
+         button[ma_mc].obj3 != 999999 ) /* se c'e' lo steerer 2 */
+        {
+        steerer_presente = 1;   
+        supply_number = steerer[button[ma_mc].obj3].alim1;
+        interroga(supply_number);
+        if ( steerer_supply[supply_number].mode == 0 ) steerer_stub = 1;
+        supply_number = steerer[button[ma_mc].obj3].alim2;
+        interroga(supply_number);
+        if ( steerer_supply[supply_number].mode == 0 ) steerer_stub = 1;
+        }
+
+    if ( steerer_stub ) 
+        XtSetArg( args[0], XtNborderColor, pixel_black);
+    else
+        if ( allarme_steerer ) 
+            XtSetArg( args[0], XtNborderColor, pixel_red);
+        else
+            if ( steerer_presente )
+                XtSetArg( args[0], XtNborderColor, pixel_blue);
+    XtSetValues(wid_array[ma_mc], args, 1 ) ;
+
+    } /* end check steerer */
+
+
+
+if ( ma_alarms_onoff == OFF ) return ;
+
+stub_1 = OFF;
+stub_2 = OFF;
+on_1 = ON;
+on_2 = ON;
+al_1 = ON;
+al_2 = ON;
+num_ps = 1 ; /* STEFANIA: numero di power supply associati al bottone */
+
+ 
+
+malim1 = magnet[ma_mc].alim1 ; /* indice alim. 1 */
+malim2 = magnet[ma_mc].alim2 ; /* indice alim. 2 */
+
+if ( malim1 < 100 && malim1 >= 0 ) /* se esiste */
+    {
+
+    XtSetArg( args[0], XtNlabel, magnet[ma_mc].name ) ;
+    XtSetValues( maalarm_lab, args, 1 ) ;
+
+    sprintf ( to_server ,"ma comm : ALIM = %2d !S1", malim1);
+    write( server_channel, to_server, BUF_SIZE ) ;
+    read( server_channel, from_server, BUF_SIZE ) ;
+
+    if ( strncmp ( from_server, "STUB", 4 ) == 0 )
+        stub_1 = ON ;
+    else
+        {
+        stub_1 = OFF;
+        if ( from_server[0] == '!')
+            on_1 = OFF;
+        else
+            on_1 = ON; /* '.' */
+        if ( from_server[9] == '.')
+            al_1 = OFF;
+        else
+            al_1 = ON; /* '!' */
+        }
+
+    }
+
+
+
+if ( malim2 < 100 && malim2 >= 0 ) /* se esiste */
+    {
+
+    sprintf ( to_server ,"ma comm : ALIM = %2d !S1", malim2 ) ;
+    write( server_channel, to_server, BUF_SIZE ) ;
+    read( server_channel, from_server, BUF_SIZE ) ;
+
+    if ( strncmp ( from_server, "STUB", 4 ) == 0 )
+        stub_2 = ON ;
+    else
+        {
+        stub_2 = OFF;
+        if ( from_server[0] == '!')
+            on_2 = OFF;
+        else
+            on_2 = ON; /* '.' */
+        if ( from_server[9] == '.')
+            al_2 = OFF;
+        else
+            al_2 = ON; /* '!' */
+        }
+
+    num_ps = 2 ; /* STEFANIA: ci sono proprio 2 p.s. */
+
+    }
+
+if ( ( malim1 < 100 && malim1 >= 0) ||
+     ( malim2 < 100 && malim2 >= 0) ) /* se uno dei due esiste */
+        {
+
+        /* STEFANIA: segue il check in stile stefania */ 
+
+        if ( num_ps == 1) /* check del solo p.s. numero 1 */
+            if ( stub_1 == ON )
+                { /* e' in stub mode */
+                XtSetArg( args[0], XtNbackground, pixel_black );
+                XtSetArg( args[1], XtNforeground, pixel_yellow );
+                }
+            else
+                /* e' in real mode */
+                if ( al_1 == ON )
+                    { /* e' in allarme */
+                    XtSetArg( args[0], XtNbackground, pixel_red);
+                    XtSetArg( args[1], XtNforeground, pixel_white);
+                    }
+                else /* non e' in allarme */
+                    if ( on_1 == OFF )
+                        {  /* e' spento */
+                        XtSetArg( args[0], XtNbackground, pixel_white);
+                        XtSetArg( args[1], XtNforeground, pixel_black );
+                        }
+                    else
+                        { /* e' acceso */
+                        XtSetArg( args[0], XtNbackground, pixel_green);
+                        XtSetArg( args[1], XtNforeground, pixel_black );
+                        }
+        else /* check di entrambi i p.s. */
+            if ( ( stub_1 == ON ) && ( stub_2 == ON ) ) 
+                { /* sono entrambi in stub mode */
+                XtSetArg( args[1], XtNbackground, pixel_black );
+                XtSetArg( args[0], XtNforeground, pixel_yellow );
+                }
+            else /* almeno uno dei due (o entrambi) e' reale */
+                if ( ( stub_1 == ON ) || ( stub_2 == ON ) ) 
+                    /* uno dei due e' in stub mode, check dell'altro */
+                    if ( stub_2 == ON ) /* 2 in stub mode, check di 1 */
+                        if ( al_1 == ON )
+                            { /* e' in allarme */
+                            XtSetArg( args[0], XtNbackground, pixel_red);
+                            XtSetArg( args[1], XtNforeground, pixel_white);
+                            }
+                        else /* non e' in allarme */
+                            if ( on_1 == OFF )
+                                {  /* e' spento */
+                                XtSetArg( args[0], XtNbackground, pixel_blue);
+                                XtSetArg( args[1], XtNforeground, pixel_black);
+                                }
+                            else
+                                { /* e' acceso */
+                                XtSetArg( args[0], XtNbackground, pixel_green);
+                                XtSetArg( args[1], XtNforeground, pixel_black);
+                                }
+                    else /* 1 in stub mode, check di 2 */
+                        if ( al_2 == ON )
+                            { /* e' in allarme */
+                            XtSetArg( args[0], XtNbackground, pixel_red);
+                            XtSetArg( args[1], XtNforeground, pixel_white);
+                            }
+                        else /* non e' in allarme */
+                            if ( on_2 == OFF )
+                                {  /* e' spento */
+                                XtSetArg( args[0], XtNbackground, pixel_blue);
+                                XtSetArg( args[1], XtNforeground, pixel_black);
+                                }
+                            else
+                                { /* e' acceso */
+                                XtSetArg( args[0], XtNbackground, pixel_green);
+                                XtSetArg( args[1], XtNforeground, pixel_black);
+                                }
+                else /* sono entrambi in real mode */
+                   if ( ( al_1 == ON) || ( al_2 == ON ) )
+                       { /* almeno uno dei due e' in allarme */
+                       XtSetArg( args[0], XtNbackground, pixel_red);
+                       XtSetArg( args[1], XtNforeground, pixel_white);
+                       }
+                   else 
+                       /* nessuno dei due in allarme */
+                       if ( ( on_1 == OFF ) && ( on_2 == OFF ) )
+                           { /* entrambi off */
+                           XtSetArg( args[0], XtNbackground, pixel_white);
+                           XtSetArg( args[1], XtNforeground, pixel_black );
+                           }
+                        else
+                            if ( ( on_1 == ON ) && ( on_2 == ON ) )
+                                { /* entrambi on */
+                                XtSetArg( args[0], XtNbackground, pixel_green);
+                                XtSetArg( args[1], XtNforeground, pixel_black);
+                                }
+                            else
+                                { /* almeno uno dei due on */
+                                XtSetArg( args[0], XtNbackground,pixel_yellow);
+                                XtSetArg( args[1], XtNforeground, pixel_black);
+                                }
+
+    XtSetValues(wid_array[ma_mc], args, 2 ) ;
+
+    }
+
+
+//==================================
+                /* turn on the green light */
+                semop_retval = semctl( semaphore_id,  0, SETVAL, 1 ) ;
+
+}
+
+/*** fine del check in stile STEFANIA ***/
+
+
+
+ma_mc++;
+if ( ma_mc > numero_bottoni ) ma_mc = 1;
+
+if ( ma_alarms_onoff == ON ) 
+    alarminterval_id = XtAddTimeOut( MA_TIMEOUT, ma_alarm_timeout_proc, NULL);
+
+} ;
+
+
+
+int maalarm_act()
+{
+Arg arg;
+extern Pixmap but_pixmap_on, but_pixmap_off ;
+extern Widget maalarm_lab ;
+
+if ( ma_alarms_onoff ) /* if on then switch off */
+    {
+    /* remove immediato del TimeOut */
+    if ( alarminterval_id != NULL )
+        XtRemoveTimeOut(alarminterval_id);
+    ma_alarms_onoff = OFF;
+    alarminterval_id = NULL ;
+    XtSetArg( arg, XtNbackgroundPixmap, but_pixmap_off ) ;
+    XtSetValues(maalarm_but , &arg, 1 ) ;
+    XtSetArg( arg, XtNlabel, "" ) ;
+    XtSetValues( maalarm_lab, &arg, 1 ) ;
+    }
+else /* if off then switch on */
+    {
+    XtSetArg( arg, XtNbackgroundPixmap, but_pixmap_on ) ;
+    XtSetValues(maalarm_but , &arg, 1 ) ;
+    ma_alarms_onoff = ON;
+    alarminterval_id = XtAddTimeOut( 1000,ma_alarm_timeout_proc,NULL);
+    }
+
+}
+

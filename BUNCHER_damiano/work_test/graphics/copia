@@ -1,0 +1,13 @@
+rcp automagico.c impulsi@buncher:/usr/users/impulsi/sources/automagico.c 
+rcp bit_setclear.c impulsi@buncher:/usr/users/impulsi/sources/bit_setclear.c
+rcp callbacks-c.c impulsi@buncher:/usr/users/impulsi/sources/callbacks-c.c
+rcp creation-c.c impulsi@buncher:/usr/users/impulsi/sources/creation-c.c
+rcp leggiconf.c impulsi@buncher:/usr/users/impulsi/sources/leggiconf.c
+rcp main-c.c impulsi@buncher:/usr/users/impulsi/sources/main-c.c
+rcp opennetwork.c impulsi@buncher:/usr/users/impulsi/sources/opennetwork.c
+rcp refresh.c impulsi@buncher:/usr/users/impulsi/sources/refresh.c
+rcp defs.h impulsi@buncher:/usr/users/impulsi/sources/defs.h
+rcp creation-c.h impulsi@buncher:/usr/users/impulsi/sources/creation-c.h
+rcp w_defs.h impulsi@buncher:/usr/users/impulsi/sources/w_defs.h
+tar cvf configurazione.tar configurazione
+rcp configurazione.tar impulsi@buncher:/usr/users/impulsi/configurazione.tar

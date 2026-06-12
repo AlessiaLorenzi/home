@@ -1,0 +1,1 @@
+cmd_/home/alpi/nslink603/nslink/nslink.ko.unsigned := ld -r -m elf_x86_64 -T /usr/src/kernels/2.6.32-754.3.5.el6.x86_64/scripts/module-common.lds --build-id -o /home/alpi/nslink603/nslink/nslink.ko.unsigned /home/alpi/nslink603/nslink/nslink.o /home/alpi/nslink603/nslink/nslink.mod.o 

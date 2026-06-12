@@ -1,0 +1,6 @@
+xrdb -merge /home/alpi/BUNCHER/work/.Xdefaults
+cd /home/alpi/BUNCHER/work_test
+./start_servers_veri
+sleep 2
+cd graphics
+./main-c >/dev/null 

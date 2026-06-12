@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=No name
+Type=Application
+Exec=/home/alpi/PIAVE_ALPI/PIAVE_ALPI
+TryExec=
+Icon=/home/alpi/BITMAPS/piave-alpi.png
+X-GNOME-DocPath=
+Terminal=true
+Name[en_US]=PIAVE-ALPI
+GenericName[en_US]=
+Comment[en_US]=

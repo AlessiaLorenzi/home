@@ -1,0 +1,44 @@
+.TH "nslinkd" "8" "8 December 2007" "(c) Comtrol Corp." "Comtrol"
+.SH "NAME" 
+nslinkd \- Device daemon for NS-Link driver
+.PP 
+.SH "SYNOPSIS" 
+.PP
+Daemon started by init process.
+
+.SH "DESCRIPTION" 
+
+.PP
+The \fBnslinkd\fP daemon provides support functionality for the
+NS-Link device driver kernel module. It is started in order to
+download binary boot files to the DeviceMasters and to establish 
+initial communications with the DeviceMasters.
+.PP
+There should be one master instance of \fBnslinkd\fP plus one
+instance for each configured DeviceMaster.
+.SH "OPTIONS" 
+.PP
+None
+.SH "ENVIRONMENT" 
+.PP 
+None
+.PP
+.SH "FILES" 
+.PP 
+.IP "\fBdevmast.bin\fP" 
+Application binary file downloaded to DeviceMaster by the
+load operation. Search path: current directory, /etc.
+.PP 
+.SH "SEE ALSO" 
+.PP 
+\fInslink\fP(8), \fInslinkadmin\fP(8), \fInslink.conf\fP(5)
+.PP 
+.SH "BUGS" 
+.PP 
+Check the release notes file for an up-to-date list\&.
+.PP 
+.SH "FTP LOCATION"
+.PP 
+ftp://ftp\&.comtrol\&.com/
+
+

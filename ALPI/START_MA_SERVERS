@@ -1,0 +1,40 @@
+/home/alpi/COMMON/ma_server/ma_server 3000  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3001  alpi_process  &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3002  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3003  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3004  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3005  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3006  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3007  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3008  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3009  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3010  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3011  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3100  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3101  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3102  alpi_process   &
+sleep 1
+/home/alpi/COMMON/ma_server/ma_server 3103  alpi_process   &
+sleep 1
+
+#/home/alpi/COMMON/ma_server/ma_server 4000  alpi_process   &
+#usleep 100000
+#/home/alpi/COMMON/ma_server/ma_server 4001  alpi_process   &
+#usleep 100000
+#/home/alpi/COMMON/ma_server/ma_server 4002  alpi_process   &
+#usleep 100000
+#/home/alpi/COMMON/ma_server/ma_server 4003  alpi_process   &

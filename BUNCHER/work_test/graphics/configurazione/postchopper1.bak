@@ -1,0 +1,11 @@
+post chopper linac
+10MHZ.AND
+5451.0 2170.0 29830.0 10.0
+localhost 6100
+localhost 6201 1
+localhost 6201 8 1
+150 450 2000 1.000000
+10 8
+20 150
+1
+200 0.500000

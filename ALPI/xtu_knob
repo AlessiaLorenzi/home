@@ -1,0 +1,7 @@
+xrdb -quiet /home/magnets/piave/ma_Xdefaults
+./start_ma_servers > /dev/null
+./start_st_servers 
+sleep 1
+clear
+/home/magnets/alpi_alpimag_RH8/netm/netm ./definitivo 2000 > /dev/null &
+/home/magnets/alpi_luna-gialla/knob_graphics/alpi localhost 2000 > /dev/null &

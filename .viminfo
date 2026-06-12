@@ -1,0 +1,305 @@
+# Questo file viminfo è stato generato da Vim 7.4.
+# File modificabile, attento a quel che fai!
+
+# Valore di 'encoding' al momento della scrittura di questo file
+*encoding=utf-8
+
+
+# hlsearch on (H) or off (h):
+~H
+# Ult. Espressione di Ricerca:
+~MSle0~/PST1
+
+# Ult. Sostituzione Espressione di Ricerca:
+~MSle0&bold-18
+
+# Ultima Stringa Sostituzione:
+$bold-12
+
+# Linea di Comando Storia (da più recente a meno recente):
+:q
+:n
+:q!
+:q\
+:wq
+:%s/bold-18/bold-12/
+:%s/bold-14/bold-12/
+:%s/bold-18/bold-14/
+:%s/bold
+:w
+
+# Stringa di Ricerca Storia (da più recente a meno recente):
+?/PST1
+?/WA
+?/3Q18
+?/FD1
+?/3Q10B
+?/35
+?/MD1
+?/usleep
+? bold-18
+? bold-14
+?/PA
+?/answer 
+?/answer from server is
+?/XtAppAddTimeOut
+?/char cmd
+?/cher cmd
+?/cmd
+?/fgetc
+?/rs232r
+?/loop 2
+?/start loop
+?/on_alarm
+
+# Espressione Storia (da più recente a meno recente):
+
+# Linea di Input Storia (da più recente a meno recente):
+
+# Linea di Input Storia (da più recente a meno recente):
+
+# Registri:
+"0	LINE	0
+	OBJ3    =       9999
+"1	LINE	0
+	
+"2	LINE	0
+	
+"3	LINE	0
+	OBJ4	=	9999
+"4	LINE	0
+	OBJ3	=	9999
+"5	LINE	0
+	OBJ2	=	33
+"6	LINE	0
+	OBJ1	=	9999
+"7	LINE	0
+	TYPE	=	1
+"8	LINE	0
+	BUTTON	=	32
+"9	LINE	0
+	
+""-	CHAR	0
+	#
+
+# File mark:
+'0  10  43  ~/BUNCHER/work/start_servers_nuovi
+'1  9  0  ~/BUNCHER/START
+'2  14  64  ~/BUNCHER/work/start_servers_nuovi
+'3  8  0  ~/BUNCHER/work/start_servers_veri
+'4  16  0  ~/BUNCHER/work/start_servers_veri
+'5  18  0  ~/BUNCHER/work/start_servers_veri
+'6  18  64  ~/BUNCHER/work/start_servers_nuovi
+'7  1  0  ~/BUNCHER/start_servers_nuovi
+'8  1  0  ~/BUNCHER/work/graphics/configurazione/postchopper2.bak
+'9  1  0  ~/postchopper1
+
+# Jumplist (dai più recenti):
+-'  10  43  ~/BUNCHER/work/start_servers_nuovi
+-'  14  0  ~/BUNCHER/work/start_servers_nuovi
+-'  9  0  ~/BUNCHER/START
+-'  18  0  ~/BUNCHER/work/start_servers_nuovi
+-'  1  0  ~/BUNCHER/START
+-'  8  0  ~/BUNCHER/work/start_servers_veri
+-'  16  0  ~/BUNCHER/work/start_servers_veri
+-'  18  0  ~/BUNCHER/work/start_servers_veri
+-'  14  0  ~/BUNCHER/work/start_servers_veri
+-'  1  0  ~/BUNCHER/start_servers_nuovi
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/postchopper2.bak
+-'  4  0  ~/BUNCHER/work/graphics/configurazione/postchopper2
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/postchopper1.bak
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/postchopper1
+-'  5  0  ~/BUNCHER/work/graphics/configurazione/passiva
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/fase
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/conf
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/chopper
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buttafuori.bak
+-'  4  0  ~/BUNCHER/work/graphics/configurazione/buttafuori
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buncher_t
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buncher_b.bak
+-'  4  0  ~/BUNCHER/work/graphics/configurazione/buncher_b
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buncher_a.bak
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buncher_a
+-'  1  0  ~/postchopper1
+-'  16  0  ~/BUNCHER/work/start_servers_nuovi
+-'  1  0  work/start_servers_nuovi
+-'  1  0  ~/BUNCHER/work/start_servers_nuovi
+-'  1  0  ~/BUNCHER/work/start_servers_veri
+-'  1  0  ~/BUNCHER/work/start_servers_
+-'  122  0  ~/BUNCHER/work/rf_server/main.c
+-'  1  0  ~/BUNCHER/work/rf_server/main.c
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/postchopper2
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buttafuori
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buncher_b
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/passiva
+-'  2  0  ~/BUNCHER/work/start_servers_nuovi
+-'  1  38  ~/nslink/leggimi
+-'  518  0  ~/PIAVE/piave_devicemaster_stub.conf
+-'  3  92  ~/PIAVE/START_ST_SERVERS
+-'  1  0  ~/PIAVE/START_ST_SERVERS
+-'  7  0  ~/PIAVE/MAGSTART
+-'  433  16  ~/PIAVE/piave_devicemaster_stub.conf
+-'  444  0  ~/PIAVE/piave_devicemaster_stub.conf
+-'  512  0  ~/PIAVE/piave_devicemaster_stub.conf
+-'  372  0  ~/PIAVE/piave_devicemaster_stub.conf
+-'  1  0  ~/PIAVE/MAGSTART
+-'  1  0  ~/PIAVE/piave_devicemaster_stub.conf
+-'  147  0  ~/COMMON/bruk_st_server/exec_command.c
+-'  193  13  ~/COMMON/bruk_st_server/exec_command.c
+-'  1  0  ~/COMMON/bruk_st_server/exec_command.c
+-'  43  4  ~/COMMON/bruk_st_server/exec_command.c
+-'  2009  57  ~/COMMON/graphics/callbacks.c
+-'  291  8  ~/COMMON/graphics/callbacks.c
+-'  1  0  ~/COMMON/graphics/callbacks.c
+-'  17  0  ~/COMMON/ma_server/makefile
+-'  1  0  ~/COMMON/ma_server/makefile
+-'  1025  0  ~/ALPI/definitivo
+-'  367  0  ~/ALPI/definitivo
+-'  1227  19  ~/PIAVE_ALPI/piave_alpi_1_ss.conf
+-'  1129  10  ~/PIAVE_ALPI/piave_alpi_1_ss.conf
+-'  1398  16  ~/PIAVE_ALPI/piave_alpi_1_ss.conf
+-'  1049  7  ~/PIAVE_ALPI/piave_alpi_1_ss.conf
+-'  1025  10  ~/PIAVE_ALPI/piave_alpi_1_ss.conf
+-'  867  0  ~/PIAVE_ALPI/piave_alpi_1_ss.conf
+-'  829  0  ~/PIAVE_ALPI/piave_alpi_1_ss.conf
+-'  8  44  ~/PIAVE_ALPI/PIAVE_ALPI
+-'  1  0  ~/PIAVE_ALPI/PIAVE_ALPI
+-'  1  0  ~/PIAVE_ALPI/piave_alpi_1_ss.conf
+-'  1659  16  ~/PIAVE_ALPI/piave_alpi_1.conf
+-'  1  0  ~/PIAVE_ALPI/piave_alpi_1.conf
+-'  510  13  ~/ALPI/definitivo_test
+-'  501  0  ~/ALPI/definitivo_test
+-'  509  0  ~/ALPI/definitivo_test
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/postchopper2.bak
+-'  4  0  ~/BUNCHER/work/graphics/configurazione/postchopper2
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/postchopper1.bak
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/postchopper1
+-'  5  0  ~/BUNCHER/work/graphics/configurazione/passiva
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/fase
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/conf
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/chopper
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buttafuori.bak
+-'  4  0  ~/BUNCHER/work/graphics/configurazione/buttafuori
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buncher_t
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buncher_b.bak
+-'  4  0  ~/BUNCHER/work/graphics/configurazione/buncher_b
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buncher_a.bak
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/buncher_a
+-'  1  0  ~/postchopper1
+-'  1  0  work/start_servers_nuovi
+-'  1  0  ~/BUNCHER/work/start_servers_
+-'  122  0  ~/BUNCHER/work/rf_server/main.c
+-'  1  0  ~/BUNCHER/work/rf_server/main.c
+-'  1  0  ~/BUNCHER/work/graphics/configurazione/postchopper2
+
+# Storia dei mark all'interno dei file (dai più recenti ai meno recenti):
+
+> ~/BUNCHER/work/start_servers_nuovi
+	"	10	43
+	^	18	62
+	.	14	64
+	+	2	67
+	+	4	66
+	+	6	66
+	+	8	66
+	+	10	66
+	+	12	66
+	+	14	66
+	+	2	66
+	+	8	64
+	+	10	64
+	+	4	64
+	+	14	64
+	+	16	65
+	+	18	65
+	+	4	64
+	+	8	64
+	+	10	64
+	+	14	64
+	+	16	65
+	+	18	58
+	+	16	65
+	+	18	61
+	+	2	64
+	+	8	64
+	+	12	64
+	+	14	64
+
+> ~/BUNCHER/START
+	"	9	0
+	^	9	1
+	.	9	0
+	+	9	0
+
+> ~/BUNCHER/work/start_servers_veri
+	"	8	0
+	.	12	64
+	+	4	64
+	+	8	64
+	+	10	64
+	+	14	64
+	+	18	66
+	+	8	64
+	+	2	64
+	+	4	64
+	+	8	64
+	+	12	64
+
+> ~/BUNCHER/start_servers_nuovi
+	"	1	0
+
+> ~/BUNCHER/work/graphics/configurazione/buncher_a
+	"	1	0
+
+> ~/BUNCHER/work/graphics/configurazione/buncher_a.bak
+	"	1	0
+
+> ~/BUNCHER/work/graphics/configurazione/buncher_b
+	"	4	0
+	.	4	13
+	+	4	13
+
+> ~/BUNCHER/work/graphics/configurazione/buncher_b.bak
+	"	1	0
+
+> ~/BUNCHER/work/graphics/configurazione/buncher_t
+	"	1	0
+
+> ~/BUNCHER/work/graphics/configurazione/buttafuori
+	"	4	0
+	.	4	13
+	+	4	13
+
+> ~/BUNCHER/work/graphics/configurazione/buttafuori.bak
+	"	1	0
+
+> ~/BUNCHER/work/graphics/configurazione/chopper
+	"	1	0
+
+> ~/BUNCHER/work/graphics/configurazione/conf
+	"	1	0
+
+> ~/BUNCHER/work/graphics/configurazione/fase
+	"	1	0
+
+> ~/BUNCHER/work/graphics/configurazione/passiva
+	"	5	0
+	.	5	13
+	+	5	13
+
+> ~/BUNCHER/work/graphics/configurazione/postchopper1
+	"	1	0
+
+> ~/BUNCHER/work/graphics/configurazione/postchopper1.bak
+	"	1	0
+
+> ~/BUNCHER/work/graphics/configurazione/postchopper2
+	"	4	0
+	.	4	13
+	+	4	13
+
+> ~/BUNCHER/work/graphics/configurazione/postchopper2.bak
+	"	1	0
+
+> ~/postchopper1
+	"	1	0

@@ -1,0 +1,18 @@
+
+
+dispositivo		socket	ttySI
+
+buncher 5 MHz		6102	67
+buncher 10 MHz		6101	65
+buttafuori		6104	71
+postchopper 1 LIN	6100	64
+postchopper 1 TAN	6103	70
+			6105	69
+passiva			6108	72
+
+
+cest pre tandem		6200	66
+cest postchopper	6201	68	
+
+
+

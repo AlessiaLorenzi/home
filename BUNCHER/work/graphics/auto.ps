@@ -1,0 +1,2425 @@
+%!PS-Adobe-3.0
+%%Title: automagico.c
+%%For: Andrea Battistella
+%%Creator: a2ps version 4.10.2
+%%CreationDate: Fri Nov 27 10:30:21 1998
+%%BoundingBox: 24 24 571 818
+%%DocumentData: Clean7Bit
+%%Orientation: Landscape
+%%Pages: 16
+%%PageOrder: Ascend
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: font Courier
+%%+ font Courier-Bold
+%%+ font Courier-BoldOblique
+%%+ font Courier-Oblique
+%%+ font Helvetica
+%%+ font Helvetica-Bold
+%%+ font Symbol
+%%+ font Times-Bold
+%%+ font Times-Roman
+%%DocumentProcessColors: Black 
+%%DocumentSuppliedResources: procset a2ps-a2ps-hdr
+%%+ procset a2ps-black+white-Prolog
+%%+ encoding ISO-8859-1Encoding
+%%EndComments
+/a2psdict 200 dict def
+a2psdict begin
+%%BeginProlog
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+
+% EPSF import as in the Red Book
+/BeginInclude {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack 
+  userdict begin
+    0 setgray 0 setlinecap
+    1 setlinewidth 0 setlinejoin
+    10 setmiterlimit [ ] 0 setdash newpath
+    gs_languagelevel 1 ne {
+      false setstrokeadjust false setoverprint 
+    } if
+} bind def
+
+/EndInclude {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+/BeginEPSF {
+  BeginInclude
+  /showpage { } def
+} bind def
+
+/EndEPSF {
+  EndInclude
+} bind def
+
+% Page prefeed
+/page_prefeed {         % bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} bind def
+
+/deffont {
+  findfont exch scalefont def
+} bind def
+
+/reencode_font {
+  findfont reencode 2 copy definefont pop def
+} bind def
+
+% Function c-show (str => -)
+% centers text only according to x axis.
+/c-show { 
+  dup stringwidth pop
+  2 div neg 0 rmoveto
+  show
+} bind def
+
+% Function l-show (str => -)
+% prints texts so that it ends at currentpoint
+/l-show {
+  dup stringwidth pop neg 
+  0 
+  rmoveto show
+} bind def
+
+% center-fit show (str w => -)
+% show centered, and scale currentfont so that the width is less than w
+/cfshow {
+  exch dup stringwidth pop
+  % If the title is too big, try to make it smaller
+  3 2 roll 2 copy
+  gt
+  { % if, i.e. too big
+    exch div
+    currentfont exch scalefont setfont
+  } { % ifelse
+    pop pop 
+  }
+  ifelse
+  c-show			% center title
+} bind def
+
+% Return the y size of the current font
+% - => fontsize
+/currentfontsize {
+  currentfont /FontMatrix get 3 get 1000 mul
+} bind def
+
+% reencode the font
+% <encoding-vector> <fontdict> -> <newfontdict>
+/reencode { %def
+  dup length 5 add dict begin
+    { %forall
+      1 index /FID ne 
+      { def }{ pop pop } ifelse
+    } forall
+    /Encoding exch def
+
+    % Use the font's bounding box to determine the ascent, descent,
+    % and overall height; don't forget that these values have to be
+    % transformed using the font's matrix.
+    FontBBox
+    FontMatrix transform /Ascent exch def pop
+    FontMatrix transform /Descent exch def pop
+    /FontHeight Ascent Descent sub def
+
+    % Define these in case they're not in the FontInfo (also, here
+    % they're easier to get to.
+    /UnderlinePosition 1 def
+    /UnderlineThickness 1 def
+    
+    % Get the underline position and thickness if they're defined.
+    currentdict /FontInfo known {
+      FontInfo
+      
+      dup /UnderlinePosition known {
+	dup /UnderlinePosition get
+	0 exch FontMatrix transform exch pop
+	/UnderlinePosition exch def
+      } if
+      
+      dup /UnderlineThickness known {
+	/UnderlineThickness get
+	0 exch FontMatrix transform exch pop
+	/UnderlineThickness exch def
+      } if
+      
+    } if
+    currentdict 
+  end 
+} bind def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul neg 2 div 0 rmoveto
+    f# setfont
+    c-show
+  grestore
+} bind def
+
+% -------- Some routines to enlight plain b/w printings ---------
+
+% Underline
+% width --
+/dounderline {
+  currentpoint
+  gsave
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    0 rlineto
+    stroke
+  grestore
+} bind def
+
+% Underline a string
+% string --
+/dounderlinestring {
+  stringwidth pop
+  dounderline
+} bind def
+
+/UL {
+  /ul exch store
+} bind def
+
+% Draw a box of WIDTH wrt current font
+% width --
+/dobox {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    stroke
+  grestore
+} bind def
+
+/BX {
+  /bx exch store
+} bind def
+
+% Box a string
+% string --
+/doboxstring {
+  stringwidth pop
+  dobox
+} bind def
+
+%
+% ------------- Color routines ---------------
+%
+/FG /setrgbcolor load def
+
+% Draw the background
+% width --
+/dobackground {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    bgcolor aload pop setrgbcolor
+    fill
+  grestore
+} bind def
+
+% Draw bg for a string
+% string --
+/dobackgroundstring {
+  stringwidth pop
+  dobackground
+} bind def
+
+
+/BG {
+  dup /bg exch store
+  { mark 4 1 roll ] /bgcolor exch store } if
+} bind def
+
+
+/Show {
+  bg { dup dobackgroundstring } if
+  ul { dup dounderlinestring } if
+  bx { dup doboxstring } if
+  show
+} bind def
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T {
+  cw mul x0 add
+  bg { dup currentpoint pop sub dobackground } if
+  ul { dup currentpoint pop sub dounderline } if
+  bx { dup currentpoint pop sub dobox } if
+  y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n {
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+/S {
+  Show
+} bind def
+
+%%BeginResource: procset a2ps-a2ps-hdr 2.0 2
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Function title: prints page header.
+% <ct> <rt> <lt> are passed as argument
+/title { 
+  % 1. Draw the background
+  x v get y v get moveto
+  gsave
+    0 th 2 div neg rmoveto 
+    th setlinewidth
+    0.95 setgray
+    pw 0 rlineto stroke
+  grestore
+  % 2. Border it
+  gsave
+    0.7 setlinewidth
+    pw 0 rlineto
+    0 th neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+  % stk: ct rt lt
+  x v get y v get th sub 1 add moveto
+%%IncludeResource: font Helvetica
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  % 3. The left title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    fnfs 0.8 mul hm rmoveto
+    show			% left title
+  grestore
+  exch
+  % stk: ct ltw rt
+  % 4. the right title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    dup
+    pw exch stringwidth pop fnfs 0.8 mul add sub
+    hm
+    rmoveto
+    show			% right title
+  grestore
+  % stk: ct ltw rtw
+  % 5. the center title
+  gsave
+    pw 3 1 roll
+    % stk: ct pw ltw rtw
+    3 copy 
+    % Move to the center of the left room
+    sub add 2 div hm rmoveto
+    % What is the available space in here?
+    add sub fnfs 0.8 mul sub fnfs 0.8 mul sub
+    % stk: ct space_left
+%%IncludeResource: font Helvetica-Bold
+  fHelvetica-Bold fnfs scalefont setfont
+    cfshow
+  grestore
+} bind def
+
+% Function border: prints virtual page border
+/border { %def
+  gsave				% print four sides
+    0 setgray
+    x v get y v get moveto
+    0.7 setlinewidth		% of the square
+    pw 0 rlineto
+    0 ph neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+} bind def
+
+% Function water: prints a water mark in background
+/water { %def
+  gsave
+    scx scy moveto rotate
+%%IncludeResource: font Times-Bold
+  fTimes-Bold 100 scalefont setfont
+    .97 setgray
+    dup stringwidth pop 2 div neg -50 rmoveto
+    show
+  grestore
+} bind def
+
+% Function rhead: prints the right header
+/rhead {  %def
+  lx ly moveto
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  l-show
+} bind def
+
+% Function footer (cf rf lf -> -)
+/footer {
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  dx dy moveto
+  show
+
+  snx sny moveto
+  l-show
+  
+  fnx fny moveto
+  c-show
+} bind def
+%%EndResource
+%%BeginResource: procset a2ps-black+white-Prolog 2.0 1
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T { 
+  cw mul x0 add y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n { %def
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+}  bind def
+
+/S {
+  Show
+} bind def
+
+/p {
+  false UL
+  false BX
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/sy {
+  false UL
+  false BX
+  fSymbol bfs scalefont setfont
+  Show
+} bind def
+
+/k {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/K {
+  false UL
+  false BX
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/c {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/C {
+  false UL
+  false BX
+  fCourier-BoldOblique bfs scalefont setfont
+  Show 
+} bind def
+
+/l {
+  false UL
+  false BX
+  fHelvetica bfs scalefont setfont
+  Show
+} bind def
+
+/L {
+  false UL
+  false BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show 
+} bind def
+
+/str{
+  false UL
+  false BX
+  fTimes-Roman bfs scalefont setfont
+  Show
+} bind def
+
+/e{
+  false UL
+  true BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show
+} bind def
+
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier
+%%IncludeResource: font Courier-Oblique
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Symbol
+%%IncludeResource: font Courier-BoldOblique
+%%BeginResource: encoding ISO-8859-1Encoding
+/ISO-8859-1Encoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright 
+/parenleft /parenright /asterisk /plus /comma /minus /period /slash 
+/zero /one /two /three /four /five /six /seven 
+/eight /nine /colon /semicolon /less /equal /greater /question 
+/at /A /B /C /D /E /F /G 
+/H /I /J /K /L /M /N /O 
+/P /Q /R /S /T /U /V /W 
+/X /Y /Z /bracketleft /backslash /bracketright /asciicircum /underscore 
+/quoteleft /a /b /c /d /e /f /g 
+/h /i /j /k /l /m /n /o 
+/p /q /r /s /t /u /v /w 
+/x /y /z /braceleft /bar /braceright /asciitilde /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclamdown /cent /sterling /currency /yen /brokenbar /section 
+/dieresis /copyright /ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron 
+/degree /plusminus /twosuperior /threesuperior /acute /mu /paragraph /bullet 
+/cedilla /dotlessi /ordmasculine /guillemotright /onequarter /onehalf /threequarters /questiondown 
+/Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla 
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis 
+/Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply 
+/Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls 
+/agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla 
+/egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis 
+/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide 
+/oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis 
+] def
+%%EndResource
+% Initialize page description variables.
+/sh 595 def
+/sw 842 def
+/llx 24 def
+/urx 818 def
+/ury 571 def
+/lly 24 def
+/#copies 1 def
+/th 20.000000 def
+/fnfs 15 def
+/bfs 9.921104 def
+/cw 5.952663 def
+
+% Dictionary for ISO-8859-1 support
+/latin1dict 8 dict begin
+  /fCourier ISO-8859-1Encoding /Courier reencode_font
+  /fCourier-Bold ISO-8859-1Encoding /Courier-Bold reencode_font
+  /fCourier-BoldOblique ISO-8859-1Encoding /Courier-BoldOblique reencode_font
+  /fCourier-Oblique ISO-8859-1Encoding /Courier-Oblique reencode_font
+  /fHelvetica ISO-8859-1Encoding /Helvetica reencode_font
+  /fHelvetica-Bold ISO-8859-1Encoding /Helvetica-Bold reencode_font
+  /fTimes-Bold ISO-8859-1Encoding /Times-Bold reencode_font
+  /fTimes-Roman ISO-8859-1Encoding /Times-Roman reencode_font
+currentdict end def
+/bgcolor [ 0 0 0 ] def
+/bg false def
+/ul false def
+/bx false def
+% The font for line numbering
+/f# /Helvetica findfont bfs .6 mul scalefont def
+/fSymbol /Symbol findfont def
+/hm fnfs 0.25 mul def
+/pw
+   cw 132.400000 mul
+def
+/ph
+   502.999995 th add
+def
+/pmw 0 def
+/pmh 0 def
+/v 0 def
+/x [
+  0
+] def
+/y [
+  pmh ph add 0 mul ph add
+] def
+/scx sw 2 div def
+/scy sh 2 div def
+/snx urx def
+/sny lly 2 add def
+/dx llx def
+/dy sny def
+/fnx scx def
+/fny dy def
+/lx snx def
+/ly ury fnfs 0.8 mul sub def
+/sx 0 def
+/tab 8 def
+/x0 0 def
+/y0 0 def
+%%EndSetup
+
+%%Page: (1) 1
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( <Xm/Xm.h>) p n
+(#include) K
+( <Xm/DialogS.h>) p n
+(#include) K
+( <Xm/MwmUtil.h>) p n
+(#include) K
+( <Xm/BulletinB.h>) p n
+(#include) K
+( <Xm/Form.h>) p n
+(#include) K
+( <Xm/Label.h>) p n
+(#include) K
+( <Xm/PushB.h>) p n
+(#include) K
+( <Xm/ScrollBar.h>) p n
+(#include) K
+( <Xm/ScrolledW.h>) p n
+(#include) K
+( <Xm/List.h>) p n
+(#include) K
+( <Xm/ArrowB.h>) p n
+(#include) K
+( <sys/types.h>l) p n
+(#include) K
+( <sys/socket.h>) p n
+(#include) K
+( <netinet/in.h>) p n
+(#include) K
+( <netdb.h>) p n
+(#include) K
+( <stdio.h>) p n
+() N
+(#include) K
+( ") p
+(creation-c.h) str
+(") p n
+(#include) K
+( ") p
+(defs.h) str
+(") p n
+(extern) K
+( XtAppContext app;) p n
+() N
+() N
+(oscillazione\(\)) N
+({) N
+() N
+(Arg args[10];) N
+(Boolean argok;) N
+(char) k
+( cmd[20];) p n
+(char) k
+( frame_to_s[1024], frame_to_r[1024] ;) p n
+(int) k
+( nb_to_s, nb_to_r ;) p n
+(int) k
+( ind;) p n
+() N
+() N
+() N
+(char) k
+( stringa[64];) p n
+(char) k
+( stringa1[64];) p n
+(char) k
+( namestring[64];) p n
+() N
+() N
+() N
+() N
+(nb_to_s = ) S
+(sizeof) K
+(\( frame_to_s \) ;) p n
+(nb_to_r = ) S
+(sizeof) K
+(\( frame_to_r \) ;) p n
+() N
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: stato = %d  loop = %d\\n) str
+(", to_do, loop_counter\);) p n
+(switch) K
+( \(to_do\)) p n
+() S 8 T ({) N
+() S 8 T () S
+(case ) K
+(0) l
+(:) p n
+() S 8 T () S
+(/* accendere l'amplificatore */) c n
+() p 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: stato = %d  loop = %d\\n) str
+(", to_do, loop_counter\);) p n
+(automagico.c) (Page 1/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (1/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (2) 2
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(        amplifier_onoff[sottop_selez]=ACCESO;) p n
+(/*) c n
+(        bit_set\(za_ampli_fildes[sottop_selez], za_par_io_port[sottop_selez], za_ampl_bit[sottop_selez]\);) N
+(*/) N
+() p n
+(        XtSetArg\(args[2], XmNbackground, CONVERT\(pushButton59, ") S
+(red) str
+(", XmRPixel, 0, &argok\)\);) p n
+(        XtSetArg\(args[1], XmNforeground, CONVERT\(pushButton59, ") S
+(black) str
+(", XmRPixel, 0, &argok\)\);) p n
+(        XtSetArg\(args[0], XmNlabelString, XmStringCreate\(") S
+(amplif.:ON) str
+(", XmFONTLIST_DEFAULT_TAG\)\);) p n
+() N
+(if) K
+( \( sottop_tipo[sottop_selez] == 0 \)) p n
+(        {) N
+(        ) S
+(/* BUNCHER */) c n
+(        XtSetValues\(pushButton35, args, 3\);) p n
+(        }) N
+() N
+(else) K n
+(        {) p n
+(        ) S
+(/* POSTCHOPPER */) c n
+(        XtSetValues\(pushButton59, args, 3\);) p n
+(        }) N
+() N
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: ho acceso l'ampli\\n) str
+("\);) p n
+() N
+() N
+() S 8 T () S
+(/* accendere loop power */) c n
+() p n
+() S 8 T (lp_onoff[sottop_selez]=ACCESO;) N
+() N
+(        strcpy\(cmd,") S
+(!POWER=1) str
+("\);) p n
+(        XtSetArg\(args[2], XmNbackground, CONVERT\(pushButton29, ") S
+(red) str
+(", XmRPixel, 0, &argok\)\);) p n
+(        XtSetArg\(args[1], XmNforeground, CONVERT\(pushButton29, ") S
+(black) str
+(", XmRPixel, 0, &argok\)\);) p n
+(        XtSetArg\(args[0], XmNlabelString, XmStringCreate\(") S
+(loop pow.:ON) str
+(", XmFONTLIST_DEFAULT_TAG\)\);) p n
+() N
+() S 8 T () S
+(if) K
+( \( sottop_tipo[sottop_selez] == 0 \)) p n
+() S 8 T (        {) N
+() S 8 T (        ) S
+(/* BUNCHER */) c n
+() p 8 T (        XtSetValues\(pushButton29, args, 3\);) N
+() S 8 T (        }) N
+() N
+() S 8 T () S
+(else) K n
+() p 8 T (        {) N
+() S 8 T (        ) S
+(/* POSTCHOPPER */) c n
+() p 8 T (        XtSetValues\(pushButton58, args, 3\);) N
+() S 8 T (        }) N
+() N
+() N
+(     ) S
+(/* write to server */) c n
+(        ) p
+(if) K
+( \(  write\(rf_fildes[sottop_selez],cmd,) p
+(sizeof) K
+(\(cmd\)\) < 0 \)) p n
+(            {) N
+(            perror\( ") S
+(\\nclient: error writing to s streamsocket\\n) str
+(" \) ;) p n
+(automagico.c) (Page 2/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (2/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (3) 3
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(            }) p n
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( scritto %s su   %d\\n) str
+(", cmd, rf_fildes[sottop_selez]\);) p n
+() N
+(     ) S
+(/* listen to server */) c n
+(        ) p
+(if) K
+( \( read\( rf_fildes[sottop_selez], frame_to_r, nb_to_r \) < 0 \)) p n
+(            {) N
+(            perror\( ") S
+(\\nclient: error reading from s streamsocket\\n) str
+(" \) ;) p n
+(            }) N
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( letto %s da   %d\\n) str
+(", frame_to_r, rf_fildes[sottop_selez]\);) p n
+() N
+() N
+() S 8 T (sleep\(2\);) N
+() N
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: ho acceso loop power\\n) str
+("\);) p n
+() N
+() N
+(        strcpy\(cmd,") S
+(!AMP?) str
+("\);) p n
+() N
+(     ) S
+(/* write to server */) c n
+(        ) p
+(if) K
+( \(  write\(rf_fildes[sottop_selez],cmd,) p
+(sizeof) K
+(\(cmd\)\) < 0 \)) p n
+(            {) N
+(            perror\( ") S
+(\\nclient: error writing to s streamsocket\\n) str
+(" \) ;) p n
+(            }) N
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( scritto %s su   %d\\n) str
+(", cmd, rf_fildes[sottop_selez]\);) p n
+() N
+(     ) S
+(/* listen to server */) c n
+(        ) p
+(if) K
+( \( read\( rf_fildes[sottop_selez], frame_to_r, nb_to_r \) < 0 \)) p n
+(            {) N
+(            perror\( ") S
+(\\nclient: error reading from s streamsocket\\n) str
+(" \) ;) p n
+(            }) N
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( *letto %s da   %d\\n) str
+(", frame_to_r, rf_fildes[sottop_selez]\);) p n
+() N
+(        amplitude_error = atoi\(frame_to_r\);) N
+() N
+(        to_do = 1;) N
+() N
+(        ) S
+(if) K
+( \( amplitude_error < 4000 \) ) p
+(/* l'errore di ampiezza non e' in saturazione */) c n
+(                {) p n
+(                ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(*automagico: amplitude error = %d  OSCILLA !!!!\\n) str
+(", amplitude_error\);) p n
+(                to_do = 1;) N
+(                }) N
+() N
+(        ) S
+(if) K
+( \( amplitude_error < 20 \) ) p
+(/* l'errore di ampiezza e' in saturazione */) c n
+() p 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(/* campo troppo alto */) c
+() p 64 T () N
+(                {) N
+(                ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(**automagico: amplitude error = %d  OSCILLA !!!!\\n) str
+(", amplitude_error\);) p n
+() S 8 T () S 16 T (next_to_do = 1;) N
+(                to_do = 5;) N
+(                }) N
+() N
+(automagico.c) (Page 3/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (3/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (4) 4
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+() N
+() N
+() S 8 T () S
+(if) K
+( \(auto_oscill_onoff\)) p n
+(        XtAppAddTimeOut\(app, 500, oscillazione, ) S
+(NULL) K
+(\);) p n
+() N
+() S 8 T (loop_counter++;) N
+(        ) S
+(break) K
+(;) p n
+() N
+() N
+() N
+() S 8 T () S
+(case ) K
+(1) l
+(:) p n
+() S 8 T () N
+() S 8 T () S
+(/*termino il loop */) c n
+(        auto_oscill_cbk\(\);) p n
+() S 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: prima procedura terminata\\n) str
+("\);) p n
+() N
+() N
+() N
+() S 8 T () S
+(default) K
+(:) p n
+() N
+() N
+() N
+() N
+() N
+() S 8 T () S
+(break) K
+(;) p n
+() N
+() S 8 T () S
+(case ) K
+(2) l
+(:) p n
+() S 8 T () S
+(/* ricerca dell'oscillazione */) c n
+() p 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: stato = %d  loop = %d\\n) str
+(", to_do, loop_counter\);) p n
+() N
+() S 8 T (loop[sottop_selez] = a_loop_ph ;) N
+() N
+(if) K
+( \( sottop_tipo[sottop_selez] == 0 \)) p n
+(        {) N
+(        ) S
+(/* BUNCHER */) c n
+(        XmScrollBarSetValues \(scrollBar16, a_loop_ph, 19, 1, 10, TRUE\);) p n
+() S 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: ho impostato ph = %d\\n) str
+(", a_loop_ph\);) p n
+(        }) N
+() N
+(else) K n
+(        {) p n
+(        ) S
+(/* POSTCHOPPER */) c n
+() p 8 T () S
+(/*XmScrollBarSetValues \(widget, value, slider_size, increment, page_increment, notify\)*/) c n
+(        XmScrollBarSetValues \(scrollBar7, a_loop_ph, 19, 1, 10, TRUE\);) p n
+() S 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: ho impostato ph = %d\\n) str
+(", a_loop_ph\);) p n
+(        }) N
+() N
+() N
+() N
+(automagico.c) (Page 4/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (4/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (5) 5
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(        strcpy\(cmd,") p
+(!AMP?) str
+("\);) p n
+() N
+(     ) S
+(/* write to server */) c n
+(        ) p
+(if) K
+( \(  write\(rf_fildes[sottop_selez],cmd,) p
+(sizeof) K
+(\(cmd\)\) < 0 \)) p n
+(            {) N
+(            perror\( ") S
+(\\nclient: error writing to s streamsocket\\n) str
+(" \) ;) p n
+(            }) N
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( scritto %s su   %d\\n) str
+(", cmd, rf_fildes[sottop_selez]\);) p n
+() N
+(     ) S
+(/* listen to server */) c n
+(        ) p
+(if) K
+( \( read\( rf_fildes[sottop_selez], frame_to_r, nb_to_r \) < 0 \)) p n
+(            {) N
+(            perror\( ") S
+(\\nclient: error reading from s streamsocket\\n) str
+(" \) ;) p n
+(            }) N
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( letto %s da   %d\\n) str
+(", frame_to_r, rf_fildes[sottop_selez]\);) p n
+() N
+() S 8 T (amplitude_error  = new_amplitude_error;) N
+() N
+(        new_amplitude_error = atoi\(frame_to_r\);) N
+() N
+() S 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico:     ampl. err. = %d\\n) str
+(", amplitude_error\);) p n
+() S 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: new ampl. err. = %d  \\n) str
+(", new_amplitude_error\);) p n
+() N
+() N
+(        ) S
+(if) K
+( \( new_amplitude_error < 20 \) ) p
+(/* sono andato in saturazione */) c n
+(                {) p n
+() S 8 T () S 16 T (next_to_do = 2;) N
+() S 8 T () S 16 T (to_do = 5;) N
+() S 8 T () S 16 T (loop_for_min = a_loop_ph;) N
+() S 8 T () S 16 T (index_for_min = ph_index;) N
+() S 8 T () S 16 T (min_from_sat = 1;) N
+() S 8 T () S 16 T (}) N
+() S 8 T () S
+(else) K n
+() p 8 T () S 16 T ({) S 24 T () N
+() S 8 T () S 16 T (ampl_err[ph_index] = new_amplitude_error ;) N
+() S 8 T () S 16 T (loop_phase[ph_index] = a_loop_ph;) N
+() S 8 T () S 16 T (ph_max_index = ph_index;) N
+() S 8 T () S 16 T (ph_index++;) N
+() S 8 T () S 16 T (a_loop_ph = a_loop_ph + phase_step;) N
+() S 8 T () S 16 T () S
+(if) K
+( \(a_loop_ph > phase_stop \) ) p n
+() S 8 T () S 16 T () S 24 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(/* ho finito la spazzolata */) c n
+() p 8 T () S 16 T () S 24 T () S
+(if) K
+( \( auto_verbose \) ) p n
+() S 8 T () S 16 T () S 24 T () S 32 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T (printf \(") S
+(automagico: ho finito la pazzolata\\n) str
+("\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(for) K
+( \(ind = 0 ; ind <= ph_max_index ; ind++\) ) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (printf \(") S
+(ind = %d ampl_err = %d loop_phase = %d\\n) str
+(", ind, ampl_err[ind], loop_phase[ind]\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (}) N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T (oscill_is_on = 0;) N
+(automagico.c) (Page 5/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (5/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (6) 6
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S 16 T () S 24 T () S 32 T (min_ampl_err = 4095;) N
+(                                ) S
+(for) K
+( \(ind = 0 ; ind <= ph_max_index ; ind++\)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(if) K
+( \(ampl_err[ind] < 4090\) oscill_is_on = 1;) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(if) K
+( \(ampl_err[ind] < min_ampl_err \) ) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T (min_ampl_err = ampl_err[ind];) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T (index_for_min1 = ind;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T (}) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (}) N
+() N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \( oscill_is_on == 0 \)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(/* non ha mai oscillato !! */) c n
+() p 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico:non ha mai oscillato !!\\n) str
+("\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (to_do = 4 ;) N
+() S 8 T () S 16 T () S 24 T () S 32 T (}) N
+() N
+() S 8 T () S 16 T () S 24 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T () S 32 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: ho analizzato %d punti\\n) str
+(", ph_max_index+1\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: il max e' a %d gradi\\n) str
+(", loop_phase[index_for_min]\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: il max e' a %d gradi\\n) str
+(", loop_phase[index_for_min1]\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \( min_from_sat == 0 \)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: considerare min1 \(massimo\)\\n) str
+("\);) p n
+() S 8 T () S 16 T () S 24 T (        ) S 40 T (loop[sottop_selez] = loop_phase[index_for_min1] ;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (}) N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T () S 32 T () S 40 T ({) N
+(                                        ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: considerare min \(saturazione\)\\n) str
+("\);) p n
+() S 8 T () S 16 T () S 24 T (        ) S 40 T (loop[sottop_selez] = loop_phase[index_for_min] ;) N
+(                                        }) N
+() N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(/* metto il risuonatore sul picco appena trovato */) c n
+() p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \( sottop_tipo[sottop_selez] == 0 \)) p n
+(        ) S 16 T () S 24 T () S 32 T () S 40 T ({) N
+(        ) S 16 T () S 24 T () S 32 T () S 40 T () S
+(/* BUNCHER */) c n
+(        ) p 16 T () S 24 T () S 32 T () S 40 T (XmScrollBarSetValues \(scrollBar16, loop[sottop_selez], 19, 1, 10, TRUE\);) N
+(        ) S 16 T () S 24 T () S 32 T () S 40 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: ho impostato ph = %d\\n) str
+(", loop[sottop_selez]\);) p n
+(        ) S 16 T () S 24 T () S 32 T () S 40 T (}) N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(else) K n
+(        ) p 16 T () S 24 T () S 32 T () S 40 T ({) N
+(        ) S 16 T () S 24 T () S 32 T () S 40 T () S
+(/* POSTCHOPPER */) c n
+(        ) p 16 T () S 24 T () S 32 T () S 40 T (XmScrollBarSetValues \(scrollBar7, loop[sottop_selez], 19, 1, 10, TRUE\);) N
+(        ) S 16 T () S 24 T () S 32 T () S 40 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: ho impostato ph = %d\\n) str
+(", loop[sottop_selez]\);) p n
+(automagico.c) (Page 6/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (6/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (7) 7
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(        ) p 16 T () S 24 T () S 32 T () S 40 T (}) N
+() N
+() N
+() N
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \(secondo_giro == 1 \)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(\\n\\n\\nora faccio il secondo giro !!\\n\\n\\n) str
+("\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (a_loop_ph = loop_phase[index_for_min1] - 30 ;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (secondo_giro = 0;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (phase_step = 5;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (phase_stop = loop_phase[index_for_min1] + 30 ;) N
+(                                ) S 40 T (ph_index = 0;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (ph_max_index = 0;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (index_for_min = 0;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (min_from_sat = 0;) N
+(                                ) S 40 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(con start = %d stop = %d step = %d\\n\\n) str
+(", a_loop_ph, phase_stop, phase_ste) p n
+(p\);) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (to_do = 2;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (}) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T () S 32 T () S 40 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (to_do = 3;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(ho trovato il picco\\n) str
+("\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(/* devo porre il loop phase sul picco */) c n
+() p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (}) N
+() S 8 T () S 16 T () S 24 T () S 32 T (}) N
+() S 8 T () S 16 T () S 24 T (}) N
+() S 8 T () S 16 T (}) N
+() N
+() S 8 T () S
+(if) K
+( \(ricerca_picco_onoff\)) p n
+(        XtAppAddTimeOut\(app, 500, oscillazione, ) S
+(NULL) K
+(\);) p n
+() N
+() S 8 T (loop_counter++;) N
+() S 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: esco con to_do = %d  \\n) str
+(", to_do\);) p n
+() S 8 T () S
+(break) K
+(;) p n
+() N
+() N
+() S 8 T () S
+(case ) K
+(3) l
+(:) p n
+() N
+() S 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: seconda procedura terminata\\n) str
+("\);) p n
+() S 8 T (ricerca_picco_cbk\(\);) N
+() N
+() S 8 T () S
+(break) K
+(;) p n
+() N
+() N
+() S 8 T () S
+(case ) K
+(4) l
+(:) p n
+() N
+(automagico.c) (Page 7/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (7/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (8) 8
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+() S 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: aumento quiescent power di 4\\n) str
+("\);) p n
+() N
+(        ) S
+(if) K
+( \( power[sottop_selez] < 500 \) power[sottop_selez] = power[sottop_selez] + 20 ;) p n
+() N
+(        ) S
+(if) K
+( \( sottop_tipo[sottop_selez] == 0 \)) p n
+(                {) N
+(                ) S
+(/* BUNCHER */) c n
+(                XmScrollBarSetValues \(scrollBar17, power[sottop_selez], 26, 1, 10, TRUE\);) p n
+(                }) N
+() N
+(        ) S
+(else) K n
+(                {) p n
+(                ) S
+(/* POSTCHOPPER */) c n
+(                XmScrollBarSetValues \(scrollBar6, power[sottop_selez], 26, 1, 10, TRUE\);) p n
+(                }) N
+() N
+() N
+() N
+() S 8 T (to_do = 2;) N
+() S 8 T (amplitude_error = 4095 ;) N
+() S 8 T (new_amplitude_error = 4095 ;) N
+() S 8 T (phase_step=30;) N
+() S 8 T (phase_start = 1;) N
+() S 8 T (phase_stop = 360;) N
+() S 8 T (ph_index = 0;) N
+() S 8 T (a_loop_ph = phase_start;) N
+() S 8 T (secondo_giro = 1;) N
+() S 8 T (min_from_sat = 0;) N
+() N
+(        XtAppAddTimeOut\(app, 5, oscillazione, ) S
+(NULL) K
+(\);) p n
+() N
+() N
+() N
+() S 8 T () S
+(break) K
+(;) p n
+() N
+() N
+() S 8 T () S
+(case ) K
+(5) l
+(:) p n
+() N
+(        ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: stato = %d  loop = %d\\n) str
+(", to_do, loop_counter\);) p n
+(        ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: diminuisco quiescent power di uno\\n) str
+("\);) p n
+() N
+() S 8 T () S
+(if) K
+( \( power[sottop_selez] > 0 \) power[sottop_selez] = power[sottop_selez] - 5 ;) p n
+() N
+() S 8 T () S
+(if) K
+( \( sottop_tipo[sottop_selez] == 0 \)) p n
+(        {) N
+(        ) S
+(/* BUNCHER */) c n
+(        XmScrollBarSetValues \(scrollBar17, power[sottop_selez], 26, 1, 10, TRUE\);) p n
+(        }) N
+() N
+(automagico.c) (Page 8/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (8/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (9) 9
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(else) K n
+(        {) p n
+(        ) S
+(/* POSTCHOPPER */) c n
+(        XmScrollBarSetValues \(scrollBar6, power[sottop_selez], 26, 1, 10, TRUE\);) p n
+(        }) N
+() N
+() N
+() N
+(        strcpy\(cmd,") S
+(!AMP?) str
+("\);) p n
+() N
+(     ) S
+(/* write to server */) c n
+(        ) p
+(if) K
+( \(  write\(rf_fildes[sottop_selez],cmd,) p
+(sizeof) K
+(\(cmd\)\) < 0 \)) p n
+(            {) N
+(            perror\( ") S
+(\\nclient: error writing to s streamsocket\\n) str
+(" \) ;) p n
+(            }) N
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( scritto %s su   %d\\n) str
+(", cmd, rf_fildes[sottop_selez]\);) p n
+() N
+(     ) S
+(/* listen to server */) c n
+(        ) p
+(if) K
+( \( read\( rf_fildes[sottop_selez], frame_to_r, nb_to_r \) < 0 \)) p n
+(            {) N
+(            perror\( ") S
+(\\nclient: error reading from s streamsocket\\n) str
+(" \) ;) p n
+(            }) N
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( *letto %s da   %d\\n) str
+(", frame_to_r, rf_fildes[sottop_selez]\);) p n
+() N
+(        amplitude_error = atoi\(frame_to_r\);) N
+() N
+(        to_do= next_to_do;) N
+() N
+() N
+(        ) S
+(if) K
+( \( amplitude_error < 20 \) ) p
+(/* l'errore di ampiezza e' in saturazione */) c n
+(                                        ) p
+(/* campo troppo alto */) c n
+(                {) p n
+(                ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(**automagico: amplitude error = %d  OSCILLA !!!!\\n) str
+(", amplitude_error\);) p n
+(                to_do = 5;) N
+(                }) N
+() N
+( ) N
+(        ) S
+(if) K
+( \(ricerca_picco_onoff || auto_oscill_onoff\)) p n
+(        XtAppAddTimeOut\(app, 500, oscillazione, ) S
+(NULL) K
+(\);) p n
+() N
+() S 8 T () S
+(break) K
+(;) p n
+() N
+() N
+() S 8 T () S
+(case ) K
+(7) l
+(:) p n
+() S 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(tuning\\n) str
+("\);) p n
+() N
+(        strcpy\(cmd,") S
+(!FREQ?) str
+("\);) p n
+() N
+(         ) S
+(/* write to server */) c n
+(         ) p
+(if) K
+( \(  write\(rf_fildes[sottop_selez],cmd,) p
+(sizeof) K
+(\(cmd\)\) < 0 \)) p n
+(automagico.c) (Page 9/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (9/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (10) 10
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(                 perror\( ") p
+(\\nclient: error writing to s streamsocket\\n) str
+(" \) ;) p n
+(                 ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( scritto %s su   %d\\n) str
+(", cmd, rf_fildes[sottop_selez]\);) p n
+() N
+(         ) S
+(/* listen to server */) c n
+(         ) p
+(if) K
+( \( read\( rf_fildes[sottop_selez], frame_to_r, nb_to_r \) < 0 \)) p n
+(                 perror\( ") S
+(\\nclient: error reading from s streamsocket\\n) str
+(" \) ;) p n
+(         ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( letto %s da   %d\\n) str
+(", frame_to_r, rf_fildes[sottop_selez]\);) p n
+() N
+() S 8 T ( old_frequency_error = 2048 ;) N
+() N
+(         new_frequency_error = 2048 - atoi\(frame_to_r\);) N
+() N
+() S 8 T ( frequency_error = new_frequency_error ;) N
+() N
+(        ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: err. di freq = %d\\n) str
+(", new_frequency_error\);) p n
+(        ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(slow = %d fast = %d fast_fast = %d\\n) str
+(", tu_step_slow[sottop_selez], tu_step_fast[sottop_selez], tu_step_f) p n
+(ast_fast[sottop_selez]\);) N
+() N
+() N
+() S 8 T () S
+(if) K
+( \( new_frequency_error > 2046 \)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S
+(/* errore di frequenza saturo */) c n
+() p 8 T () S 16 T (to_do = 10 ;) N
+() S 8 T () S 16 T (}) N
+(else) K n
+() p n
+() S 8 T (to_do = 8;) N
+() N
+() S 8 T (tu_direction = 1 ;) N
+() S 8 T (ha_diminuito = 0 ;) N
+() S 8 T (tu_fa_sl = 500;) N
+() S 8 T (steps = tu_step_fast[sottop_selez];) N
+() N
+(        ) S
+(if) K
+( \(auto_tuning_onoff\)) p n
+(        XtAppAddTimeOut\(app, 500, oscillazione, ) S
+(NULL) K
+(\);) p n
+() N
+() N
+() S 8 T () S
+(break) K
+(;) p n
+() N
+() N
+() S 8 T () S
+(case ) K
+(8) l
+(:) p n
+() N
+() S 8 T () S
+(/* prova a fare un passo */) c n
+() p 8 T (sprintf\(stringa,") S
+(!%1d, %d, %d) str
+(",motor[sottop_selez], tu_direction * steps, 400\);) p n
+() N
+() N
+(     ) S
+(/* write to server */) c n
+(        ) p
+(if) K
+( \(  write\(za_fildes[sottop_selez],stringa,) p
+(sizeof) K
+(\(stringa\)\) < 0 \)) p n
+(            perror\( ") S
+(\\nclient: error writing to s streamsocket\\n) str
+(" \) ;) p n
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( scritto %s su   %d\\n) str
+(", stringa, za_fildes[sottop_selez]\);) p n
+(automagico.c) (Page 10/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (10/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (11) 11
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+(     ) S
+(/* listen to server */) c n
+(        ) p
+(if) K
+( \( read\( za_fildes[sottop_selez], frame_to_r, nb_to_r \) < 0 \)) p n
+(            perror\( ") S
+(\\nclient: error reading from s streamsocket\\n) str
+(" \) ;) p n
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( letto %s da   %d\\n) str
+(", frame_to_r, za_fildes[sottop_selez]\);) p n
+() N
+() N
+() N
+() N
+() S 8 T () S
+(if) K
+( \( strncmp\(frame_to_r, ") p
+(Start position) str
+(", 14\) == 0 \)) p n
+() N
+() S 8 T () N
+() S 8 T ({) N
+() S 8 T () S
+(if) K
+( \( strncmp\(frame_to_r, ") p
+(Start position CW) str
+(", 17\) == 0 \)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+( \(auto_verbose\) printf \(") p
+(ho raggiunto il fine corsa CW -> cambio direzione \\n) str
+("\);) p n
+() S 8 T () S 16 T (tu_direction = tu_direction * -1;) N
+() S 8 T () S 16 T (}) N
+() N
+(        ) S
+(if) K
+( \( strncmp\(frame_to_r, ") p
+(Start position CCW) str
+(", 18\) == 0 \)) p n
+(                {) N
+(                ) S
+(if) K
+( \(auto_verbose\) printf \(") p
+(ho raggiunto il fine corsa CCW -> cambio direzione \\n) str
+("\);) p n
+() S 8 T () S 16 T (tu_direction = tu_direction * -1;) N
+(                }) N
+() N
+() S 8 T (to_do = 8 ;) N
+() S 8 T (}) N
+() N
+() S 8 T () S
+(else) K n
+() p n
+() S 8 T ({) N
+() N
+() N
+() S 8 T () S
+(/* rileggo errore di frequenza */) c n
+() p n
+(        strcpy\(cmd,") S
+(!FREQ?) str
+("\);) p n
+() N
+(         ) S
+(/* write to server */) c n
+(         ) p
+(if) K
+( \(  write\(rf_fildes[sottop_selez],cmd,) p
+(sizeof) K
+(\(cmd\)\) < 0 \)) p n
+(                 perror\( ") S
+(\\nclient: error writing to s streamsocket\\n) str
+(" \) ;) p n
+(                 ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( scritto %s su   %d\\n) str
+(", cmd, rf_fildes[sottop_selez]\);) p n
+() N
+(         ) S
+(/* listen to server */) c n
+(         ) p
+(if) K
+( \( read\( rf_fildes[sottop_selez], frame_to_r, nb_to_r \) < 0 \)) p n
+(                 perror\( ") S
+(\\nclient: error reading from s streamsocket\\n) str
+(" \) ;) p n
+(         ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( letto %s da   %d\\n) str
+(", frame_to_r, rf_fildes[sottop_selez]\);) p n
+() N
+() S 8 T ( old_frequency_error = frequency_error ;) N
+() S 8 T ( frequency_error = new_frequency_error ;) N
+(         new_frequency_error = 2048 - atoi\(frame_to_r\);) N
+(automagico.c) (Page 11/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (11/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (12) 12
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+(        ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: old err. di freq = %d  %f KHz\\n) str
+(", old_frequency_error, old_frequency_error * 100.0 / 2048.0\);) p n
+(        ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico:     err. di freq = %d  %f KHz\\n) str
+(", frequency_error, frequency_error * 100.0 / 2048.0\);) p n
+(        ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: new err. di freq = %d  %f KHz\\n) str
+(", new_frequency_error, new_frequency_error * 100.0 / 2048.0\);) p n
+() N
+() S 8 T (ok_1 = 0;) N
+() S 8 T (ok_2 = 0;) N
+() S 8 T () S
+(if) K
+( \(old_frequency_error - frequency_error > 0 \) ok_1 = 1;) p n
+() S 8 T () S
+(if) K
+( \(frequency_error - new_frequency_error > 0 \) ok_2 = 1;) p n
+() N
+() S 8 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: ok_1 = %d ok_2 = %d\\n) str
+(", ok_1, ok_2\);) p n
+() N
+() N
+() N
+() S 8 T () S
+(if) K
+( \(new_frequency_error * 100.0 / 2048.0 < 0.2 \)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S
+(/* ho raggiunto la soglia */) c n
+(                ) p
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: ho raggiunto la soglia\\n) str
+("\);) p n
+(                to_do = 9 ;) N
+(                }) N
+() N
+() N
+() S 8 T () N
+() S 8 T () S
+(if) K
+( \( ok_1 == 1 && ok_2 == 0 \)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S
+(/* ho oltrepassato il minimo */) c n
+(        ) p 16 T () S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: ho oltrepassato il minimo\\n) str
+("\);) p n
+() S 8 T () S 16 T (tu_direction = tu_direction * -1;) N
+() S 8 T () S 16 T () N
+() S 8 T () S 16 T (steps = tu_step_slow[sottop_selez];) N
+() S 8 T () S 16 T (to_do = 8 ;) N
+() S 8 T () S 16 T (}) N
+() N
+(        ) S
+(if) K
+( \( ok_1 == 0 && ok_2 == 0 \)) p n
+(                {) N
+(                ) S
+(/* ho sbagliato direzione */) c n
+(                ) p
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: ho sbagliato direzione\\n) str
+("\);) p n
+() S 8 T () S 16 T (tu_direction = tu_direction * -1;) N
+(                to_do = 8 ;) N
+(                }) N
+() N
+() N
+() N
+() N
+() N
+() S 8 T (}) N
+() N
+() N
+() N
+(        ) S
+(if) K
+( \(auto_tuning_onoff\)) p n
+(automagico.c) (Page 12/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (12/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (13) 13
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(        XtAppAddTimeOut\(app, 300, oscillazione, ) p
+(NULL) K
+(\);) p n
+() N
+() S 8 T () S
+(break) K
+(;) p n
+() N
+() N
+() S 8 T () S
+(case ) K
+(9) l
+(:) p n
+() N
+(        ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: pocedura tuning terminata\\n) str
+("\);) p n
+() N
+() S 8 T (tuning_cbk\(\);) N
+() N
+() S 8 T () S
+(break) K
+(;) p n
+() N
+() N
+() S 8 T () S
+(case ) K
+(10) l
+(:) p n
+() N
+(        ) S
+(/* prova a fare un passo */) c n
+(        sprintf\(stringa,") p
+(!%1d, %d, %d) str
+(",motor[sottop_selez], tu_direction * tu_step_fast_fast[sottop_selez], 400\);) p n
+() N
+() N
+(     ) S
+(/* write to server */) c n
+(        ) p
+(if) K
+( \(  write\(za_fildes[sottop_selez],stringa,) p
+(sizeof) K
+(\(stringa\)\) < 0 \)) p n
+(            perror\( ") S
+(\\nclient: error writing to s streamsocket\\n) str
+(" \) ;) p n
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( scritto %s su   %d\\n) str
+(", stringa, za_fildes[sottop_selez]\);) p n
+() N
+(     ) S
+(/* listen to server */) c n
+(        ) p
+(if) K
+( \( read\( za_fildes[sottop_selez], frame_to_r, nb_to_r \) < 0 \)) p n
+(            perror\( ") S
+(\\nclient: error reading from s streamsocket\\n) str
+(" \) ;) p n
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( letto %s da   %d\\n) str
+(", frame_to_r, za_fildes[sottop_selez]\);) p n
+() N
+() N
+() N
+() N
+(        ) S
+(if) K
+( \( strncmp\(frame_to_r, ") p
+(Start position) str
+(", 14\) == 0 \)) p n
+(        ) S 16 T ({) N
+() S 8 T (        ) S
+(if) K
+( \( strncmp\(frame_to_r, ") p
+(Start position CW) str
+(", 17\) == 0 \)) p n
+(       ) S 8 T () S 16 T (         {) N
+(       ) S 8 T () S 16 T (         ) S
+(if) K
+( \(auto_verbose\) printf \(") p
+(ho raggiunto il fine corsa CW -> cambio direzione \\n) str
+("\);) p n
+(       ) S 8 T () S 16 T (         tu_direction = tu_direction * -1;) N
+(                       ) S 24 T ( }) N
+() N
+(        ) S 16 T () S
+(if) K
+( \( strncmp\(frame_to_r, ") p
+(Start position CCW) str
+(", 18\) == 0 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T () S
+(if) K
+( \(auto_verbose\) printf \(") p
+(ho raggiunto il fine corsa CCW -> cambio direzione \\n) str
+("\);) p n
+(                ) S 24 T (tu_direction = tu_direction * -1;) N
+(                ) S 24 T (}) N
+() N
+(        ) S 16 T (to_do = 10 ;) N
+(        ) S 16 T (}) N
+(else) K n
+(automagico.c) (Page 13/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (13/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (14) 14
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+(        ) S 16 T ({) N
+() N
+() N
+(        ) S 16 T () S
+(/* rileggo errore di frequenza */) c n
+() p n
+(        ) S 16 T (strcpy\(cmd,") S
+(!FREQ?) str
+("\);) p n
+() N
+(         ) S 16 T () S
+(/* write to server */) c n
+(         ) p 16 T () S
+(if) K
+( \(  write\(rf_fildes[sottop_selez],cmd,) p
+(sizeof) K
+(\(cmd\)\) < 0 \)) p n
+(                 ) S 24 T (perror\( ") S
+(\\nclient: error writing to s streamsocket\\n) str
+(" \) ;) p n
+(                 ) S 24 T () S
+(if) K
+( \(net_verbose\) printf \(") p
+( scritto %s su   %d\\n) str
+(", cmd, rf_fildes[sottop_selez]\);) p n
+() N
+(         ) S 16 T () S
+(/* listen to server */) c n
+(         ) p 16 T () S
+(if) K
+( \( read\( rf_fildes[sottop_selez], frame_to_r, nb_to_r \) < 0 \)) p n
+(                 ) S 24 T (perror\( ") S
+(\\nclient: error reading from s streamsocket\\n) str
+(" \) ;) p n
+(         ) S 16 T () S 24 T () S
+(if) K
+( \(net_verbose\) printf \(") p
+( letto %s da   %d\\n) str
+(", frame_to_r, rf_fildes[sottop_selez]\);) p n
+() N
+(         ) S 16 T (new_frequency_error = 2048 - atoi\(frame_to_r\);) N
+(        ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: new err. di freq = %d  %f KHz\\n) str
+(", new_frequency_error, new_frequency_error * 100.0 / 2048.0\);) p n
+() N
+(        ) S 16 T () S
+(if) K
+( \( new_frequency_error > 2046 \)) p n
+(                ) S 24 T ({) N
+(                ) S 24 T () S
+(/* errore di frequenza saturo */) c n
+(                ) p 24 T (to_do = 10 ;) N
+(                ) S 24 T (}) N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T (to_do = 7;) N
+() N
+() S 8 T () S 16 T (}) N
+() N
+() N
+() N
+(        ) S
+(if) K
+( \(auto_tuning_onoff\)) p n
+(        XtAppAddTimeOut\(app, 300, oscillazione, ) S
+(NULL) K
+(\);) p n
+() N
+() N
+() N
+() N
+() S 8 T () S
+(break) K
+(;) p n
+() N
+() N
+() S 8 T () S
+(case ) K
+(11) l
+(:) p n
+() N
+() N
+(        strcpy\(cmd,") S
+(!AMP?) str
+("\);) p n
+() N
+(     ) S
+(/* write to server */) c n
+(        ) p
+(if) K
+( \(  write\(rf_fildes[sottop_selez],cmd,) p
+(sizeof) K
+(\(cmd\)\) < 0 \)) p n
+(            {) N
+(automagico.c) (Page 14/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (14/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (15) 15
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(            perror\( ") p
+(\\nclient: error writing to s streamsocket\\n) str
+(" \) ;) p n
+(            }) N
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( scritto %s su   %d\\n) str
+(", cmd, rf_fildes[sottop_selez]\);) p n
+() N
+(     ) S
+(/* listen to server */) c n
+(        ) p
+(if) K
+( \( read\( rf_fildes[sottop_selez], frame_to_r, nb_to_r \) < 0 \)) p n
+(            {) N
+(            perror\( ") S
+(\\nclient: error reading from s streamsocket\\n) str
+(" \) ;) p n
+(            }) N
+(        ) S
+(if) K
+( \(net_verbose\) printf \(") p
+( *letto %s da   %d\\n) str
+(", frame_to_r, rf_fildes[sottop_selez]\);) p n
+() N
+(        amplitude_error = atoi\(frame_to_r\);) N
+() N
+(        to_do = 99;) N
+() N
+(        ) S
+(if) K
+( \( amplitude_error <= 2200 && amplitude_error >= 1900 \) ) p
+(/* l'errore di ampiezza e' minore della soglia */) c n
+(                {) p n
+(                ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(*automagico: amplitude error = %\\n) str
+(", amplitude_error\);) p n
+(                to_do = 12;) N
+(                }) N
+() N
+(        ) S
+(if) K
+( \( amplitude_error < 1900 \) ) p
+(/* campo troppo alto */) c n
+(                {) p n
+(                ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: amplitude error = %d diminuisco q.p.\\n) str
+(", amplitude_error\);) p n
+(        ) S 16 T () S
+(if) K
+( \( power[sottop_selez] > 0 \) power[sottop_selez] = power[sottop_selez] - 1 ;) p n
+(                to_do = 11;) N
+(                }) N
+() N
+(        ) S
+(if) K
+( \( amplitude_error > 2200 \) ) p
+(/* campo troppo basso */) c n
+(                {) p n
+(                ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: amplitude error = %d aumento q.p.\\n) str
+(", amplitude_error\);) p n
+(        ) S 16 T () S
+(if) K
+( \( power[sottop_selez] < 500 \) power[sottop_selez] = power[sottop_selez] + 1 ;) p n
+(                to_do = 11;) N
+(                }) N
+() N
+(        ) S
+(if) K
+( \( sottop_tipo[sottop_selez] == 0 \)) p n
+(        ) S 16 T ({) N
+(        ) S 16 T () S
+(/* BUNCHER */) c n
+(        ) p 16 T (XmScrollBarSetValues \(scrollBar17, power[sottop_selez], 26, 1, 10, TRUE\);) N
+(        ) S 16 T (}) N
+() N
+() S 8 T () S
+(else) K n
+(        ) p 16 T ({) N
+(        ) S 16 T () S
+(/* POSTCHOPPER */) c n
+(        ) p 16 T (XmScrollBarSetValues \(scrollBar6, power[sottop_selez], 26, 1, 10, TRUE\);) N
+(        ) S 16 T (}) N
+() N
+(        ) S
+(if) K
+( \(auto_zeroampl_onoff\)) p n
+(        XtAppAddTimeOut\(app, 300, oscillazione, ) S
+(NULL) K
+(\);) p n
+() N
+(automagico.c) (Page 15/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (15/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (16) 16
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S
+(break) K
+(;) p n
+() N
+() N
+() N
+(        ) S
+(case ) K
+(12) l
+(:) p n
+() N
+(        ) S
+(if) K
+( \( auto_verbose \) printf \(") p
+(automagico: pocedura azzeramento err. amp. terminata\\n) str
+("\);) p n
+() N
+(        ampl_zero_cbk\(\);) N
+() N
+(        ) S
+(break) K
+(;) p n
+() N
+() N
+() N
+() S 8 T (}) N
+(}) N
+() N
+() N
+(automagico.c) (Page 16/16) (Nov 25, 98 15:59) title
+border
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(automagico.c) (16/16) (Friday November 27, 1998) footer
+end % of latin1dict
+pagesave restore
+showpage
+
+%%Trailer
+end
+%%EOF

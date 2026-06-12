@@ -1,0 +1,75 @@
+
+#include "server.h"
+#include <termios.h>
+
+/***********************************************************************
+    tty SERVER DEPENDENT vars initializations
+***********************************************************************/
+
+tty_init()
+
+{
+    extern char myname[ NCHARS ] ;
+    extern char tty_name[ NCHARS ] ;
+    extern FILE *rs232r, *rs232w ;
+
+    /***  da sistemare per linux
+    struct sgttyb pp;
+    o***/
+    extern int fildes, errno;
+    
+    /***
+    extern char *sys_errlist[] ;
+    ***/
+
+    int ret_val ;
+    /* linux:no
+    int ldisc = NTTYDISC ;
+    */
+
+    /* open line towards controller */
+
+    /*** da sistemare per linux
+    pp.sg_ispeed = B9600 ;
+    pp.sg_ospeed = B9600 ;
+    pp.sg_flags =  CS8 ; ***/ /* 1 stop bit and 8 bit *
+					* for the data message *
+					* (man termios)        */
+
+    /* open line towards controller */
+    fildes = open(tty_name, O_RDWR ) ;
+    /***
+    if (fildes == -1) {
+        printf( "%s error (dev open) %s\n", myname, sys_errlist[errno] ) ;
+        return ;
+        }
+	***/
+
+    /* linux:no
+    ret_val = ioctl( fildes, TIOCSETD, &ldisc ) ;
+    if ( ret_val < 0 )
+        printf( "\n%s: error on ioctl (ldisc) \n", myname ) ;
+	*/
+
+    /* set della velocita' della porta */
+    /*** da sistemare per linux
+    ret_val = ioctl( fildes, TIOCSETN, &pp ) ;
+    if ( ret_val < 0 )
+        printf( "\n%s: error on ioctl (raw) \n", myname ) ;
+	***/
+
+    rs232r = fdopen( fildes, "r" ) ;
+    if ( rs232r == NULL ) {
+        printf( "\n%s: error opening tty %s for reading\n",
+                myname, tty_name ) ;
+        exit( 0 ) ;
+        }
+    rs232w = fdopen( fildes, "w" ) ;
+    if ( rs232w == NULL ) {
+        printf( "\n%s: error opening tty %s for writing\n",
+                myname, tty_name ) ;
+        exit( 0 ) ;
+        }
+
+}
+

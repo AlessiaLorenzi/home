@@ -1,0 +1,100 @@
+GNOME_KEYRING_SOCKET=/tmp/keyring-Mf66JV/socket
+SSH_AUTH_SOCK=/tmp/keyring-Mf66JV/socket.ssh
+Cleaned 26 files 9 still live
+
+(process:7974): GLib-WARNING **: goption.c:2132: ignoring no-arg, optional-arg or filename flags (8) on option of type 0
+
+(process:7974): GLib-WARNING **: goption.c:2132: ignoring no-arg, optional-arg or filename flags (8) on option of type 0
+
+(process:7974): GLib-WARNING **: goption.c:2132: ignoring no-arg, optional-arg or filename flags (8) on option of type 0
+
+** (nm-applet:7977): WARNING **: <WARN>  request_name(): Could not acquire the NetworkManagerUserSettings service.
+  Error: (9) Connection ":1.292" is not allowed to own the service "org.freedesktop.NetworkManagerUserSettings" due to security policies in the configuration file
+
+Failed to play sound: File or data not found
+
+(polkit-gnome-authentication-agent-1:8016): GLib-GObject-WARNING **: cannot register existing type `_PolkitError'
+
+(polkit-gnome-authentication-agent-1:8016): GLib-CRITICAL **: g_once_init_leave: assertion `initialization_value != 0' failed
+system-config-printer-applet: failed to start NewPrinterNotification service
+Initializing nautilus-open-terminal extension
+Initializing nautilus-gdu extension
+Starting a11y dbus service...
+libGL error: failed to open drm device: No such file or directory
+libGL error: failed to load driver: r600
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=4.45199) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Safe Browsing server returned a 400 during update:request url = https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=AIzaSyBPGXa4AYD4FC3HJK7LnIKxm4fDusVuuco&$httpMethod=POST, payload = ChUKE25hdmNsaWVudC1hdXRvLWZmb3gaJwgFEAIaGwoNCAUQBhgBIgMwMDEwARCj4h4aAhgFXc6l3SICIAIoARonCAEQAhobCg0IARAGGAEiAzAwMTABEKOIFBoCGAVs0xwdIgIgAigBGicIAxACGhsKDQgDEAYYASIDMDAxMAEQjoEUGgIYBXa7DVQiAiACKAEaJwgHEAIaGwoNCAcQBhgBIgMwMDEwARDn_hMaAhgF4Dq4LiICIAIoARolCAkQAhoZCg0ICRAGGAEiAzAwMTABECQaAhgF6_B7aSICIAIoAQ==
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=3.92619) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+Safe Browsing server returned a 400 during update:request url = https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=AIzaSyBPGXa4AYD4FC3HJK7LnIKxm4fDusVuuco&$httpMethod=POST, payload = ChUKE25hdmNsaWVudC1hdXRvLWZmb3gaJwgFEAIaGwoNCAUQBhgBIgMwMDEwARCj4h4aAhgFXc6l3SICIAIoARonCAEQAhobCg0IARAGGAEiAzAwMTABEKOIFBoCGAVs0xwdIgIgAigBGicIAxACGhsKDQgDEAYYASIDMDAxMAEQjoEUGgIYBXa7DVQiAiACKAEaJwgHEAIaGwoNCAcQBhgBIgMwMDEwARDn_hMaAhgF4Dq4LiICIAIoARolCAkQAhoZCg0ICRAGGAEiAzAwMTABECQaAhgF6_B7aSICIAIoAQ==
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+
+(gnome-power-manager:8022): GLib-GObject-CRITICAL **: g_object_unref: assertion `G_IS_OBJECT (object)' failed
+Window manager warning: CurrentTime used to choose focus window; focus window may not be correct.
+Window manager warning: Got a request to focus the no_focus_window with a timestamp of 0.  This shouldn't happen!
+Shutting down nautilus-gdu extension
+Shutting down nautilus-open-terminal extension
+
+--- Hash table keys for warning below:
+--> Alpi Control
+--> inode/directory
+--> alpi
+--> l64770
+
+(nautilus:7960): Eel-WARNING **: "unique eel_ref_str" hash table still has 4 elements at quit time (keys above)
+
+(nautilus:7960): Eel-WARNING **: "nautilus-directory.c: directories" hash table still has 3 elements at quit time
+
+** (gnome-panel:7957): WARNING **: Failed to send buffer
+
+** (gnome-panel:7957): WARNING **: Failed to send buffer
+
+(polkit-gnome-authentication-agent-1:8016): polkit-gnome-1-WARNING **: Error enumerating temporary authorizations: Remote Exception invoking org.freedesktop.PolicyKit1.Authority.EnumerateTemporaryAuthorizations() on /org/freedesktop/PolicyKit1/Authority at name org.freedesktop.PolicyKit1: org.freedesktop.PolicyKit1.Error.Failed: Cannot determine session the caller is in
+
+(polkit-gnome-authentication-agent-1:8016): polkit-gnome-1-WARNING **: Error enumerating temporary authorizations: Remote Exception invoking org.freedesktop.PolicyKit1.Authority.EnumerateTemporaryAuthorizations() on /org/freedesktop/PolicyKit1/Authority at name org.freedesktop.PolicyKit1: org.freedesktop.PolicyKit1.Error.Failed: Cannot determine session the caller is in
+gnome-settings-daemon: Fatal IO error 11 (Resource temporarily unavailable) on X server 10.20.1.8:1.
+evolution-alarm-notify: Fatal IO error 11 (Resource temporarily unavailable) on X server 10.20.1.8:1.
+polkit-gnome-authentication-agent-1: Fatal IO error 11 (Resource temporarily unavailable) on X server 10.20.1.8:1.
+gnome-volume-control-applet: Fatal IO error 11 (Resource temporarily unavailable) on X server 10.20.1.8:1.
+gnome-screensaver: Fatal IO error 11 (Resource temporarily unavailable) on X server 10.20.1.8:1.
+gdu-notification-daemon: Fatal IO error 11 (Resource temporarily unavailable) on X server 10.20.1.8:1.
+applet.py: Fatal IO error 11 (Resource temporarily unavailable) on X server 10.20.1.8:1.
+No protocol specified

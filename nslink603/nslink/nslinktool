@@ -1,0 +1,1107 @@
+#!/usr/bin/python
+
+import traceback        
+import string
+import re
+import os
+import commands
+import time
+from types import *
+
+ipAddressRE = re.compile(r"^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
+ethAddressRE = re.compile(r"^[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}$")
+portNumberRE = re.compile(r"^[0-9]{1,2}$")
+interfaceTypeRE = re.compile(r"(232)|(422)|(485)| (485_2-[wW]ire) |(485_4-[wW]ire_[mM]aster)|(485_4-[wW]ire_[sS]lave)|([oO][fF][fF])$")
+bootfileRE = re.compile(r"^bootfile$")
+bootfile2pRE = re.compile(r"^bootfile-2p$")
+bootfileDMRE = re.compile(r"^bootfile-DM$")
+
+maxPorts = 32
+
+class Configuration:
+    def __init__(self):
+        self.__hubList = []
+        self.__bootfile = ""
+        self.__bootfile2p = ""
+        self.__bootfileDM = ""
+        self.__newHub = None
+
+    def hubList(self, list=None):
+        if list:
+            self.__hubList = []
+        return self.__hubList
+    
+    def hub(self,i,hub=None):
+        if hub:
+            self.__hubList[i] = hub
+        return self.__hubList[i]
+    
+    def deleteHub(self, i):
+        del self.__hubList[i]
+
+    def addHub(self, h):
+        self.__hubList.append(h)
+        
+    
+    # hub objects know how to print themselves
+    
+    def write(self,file):
+        file.write("# RocketPort Serial Hub configuration\n\n")
+        if (self.__bootfile):
+            file.write("bootfile %s\n" % (self.__bootfile,))
+        if (self.__bootfile2p):
+            file.write("bootfile-2p %s\n" % (self.__bootfile2p,))
+        if (self.__bootfileDM):
+            file.write("bootfile-DM %s\n" % (self.__bootfileDM,))
+        for hub in self.__hubList:
+            hub.printConfig(file)
+    
+    # hub objects aren't bright enough to read themselves from
+    # files since you can't tell when you're done untill you've
+    # read data from the next hub entry
+            
+    def read(self,file):
+        lineNumber = 0
+        while 1:
+            line = file.readline()
+            if not line:
+                break
+            lineNumber = lineNumber + 1
+            if line[-1:] == '\n':
+                line = line[:-1]
+            comment = None
+            try:
+                i = string.index(line,"#")
+                comment = line[i:]
+                line = line[:i]
+            except ValueError:
+                pass
+            words = string.split(line)
+            
+            if words == []:
+                continue
+            
+            if bootfileRE.match(words[0]):
+                if len(words) < 2:
+                    raise "Filename missing at line %d: '%s'" % (lineNumber, line)
+                elif len(words) > 2:
+                    raise "Extra values at line %d: '%s'" % (lineNumber, line)
+                else:
+                    self.__bootfile = words[1]
+                
+            elif bootfile2pRE.match(words[0]):
+                if len(words) < 2:
+                    raise "Filename missing at line %d: '%s'" % (lineNumber, line)
+                elif len(words) > 2:
+                    raise "Extra values at line %d: '%s'" % (lineNumber, line)
+                else:
+                    self.__bootfile2p = words[1]
+                
+            elif bootfileDMRE.match(words[0]):
+                if len(words) < 2:
+                    raise "Filename missing at line %d: '%s'" % (lineNumber, line)
+                elif len(words) > 2:
+                    raise "Extra values at line %d: '%s'" % (lineNumber, line)
+                else:
+                    self.__bootfileDM = words[1]
+
+            elif ipAddressRE.match(words[0]):
+                if len(words) < 2:
+                    raise "Port count missing at line %d: '%s'" % (lineNumber, line)
+                elif len(words) > 5:
+                    raise "Extra values at line %d: '%s'" % (lineNumber, line)
+                else:
+                    newHub = SerialHub()
+                    newHub.useIP(1)
+                    newHub.ipAddress(words[0])
+                    newHub.portCount(int(words[1]))
+                    if len(words) >= 3:
+                        newHub.timeout(int(words[2]))
+                    if len(words) >= 4:
+                        newHub.scanPeriod(int(words[3]))
+                    if len(words) >= 5:
+                        newHub.reTransmit(int(words[4]))
+                    newHub.comment(comment)
+                    self.__hubList.append(newHub)
+
+            elif ethAddressRE.match(words[0]):
+                if len(words) < 3:
+                    raise "Ether device or portcount missing at line %d: '%s'" % (lineNumber, line)
+                elif len(words) > 6:
+                    raise "Extra values at line %d: '%s'" % (lineNumber, line)
+                else:
+                    newHub = SerialHub()
+                    newHub.useIP(0)
+                    newHub.ethAddress(words[0])
+                    newHub.ethDevice(words[1])
+                    newHub.portCount(int(words[2]))
+                    if len(words) >= 4:
+                        newHub.timeout(int(words[3]))
+                    if len(words) >= 5:
+                        newHub.scanPeriod(int(words[4]))
+                    if len(words) >= 6:
+                        newHub.reTransmit(int(words[5]))
+                    newHub.comment(comment)
+                    self.__hubList.append(newHub)
+
+            elif portNumberRE.match(words[0]):
+                if len(words) < 2:
+                    raise "Interface type missing at line %d: '%s'" % (lineNumber, line)
+                elif len(words) > 4:
+                    raise "Extra values at line %d: '%s'" % (lineNumber, line)
+                elif not interfaceTypeRE.match(words[1]):
+                    raise "Invalid interface type at line %d: '%s'" % (lineNumber, words[1])
+
+                portNum = int(words[0])-1
+                newHub.port(portNum).mode(string.lower(words[1]))
+                if len(words) >= 3:
+                    newHub.port(portNum).timeout(words[2])
+                if len(words) >= 4:
+                    for f in words[3].split(','):
+                        if f == "low_latency":
+                            newHub.port(portNum).lowLatency(1)
+                        elif f == "rx_fifo_disable":
+                            newHub.port(portNum).rxFifoDisable(1)
+                        else:
+                            raise "Invalid flag '%s' at line %d" % (f, lineNumber)
+            else:
+                raise "Error: unrecognized command at line %d: '%s'" % (lineNumber, line)
+
+class SerialPort:
+    def __init__(self,mode="232",timeout=0,lowLatency=0,rxFifoDisable=0):
+        self.__mode = mode
+        self.__timeout = timeout
+        self.__lowLatency = lowLatency
+        self.__rxFifoDisable = rxFifoDisable
+
+    def __str__(self):
+        s = self.__mode + " " + str(self.__timeout)
+        flags = []
+        if self.__lowLatency:
+            flags.append('low_latency')
+        if self.__rxFifoDisable:
+            flags.append('rx_fifo_disable')
+        if flags:
+            s = s + '  '+  ','.join(flags)
+        return s
+        
+    def mode(self, v=None):
+        if not v is None:
+	    v = string.lower(v)
+            if v != "232" and v != "422" and v != "485" and v != "485_2-wire" and v != "485_4-wire_master"  and v != "485_4-wire_slave" and v != "off":
+                raise "Invalid port mode: '%s'" % v
+            self.__mode = v
+        return self.__mode
+
+    def timeout(self, v=None):
+        if not v is None:
+            v = int(v)
+            if v < 0:
+                raise "Invalid character timeout: %d" % v
+            self.__timeout = v
+        return self.__timeout
+    
+    def lowLatency(self, v=None):
+        if not v is None:
+            self.__lowLatency = not not v
+        return self.__lowLatency
+
+    def rxFifoDisable(self, v=None):
+        if not v is None:
+            self.__rxFifoDisable = not not v
+        return self.__rxFifoDisable
+    
+class SerialHub:
+    def __init__(self):
+	self.__ipAddress ="..."
+	self.__ethAddress = ":::::"
+	self.__ethDevice = "eth0"
+	self.__useIP = 0
+	self.__portCount = 0
+	self.__portList = []
+        for i in range(maxPorts):  self.__portList.append(SerialPort())
+        self.__comment = ""
+        self.__changed = 0
+        self.__timeout = 10
+        self.__scanPeriod = 0
+	self.__reTransmit = 0
+    
+    def changed(self, flag=None):
+        if not flag is None:
+            self.__changed = flag
+        return self.__changed
+
+    def listTitle(self):
+        return "Address                 Ports Comment            "
+
+    def listString(self):
+	if self.__useIP:
+	    s = "%-20s     " % (self.__ipAddress,)
+	else:
+	    s = "%-18s %s  " %(self.__ethAddress,self.__ethDevice)
+	s = s + (" %d  " % (self.__portCount,))
+        s = s + (" %-20.20s " % (self.__comment[1:],))
+	return s
+    
+    def ipAddress(self, addr=None):
+	if addr:
+	    self.__ipAddress = addr
+	return self.__ipAddress
+    
+    def ethAddress(self, addr=None):
+	if addr:
+	    self.__ethAddress = addr
+	return self.__ethAddress
+    
+    def ethDevice(self, dev=None):
+	if dev:
+	    self.__ethDevice = dev
+	return self.__ethDevice
+    
+    def useIP(self, y=None):
+	if not (y is None):
+	    self.__useIP = y
+	return self.__useIP
+
+    def portCount(self, count=None):
+	if not (count is None):
+	    self.__portCount = count
+	return self.__portCount
+
+    def timeout(self, t=None):
+        if not (t is None):
+            self.__timeout = t
+        return self.__timeout
+
+    def scanPeriod(self, t=None):
+        if not (t is None):
+            self.__scanPeriod = t
+        return self.__scanPeriod
+    
+    def reTransmit(self, t=None):
+        if not (t is None):
+            self.__reTransmit = t
+        return self.__reTransmit
+    
+    def portList(self, portList=None):
+	if portList:
+	    self.__portList[0:len(configList)] = portList
+	return self.__portList[0:self.__portList]
+
+    def port(self, portNum, p=None):
+	if p:
+	    self.__portList[portNum] = p
+	return self.__portList[portNum]
+
+    def comment(self, comment=None):
+	if comment:
+	    self.__comment = comment
+	return self.__comment
+    
+    def printConfig(self, file):
+	if self.__useIP:
+	    file.write("%-20s" % (self.__ipAddress,))
+	else:
+	    file.write("%-15s %s" % (self.__ethAddress,self.__ethDevice))
+	file.write(" %d " % self.__portCount)
+        file.write(" %d " % self.__timeout)
+        file.write(" %d " % self.__scanPeriod)
+        file.write(" %d " % self.__reTransmit)
+        if self.__comment:
+            file.write("%s" % self.__comment)
+        file.write("\n")
+	for i in range(self.__portCount):
+	    file.write("  %d %s\n" % (i+1,self.__portList[i]))
+	file.write("\n")
+
+
+from Tkinter import *
+from SimpleDialog import SimpleDialog
+from ScrolledText import ScrolledText
+
+class IpEntry:
+    def __init__(self,parent,initial='...'):
+	self.__tvars = [StringVar(),StringVar(),StringVar(),StringVar()]
+	self.set(initial)
+	self.__frame = Frame(parent,relief=SUNKEN,borderwidth=1)
+        self.__entryWidgets = []
+	for i in range(0,4):
+            e = Entry(self.__frame,width=3,justify=RIGHT,relief=FLAT,borderwidth=0,textvariable=self.__tvars[i],exportselection=NO)
+            e.pack(side=LEFT)
+            self.__entryWidgets.append(e)
+	    if i<3:
+		Label(self.__frame,text='.',borderwidth=0).pack(side=LEFT)
+
+    def set(self,value):
+	map(lambda v,s: v.set(s), self.__tvars,string.split(value,"."))
+
+    def get(self):
+	return string.join(map(lambda s: s.get(), self.__tvars),".")
+	
+    def pack(self,**args):
+	apply(self.__frame.pack,(),args)
+        
+    def configure(self,**args):
+        for e in self.__entryWidgets:
+            apply(e.configure,(),args)
+
+class MacEntry:
+    def __init__(self,parent,initial=':::::'):
+	self.__tvars = [StringVar(),StringVar(),StringVar(),StringVar(),StringVar(),StringVar()]
+	self.set(initial)
+	self.__frame = Frame(parent,relief=SUNKEN,borderwidth=1)
+        self.__entryWidgets = []
+	for i in range(0,6):
+	    e = Entry(self.__frame,width=2,justify=RIGHT,relief=FLAT,borderwidth=0,textvariable=self.__tvars[i],font='Courier 12',exportselection=NO)
+            e.pack(side=LEFT)
+            self.__entryWidgets.append(e)
+	    if i<5:
+		Label(self.__frame,text=':',borderwidth=0).pack(side=LEFT)
+
+    def set(self,value):
+	map(lambda v,s: v.set(s), self.__tvars,string.split(value,":"))
+
+    def get(self):
+	return string.join(map(lambda s: s.get(), self.__tvars),":")
+	
+    def pack(self,**args):
+	apply(self.__frame.pack,(),args)
+
+    def configure(self,**args):
+        for e in self.__entryWidgets:
+            apply(e.configure,(),args)
+        
+class  MessageDialogOK:
+    def __init__(self,parent,msg):
+        if type(msg) == type([]):
+            msg = reduce(lambda s1,s2: s1+s2,map(str,msg))
+	SimpleDialog(parent,
+	             text=msg,
+		     buttons=["OK"],
+		     default=-1,
+		     title="nslinktool message").go()
+        
+class HubEditor:
+    def __init__(self,parent,hub):
+        self.hub = hub
+        self.root = Toplevel(parent,takefocus=YES)
+        xpos = parent.winfo_screenwidth()/2 - 120
+        ypos = 100;
+        self.root.wm_geometry("+%d+%d" % (xpos,ypos))
+        self.root.transient(parent)
+        self.root.wm_title("Edit Hub Configuration")
+        
+        self.comment   = StringVar()
+        self.useIP     = IntVar()
+        self.ethDevice = StringVar()
+        self.portCount = IntVar()
+        self.timeout   = StringVar()
+        self.scanPeriod = StringVar()
+        self.reTransmit = StringVar()
+        
+        self.comment.set(hub.comment()[1:])
+        self.useIP.set(hub.useIP())
+        self.ethDevice.set(hub.ethDevice())
+        self.portCount.set(hub.portCount())
+        self.timeout.set(str(hub.timeout()))
+        self.scanPeriod.set(str(hub.scanPeriod()))
+        self.reTransmit.set(str(hub.reTransmit()))
+        
+        outer = Frame(self.root)
+        outer.pack(padx=20,pady=15,fill=BOTH,expand=YES)
+        
+        f = Frame(outer)
+        f.pack(side=TOP,anchor=W,fill=X,pady=10)
+        Label(f,text="Comment: ").pack(side=LEFT)
+        Entry(f,textvariable=self.comment,exportselection=NO).pack(side=LEFT,fill=X,expand=YES)
+
+        f = Frame(outer)
+        f.pack(side=TOP,anchor=W,fill=X,pady=2)
+        Radiobutton(f,width=9,justify=LEFT,anchor=W,text="TCP/IP", value=1, variable=self.useIP,command=self.ipActivate).pack(side=LEFT)
+        self.ipAddrWidget = IpEntry(f,initial=hub.ipAddress())
+        self.ipAddrWidget.pack(side=LEFT)
+        Frame(f).pack(side=RIGHT,fill=X,expand=YES)
+
+        f = Frame(outer)
+        f.pack(side=TOP,anchor=W,fill=X,pady=2)
+        Radiobutton(f,width=9,justify=LEFT,anchor=W,text="Ether", value=0, variable=self.useIP,command=self.ethActivate).pack(side=LEFT)
+        self.ethAddrWidget = MacEntry(f,initial=hub.ethAddress())
+        self.ethAddrWidget.pack(side=LEFT)
+        self.ethDevWidget = Entry(f,width=6,textvariable=self.ethDevice,exportselection=NO)
+        self.ethDevWidget.pack(side=LEFT,padx=5)
+        Frame(f).pack(side=RIGHT,fill=X,expand=YES)
+        
+        f = Frame(outer)
+        f.pack(side=TOP,anchor=W,fill=X,pady=5)
+        Label(f,text="Number of Ports:  ").pack(side=LEFT)
+	OptionMenu(f,self.portCount,1,2,4,8,16,32).pack(side=LEFT)
+
+        f = Frame(outer)
+        f.pack(side=TOP,anchor=W,fill=X,pady=5)
+        Label(f,text="Link timeout:  ").pack(side=LEFT)
+	Entry(f,width=6,textvariable=self.timeout,exportselection=NO).pack(side=LEFT)
+        Label(f,text=" seconds (0 == Never)").pack(side=LEFT)
+
+        f = Frame(outer)
+        f.pack(side=TOP,anchor=W,fill=X,pady=5)
+        Label(f,text="Scan period:  ").pack(side=LEFT)
+	Entry(f,width=6,textvariable=self.scanPeriod,exportselection=NO).pack(side=LEFT)
+        Label(f,text=" milliseconds (0 == Use Default)").pack(side=LEFT)
+        
+        f = Frame(outer)
+        f.pack(side=TOP,anchor=W,fill=X,pady=5)
+        Label(f,text="ReTransmit Timer:  ").pack(side=LEFT)
+	Entry(f,width=6,textvariable=self.reTransmit,exportselection=NO).pack(side=LEFT)
+        Label(f,text=" milliseconds (0 == Use Default)").pack(side=LEFT)
+        
+        self.portVarList = []
+        
+        portFrame = Frame(outer)
+        portFrame.pack(side=TOP)
+        
+        numColumns = 4
+        for c in range(0,numColumns):
+            f = Frame(portFrame)
+            f.pack(side=LEFT)
+            r = Frame(f)
+            r.pack(side=TOP,anchor=W,pady=5)
+            Label(r,text="Port",anchor=W,justify=RIGHT,width=9).pack(side=LEFT)
+            Label(r,text="Type",anchor=W,justify=RIGHT,width=13).pack(side=LEFT)
+            Label(r,text="Timeout",anchor=W,justify=RIGHT,width=7).pack(side=LEFT)
+            Label(r,text="LL",anchor=W,justify=RIGHT,width=2).pack(side=LEFT)
+            Label(r,text="FD",anchor=W,justify=RIGHT,width=2).pack(side=LEFT)
+            for i in range(0,maxPorts/numColumns):
+                sl = []
+                portNum = i + c*(maxPorts/numColumns)
+                port = hub.port(portNum)
+                r = Frame(f)
+                r.pack(side=TOP,anchor=W)
+                s = StringVar()
+                sl.append(s)
+                s.set(port.mode())
+                
+                Label(r,text="%d:" % portNum,width=3,anchor=E,justify=RIGHT).pack(side=LEFT)
+                o = OptionMenu(r,s,'232','422','485','485_2-wire','485_4-wire_Master','485_4-wire_Slave','off')
+                o.configure(width=15)
+                o.pack(side=LEFT)
+                
+                s = StringVar()
+                sl.append(s)
+                s.set(str(port.timeout()))
+                Entry(r,width=4,textvariable=s,exportselection=NO).pack(side=LEFT)
+                
+                i = IntVar()
+                sl.append(i)
+                i.set(port.lowLatency())
+                Checkbutton(r,variable=i).pack(side=LEFT)
+
+                i = IntVar()
+                sl.append(i)
+                i.set(port.rxFifoDisable())
+                Checkbutton(r,variable=i).pack(side=LEFT)
+                
+                self.portVarList.append(sl)
+
+        Button(outer,text="Cancel",width=10,command=self.cancel).pack(side=RIGHT,pady=10,anchor=S)
+        Button(outer,text="OK",width=10,command=self.ok).pack(side=RIGHT,pady=10,padx=20,anchor=S)
+        if hub.useIP():
+            self.ipActivate()
+        else:
+            self.ethActivate()
+	self.root.grab_set()
+
+    def ipActivate(self):
+        self.ipAddrWidget.configure(state=NORMAL)
+        self.ethAddrWidget.configure(state=DISABLED)
+        self.ethDevWidget.configure(state=DISABLED)
+        
+    def ethActivate(self):
+        self.ipAddrWidget.configure(state=DISABLED)
+        self.ethAddrWidget.configure(state=NORMAL)
+        self.ethDevWidget.configure(state=NORMAL)
+        
+    def cancel(self):
+	self.hub.changed(0)
+        self.root.destroy()
+        
+    def ok(self):
+	# verify information
+	if (self.useIP.get()):
+	    if not ipAddressRE.match(self.ipAddrWidget.get()):
+		MessageDialogOK(self.root,"\n\nInvalid IP address:\n" + self.ipAddrWidget.get()+"\n\n")
+		return
+	else:
+	    if not ethAddressRE.match(self.ethAddrWidget.get()):
+		MessageDialogOK(self.root,"\n\nInvalid Ethernet address:\n" + self.ethAddrWidget.get() + "\n\n")
+		return
+	if not portNumberRE.match(str(self.portCount.get())):
+	    MessageDialogOK(self.root,"\n\nInvalid port count:\n" + str(self.portCount.get()) + "\n\n")
+	    return
+        # save all of the information
+        self.hub.comment("#"+self.comment.get())
+        self.hub.useIP(self.useIP.get())
+        self.hub.ipAddress(self.ipAddrWidget.get())
+        self.hub.ethAddress(self.ethAddrWidget.get())
+        self.hub.ethDevice(self.ethDevice.get())
+        self.hub.portCount(self.portCount.get())
+        self.hub.timeout(int(self.timeout.get()))
+        self.hub.scanPeriod(int(self.scanPeriod.get()))
+        self.hub.reTransmit(int(self.reTransmit.get()))
+        for i in range(0,maxPorts):
+            v = self.portVarList[i]
+            p = self.hub.port(i)
+            p.mode(v[0].get())
+            p.timeout(v[1].get())
+            p.lowLatency(v[2].get())
+            p.rxFifoDisable(v[3].get())
+        self.hub.changed(1)
+        self.root.destroy()
+        
+    def waitFor(self):
+        root.wait_window(self.root)
+        
+        
+class ConfigEditor:
+        
+    def __init__(self,parent,file=None):
+        self.root = Toplevel(parent)
+        self.root.wm_title("NS-Link Driver Configuration")
+        self.filename = file
+	self.config = Configuration()
+
+        f = Frame(self.root, relief=RAISED, borderwidth=1)
+        f.pack(side=TOP,fill=BOTH,expand=YES)
+        
+        Label(f,
+              text=SerialHub().listTitle(),
+              font='Courier 12',
+              justify=LEFT).pack(side=TOP,anchor=W)
+        
+        self.hubList   = Listbox(f, width=86, height=10, font='Courier 12')
+        self.hubScroll = Scrollbar(f, command=self.hubList.yview)
+        self.hubList.configure(yscrollcommand=self.hubScroll.set)
+        self.hubList.pack(side=LEFT,fill=Y,anchor=W)
+        self.hubScroll.pack(side=LEFT,fill=Y,anchor=W)
+
+        f = Frame(self.root, relief=RAISED, borderwidth=1)
+        f.pack(side=BOTTOM, fill=X)
+        Button(f, text="Edit", command=self.editHub).pack(side=LEFT, padx='2m', pady='1m')
+        Button(f, text="New", command=self.newHub).pack(side=LEFT, padx='2m', pady='1m')
+        Button(f, text="Delete", command=self.deleteHub).pack(side=LEFT, padx='2m', pady='1m')
+	Button(f, text="Quit", command=self.quit).pack(side=RIGHT,padx='2m')
+	Button(f, text="Save", command=self.saveFile).pack(side=RIGHT,padx='2m')
+        
+        if self.filename:
+            self.readFile(self.filename)
+	
+    def readFile(self,filename=None):
+        if filename:
+            self.filename = filename
+        try:
+            self.config = Configuration()
+            self.config.read(open(self.filename))
+        except:
+	    MessageDialogOK(self.root,["\n\n  Error reading file  \n"] + traceback.format_exception_only(sys.exc_type,sys.exc_value)+ ["\n\n"])
+        self.updateDisplay()
+        
+    def updateDisplay(self):
+        self.hubList.delete(0,END)
+        for hub in self.config.hubList():
+            self.hubList.insert(END,hub.listString())
+    
+    def saveFile(self):
+        try:
+            self.config.write(open(self.filename,"w"))
+        except:
+	    MessageDialogOK(self.root, ["\n\n  Error writing file  \n"] + traceback.format_exception_only(sys.exc_type,sys.exc_value)+ ["\n\n"])
+
+    def quit(self):
+        self.root.destroy()
+
+    def editHub(self):
+        s = self.hubList.curselection()
+        if not s:
+            MessageDialogOK(self.root,"\n\n   You must select a hub configuration to edit   \n\n")
+            return
+        i = int(s[0])
+        h = self.config.hub(i)
+        h.changed(0)
+        HubEditor(self.root,h).waitFor()
+        if h.changed():
+            self.updateDisplay()
+            self.hubList.selection_set(i)
+        
+    def deleteHub(self):
+        s = self.hubList.curselection()
+        if not s:
+            return
+        i = int(s[0])
+        self.config.deleteHub(i)
+        self.updateDisplay()
+    
+    def newHub(self):
+        n = SerialHub()
+        HubEditor(self.root,n).waitFor()
+        if n.changed():
+            self.config.addHub(n)
+            self.updateDisplay()
+        else:
+            del n
+
+class IpAdmin:
+    def __init__(self,parent,device="eth0"):
+        self.root = Toplevel(parent,takefocus=YES)
+        self.root.wm_title("NS-Link IP Administration")
+
+	o = Frame(self.root)
+	o.pack(expand=YES,padx=15,pady=15,fill=BOTH)
+	
+	f = Frame(o)
+	f.pack(side=TOP,expand=YES,fill=BOTH)
+	
+        self.hubList   = Listbox(f, width=80, height=10, font='Courier 12')
+        hs = Scrollbar(f, command=self.hubList.yview)
+        self.hubList.configure(yscrollcommand=hs.set)
+        self.hubList.pack(side=LEFT,fill=BOTH)
+        hs.pack(side=RIGHT,fill=Y)
+	
+	self.etherDev = StringVar()
+	self.etherDev.set(device)
+	
+	bw = 10
+	fpy = 5
+	fpx = 5
+	bpx = 6
+	bpy = 3
+
+	ipf = Frame(o,relief=RIDGE,borderwidth=2)
+	ipf.pack(side=LEFT,anchor=W,padx=fpx,pady=fpy,fill=Y)
+
+	Label(ipf,text="IP Config").pack(side=TOP,anchor=W,padx=bpx,pady=bpy)
+	
+	ef = Frame(ipf)
+	ef.pack(side=LEFT)
+	
+	bf = Frame(ipf)
+	bf.pack(side=LEFT)
+
+	f = Frame(ef)
+	f.pack(side=TOP,anchor=W,pady=bpy)
+	Label(f,text="IP Address:", width=12, anchor=E).pack(side=LEFT)
+	self.ipAddr = IpEntry(f)
+	self.ipAddr.pack(side=LEFT,padx=5)
+
+	f = Frame(ef)
+	f.pack(side=TOP,anchor=W,pady=0)
+	Label(f,text="Net Mask:", width=12, anchor=E).pack(side=LEFT)
+	self.ipMask = IpEntry(f)
+	self.ipMask.pack(side=LEFT,padx=5)
+	
+	f = Frame(ef)
+	f.pack(side=TOP,anchor=W,pady=bpy)
+	Label(f,text="Gateway:", width=12, anchor=E).pack(side=LEFT)
+	self.ipGate = IpEntry(f)
+	self.ipGate.pack(side=LEFT,padx=5)
+	
+	Button(bf,text="Get",width=bw,command=self.getIP).pack(side=TOP,padx=bpx,pady=bpy)
+	Button(bf,text="Set",width=bw,command=self.setIP).pack(side=TOP,padx=bpx,pady=bpy)
+	Button(bf,text="Erase",width=bw,command=self.eraseIP).pack(side=TOP,padx=bpx,pady=bpy)
+	
+	bf = Frame(o,relief=RIDGE,borderwidth=2)
+	bf.pack(side=LEFT,anchor=N,padx=fpx,pady=fpy,fill=Y)
+	Label(bf,text="Ethernet").pack(side=TOP,anchor=W,padx=bpx,pady=bpy)
+	Entry(bf,width=bw,textvariable=self.etherDev,exportselection=NO).pack(side=TOP,anchor=W,padx=bpx,pady=bpy)
+	Button(bf,text="Scan",width=bw,command=self.scan).pack(side=BOTTOM,padx=bpx,pady=bpy)
+	
+	bf = Frame(o,relief=RIDGE,borderwidth=2)
+	bf.pack(side=LEFT,anchor=N,padx=fpx,pady=fpy,fill=Y)
+	Label(bf,text="Hub").pack(side=TOP,anchor=W,padx=bpx,pady=bpy)
+	Button(bf,text="Load",width=bw,command=self.loadHub).pack(side=TOP,padx=bpx,pady=bpy)
+	Button(bf,text="Reset",width=bw,command=self.resetHub).pack(side=TOP,padx=bpx,pady=bpy)
+	Button(bf,text="Quit",width=bw,command=self.quit).pack(side=BOTTOM,anchor=E,padx=bpx,pady=bpy)
+	
+    def scan(self):
+        self.hubList.delete(0,END)
+        self.etherList = []
+        status,output = commands.getstatusoutput("/usr/sbin/nslinkadmin -d %s -L" % self.etherDev.get())
+        if status:
+            MessageDialogOK(self.root,"\n\nError scanning network\n\n" + output + "\n\n")
+            return
+        if output=="":
+            MessageDialogOK(self.root,"\n\n      No NS-Link devices found     \n\n")
+            return
+        
+        try:
+            devList = list(eval(output))
+            devList.sort(lambda v1,v2: cmp(v1[0],v2[0]))
+        except:
+            MessageDialogOK(self.root,["\n\n  Error parsing scan results\n"] + ['"%s"\n' % output] + traceback.format_exception_only(sys.exc_type,sys.exc_value))
+            return
+        
+        for h in devList:
+            s = "%-22s %-40.40s  %7s,%s" % h
+            self.hubList.insert(END,s)
+            self.etherList.append(h[0])
+	
+    def selectedEther(self):
+        s = self.hubList.curselection()
+        if not s:
+            return None
+        i = int(s[0])
+	if i >= len(self.etherList):
+	    return None
+	return self.etherList[i]
+
+    def getIP(self):
+	etherAddr = self.selectedEther()
+	if not etherAddr:
+	    return
+	self.ipAddr.set('...')
+	self.ipMask.set('...')
+	self.ipGate.set('...')
+	status,output = commands.getstatusoutput("/usr/sbin/nslinkadmin -d %s -e %s -q" %
+	                  (self.etherDev.get(),
+			  etherAddr))
+	if status:
+	    MessageDialogOK(self.root,["\n\n   Error getting IP info   \n",output,"\n\n"])
+	    return
+        try:
+            info = eval(output)
+        except:
+	    MessageDialogOK(self.root,["\n\n   Error parsing IP info   \n"] + [output] + traceback.format_exception_only(sys.exc_type,sys.exc_value))
+            return
+	if not info:
+	    return
+	if len(info) != 3:
+	    return
+	self.ipAddr.set(info[0])
+	self.ipMask.set(info[1])
+	self.ipGate.set(info[2])
+	
+
+    def setIP(self):
+	etherAddr = self.selectedEther()
+	if not etherAddr:
+	    return
+	ipAddr = self.ipAddr.get()
+	ipMask = self.ipMask.get()
+	ipGate = self.ipGate.get()
+	if not (ipAddressRE.match(ipAddr) and
+	        ipAddressRE.match(ipGate) and
+		ipAddressRE.match(ipMask)):
+	    MessageDialogOK(self.root,"\n\n   Invalid IP configuration data.  \nAll fields must have numbers from 0-255\n\n")
+	    return
+	status,output = commands.getstatusoutput("/usr/sbin/nslinkadmin -d %s -e %s -a %s -m %s -g %s" %
+	                  (self.etherDev.get(),
+			  etherAddr,
+			  ipAddr,
+			  ipMask,
+			  ipGate))
+	if status:
+	    MessageDialogOK(self.root,["\n\n   Error setting IP info   \n",output,"\n\n"])
+	
+    def eraseIP(self):
+	etherAddr = self.selectedEther()
+	if not etherAddr:
+	    return
+	status,output = commands.getstatusoutput("/usr/sbin/nslinkadmin -d %s -e %s -E" %
+	                  (self.etherDev.get(),
+			  etherAddr))
+	if status:
+	    MessageDialogOK(self.root,["\n\n  Error erasing IP info  \n",output,"\n\n"])
+            return
+        self.ipAddr.set('...')
+        self.ipMask.set('...')
+        self.ipGate.set('...')
+    
+    def loadHub(self):
+	etherAddr = self.selectedEther()
+	if not etherAddr:
+	    return
+	status,output = commands.getstatusoutput("/usr/sbin/nslinkadmin -d %s -e %s -l" %
+	                  (self.etherDev.get(),
+			  etherAddr))
+	if status:
+	    MessageDialogOK(self.root,["\n\n   Error booting hub   \n",output,"\n\n"])
+	
+    def resetHub(self):
+	etherAddr = self.selectedEther()
+	if not etherAddr:
+	    return
+	status,output = commands.getstatusoutput("/usr/sbin/nslinkadmin -d %s -e %s -r" %
+	                  (self.etherDev.get(),
+			  etherAddr))
+	if status:
+	    MessageDialogOK(self.root,["\n\n  Error resetting hub  \n",output,"\n\n"])
+    
+    def quit(self):
+	self.root.destroy()
+
+
+class Monitor:
+        
+    def __init__(self,parent,file):
+        self.root = Toplevel(parent,takefocus=YES)
+        self.root.wm_title("NS-Link Driver Monitor")
+        self.file = file
+
+        self.t = StringVar()
+        self.__update()
+        
+        Label(self.root,font="courier 12",textvariable=self.t,width=80,justify=LEFT).pack(side=TOP)
+	Button(self.root,text="Quit",command=self.quit).pack(side=BOTTOM)
+
+    def __update(self):
+        try:
+            t = open(self.file).read()
+        except:
+            t = "Error reading %s\n" % self.file
+        t = "\n" + t + "\n\n" + time.asctime(time.localtime(time.time()))
+        self.t.set(t)
+        self.root.after(1000,self.__update)
+    
+    def quit(self):
+	self.root.destroy()
+        
+class NSLinkTool:
+    def __init__(self,root):
+        self.root = root
+        self.root.wm_title("NS-Link")
+        self.__NSLogoImage = PhotoImage(data=NSLogoString)
+        Label(self.root,image = self.__NSLogoImage).pack(side=TOP,padx=5,pady=5)
+        
+        self.moduleStatus = StringVar()
+        self.daemonStatus = StringVar()
+        self.enableStatus = StringVar()
+
+        for w in (self.moduleStatus,self.daemonStatus,self.enableStatus):
+            Label(self.root,textvariable=w,anchor=W,justify=LEFT).pack(side=TOP,anchor=W,padx=15)
+            
+	o = Frame(self.root)
+	o.pack(expand=YES,padx=15,pady=15,fill=BOTH,side=TOP)
+        
+	Button(o,text = "Hub IP Admin",command=self.ipAdmin).pack(side=TOP,fill=X,expand=YES)
+        Frame(o).pack(side=TOP,expand=YES,pady=5)
+	Button(o,text = "Config Driver",command=self.configDriver).pack(side=TOP,fill=X,expand=YES)
+	Button(o,text = "Start Driver",command=self.startDriver).pack(side=TOP,fill=X,expand=YES)
+	Button(o,text = "Stop Driver",command=self.stopDriver).pack(side=TOP,fill=X,expand=YES)
+	Button(o,text = "Restart Driver",command=self.restartDriver).pack(side=TOP,fill=X,expand=YES)
+	Button(o,text = "Enable Driver",command=self.enableDriver).pack(side=TOP,fill=X,expand=YES)
+	Button(o,text = "Disable Driver",command=self.disableDriver).pack(side=TOP,fill=X,expand=YES)
+        Frame(o).pack(side=TOP,expand=YES,pady=5)
+	Button(o,text = "Driver Status",command=self.drvmonitor).pack(side=TOP,fill=X,expand=YES)
+	Button(o,text = "Port Status",command=self.portmonitor).pack(side=TOP,fill=X,expand=YES)
+        Frame(o).pack(side=TOP,expand=YES,pady=5)
+	Button(o,text = "Help",command=self.showHelp).pack(side=TOP,fill=X,expand=YES,pady=0)
+
+        self.autoDriverStatus()
+
+    def autoDriverStatus(self):
+        self.driverStatus()
+        self.root.after(1000, self.autoDriverStatus)
+        
+    def ipAdmin(self):
+	IpAdmin(self.root)
+
+    def drvmonitor(self):
+        Monitor(self.root, "/proc/driver/nslink/status")
+
+    def portmonitor(self):
+        Monitor(self.root, "/proc/driver/nslink/ports")
+        
+    def configDriver(self):
+	ConfigEditor(root,"/etc/nslink.conf")
+
+    def runScript(self,cmdString):
+        # figure out where the driver control shellscript is
+        scriptPath = None;
+        for path in ("/etc/rc.d/init.d/nslink", "/etc/rc.d/nslink", "/etc/init.d/nslink", "/etc/nslink"):
+            if os.access(path,os.X_OK):
+                scriptPath = path
+                break
+        if not scriptPath:
+            MessageDialogOK(self.root,"\n\nCan't %s the driver\nThe script isn't installed in any of the usual places.\n\n" % cmdString,)
+            return
+        status,output = commands.getstatusoutput("%s %s" % (scriptPath,cmdString))
+        if status:
+            MessageDialogOK(self.root,"\n\n  Error trying to %s driver  \n\n%s\n\n" % (cmdString,output))
+            
+    def startDriver(self):
+        self.runScript("start")
+        self.driverStatus()
+    
+    def stopDriver(self):
+        self.runScript("stop")
+        self.driverStatus()
+        
+    def restartDriver(self):
+        self.runScript("restart")
+        self.driverStatus()
+        
+    def findSymlinks(self):
+        enabledSymlinks = []
+        disabledSymlinks = []
+        rcDir = None
+        for path in ("/etc/rc.d/rc%d.d","/etc/rc%d.d"):
+            if os.access(path % 2,os.R_OK):
+                rcDir = path
+        if not rcDir:
+            raise "rcN.d directories not found\nYou must have a non-standard installation"
+        else:
+            for n in (2,3,4,5):
+                path = (rcDir % n) + "/S95nslink"
+                if os.access(path,os.R_OK):
+                    enabledSymlinks.append(path)
+                path = (rcDir % n) + "/K05nslink"
+                if os.access(path,os.R_OK):
+                    disabledSymlinks.append(path)
+        return (enabledSymlinks,disabledSymlinks)
+                    
+    def disableDriver(self):
+        try:
+            enabledLinks,disabledLinks = self.findSymlinks()
+            if (not enabledLinks) and disabledLinks:
+                MessageDialogOK(self.root,"\n\n  Driver already disabled  \n\n")
+            elif (not enabledLinks) and (not disabledLinks):
+                MessageDialogOK(self.root,"\n\n  Driver symlinks not installed in standard locations  \n\n")
+            else:
+                for l in enabledLinks:
+                    i = string.find(l,"S95nslink")
+                    if i >= 0:
+                        nl = l[:i] + "K05" + l[i+3:]
+                        os.rename(l,nl)
+        except:
+    	    MessageDialogOK(self.root,["\n\n  Error disabling driver\n"] + traceback.format_exception_only(sys.exc_type,sys.exc_value))
+        self.driverStatus()
+
+    def enableDriver(self):
+        try:
+            enabledLinks,disabledLinks = self.findSymlinks()
+            if (not disabledLinks) and enabledLinks:
+                MessageDialogOK(self.root,"\n\n  Driver already enabled  \n\n")
+            elif (not enabledLinks) and (not disabledLinks):
+                MessageDialogOK(self.root,"\n\n  Driver symlinks not installed in standard locations  \n\n")
+            else:
+                for l in disabledLinks:
+                    i = string.find(l,"K05nslink")
+                    if i >= 0:
+                        nl = l[:i] + "S95" + l[i+3:]
+                        os.rename(l,nl)
+        except:
+    	    MessageDialogOK(self.root,["\n\n  Error enabling driver  \n"] + traceback.format_exception_only(sys.exc_type,sys.exc_value))
+        self.driverStatus()
+
+    def driverStatus(self):
+        # check for kernel module
+	moduleFile = "/proc/modules"
+	if not os.access(moduleFile,os.R_OK):
+            self.moduleStatus.set("Kernel module: unknown")
+        else:
+            if string.find(open(moduleFile).read(),"nslink") < 0:
+                self.moduleStatus.set("Kernel module: not running")
+            else:
+                self.moduleStatus.set("Kernel module: running")
+
+        # check daemon
+        pidFile = "/var/run/nslinkd.pid"
+        daemonStatus = "Daemon: not running"
+        if os.access(pidFile,os.R_OK):
+            pid = int(open(pidFile).read())
+            if os.access("/proc/%d" % pid, os.R_OK):
+                daemonStatus = "Daemon: running"
+        self.daemonStatus.set(daemonStatus)
+            
+        
+        # check rc symlinks
+        try:
+            enabledLinks,disabledLinks = self.findSymlinks()
+            if (not disabledLinks) and enabledLinks:
+                self.enableStatus.set("Driver startup: enabled")
+            elif disabledLinks and (not enabledLinks):
+                self.enableStatus.set("Driver startup: disabled")
+            else:
+                self.enableStatus.set("Driver startup: unknown")
+        except:
+            self.enableStatus.set("Driver startup: unknown")
+            
+    def showHelp(self):
+	s,o = commands.getstatusoutput(r"(echo '.pl 1000i'; cat /usr/local/man/man8/nslinktool.8; echo '.pl \n(nlu+8') | groff -man -Tascii | col -b | expand")
+	if s:
+	    MessageDialog("\n\n  Error formatting nslinktool man page:  \n" + o + "\n\n")
+	    return
+        r = Toplevel(self.root)
+        r.transient(self.root)
+        r.wm_geometry("+10+10")
+        r.wm_title("nslinktool(8)")
+	t = ScrolledText(r,width=70,height=40,takefocus=NO,exportselection=NO)
+	t.insert(END,o)
+	t.pack()
+    
+
+# Yea, I know this is ugly, but I really want this to be a
+# self-contained, single-file sort of thing...
+
+NSLogoString = """R0lGODdhtQByAPcAAAAAAA4DBA4NCxsGBxwaFSkJCyonIDYMDjgqIzg0KkQOEkQZGUY3LkZB
+NVERFVREOFROP18UGWE9NWJbSmwXHW0rK242Mm9KQG9UR3FpVXoaIH92X4cdJIgxMok7OYlG
+QI2DapUgJ5UqLpdIQ5uQdKIjK6MtMqM3OaRBQKZqXKd0Y6d+aqiTeKmdf7AlLrJOSraggreq
+ib0oMr9RTsKEccSjhsW3lMsrNcs1PM1UUc5oX9CHdNCRe9GbgtGlidKwkNK6l9PEntguOdk4
+QNlCR9pNTtpXVdthXNtrY9x1at2Acd6Uf96eht+ojeC9m+DHouHRqQLzAAD/AAC/ANgkqP30
+8gv//0C/v6AEKPQA8/8A/78Av5Sw/qPzVgb/A0C/QMgwIKL0pBT/FAi/CDj+qKNW8hQD/whA
+v1wABAKkAAAUAAAIANiw2P3z/Qv/CzgEAKMAnRQAFAgACMzYAPT9nf8LFL9ACFwAqO+d8gQU
+/0AIv8gAAKKdABQUAAgIADiwAKPzABT/AAi/AAgEAPUAAP8AAL8AAMncCF/zAAj/AFxcA2v0
+AAz/AAD+BABW4AADEABACHw0APWk4P8UEL8ICODcDDjz8xX//wi/vwAEngAAdwAAFQAAQODY
+8PT93/8LEHsA2O6d/QQUC0AIQHgA1PWdl/8UBr8IQHzcA/XzAP//AL+/AOAAODgAoxUAFADc
+/ADABwCyAL8ABKGd8wcU/wgIv+DBDzj6WhUUAwhAQAHM2ABx/QAiCwBAQAAMBAD0AADMAwFx
+AAAiAABAAADYHAD97QALBAVATwPEdgALZQBAcgCdcgAUaQAIdAAAZQAAIP8AZb8AeJlAaWt9
+cwQidABAabQkboH0ZwD/IAC/ZgEyaQDmbAAYZQBAIPTMJwFxLwAiaABAb/S3bQHMZQAQLwAM
+ZwD0YQD/bgC/dAD9ZQDuLwAYTgBAUwCEbAD0bwD/ZwC/b0a4NAzMLgAQZwAIaQAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAtQByAAAI/gABCBxIsKDBgwgTKlzIsKHD
+hxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJkyhTqlzJkiCBBC1jykyZIMPMmzhB1szJs+fF
+nT6DCm0IdKhRmQpKhAiwMINNhQE0cChwtKpHIVgpNH2aUAPWG1bDaryBNcLWhRy+il1rsUAI
+IVQVOl2oQEgJBWzzUpShVS5XhBxK6B0skYKMhS02QBXigLBjhwOE4E3YooXCCDeYPt5sMAEB
+gSFCKKys0AUHzqgJZgAhsO4AypYRFoCbunaGIAIE8oWdkIOL2rahQBBoOCGU2AYD3DALHDUI
+KDEERp5s8HhBAgYAOBCiufnmFlCg/sAEEBqhdYEQgoSH8oNGdu/fw7MG4PrgeQPr80MfDp8w
++PC5AbBbQQKcl4F++tnAX39s/QfFBMQdVlACBiKIYAvjMajSAd095KAN0kk2YYX52QCCUy3Y
+sN4GAWpYUgAyCHHDaxA5CEUDoIlGEIWxQZCfCgYRAAEJUNiQ4UIlCOFChy4+dABWjEVkIwmt
+CUGjQDximR8DCQkwgYIMPVlWkxIpB2UIVzJkIxSfCdiXQA2cV+B6fyHUZkIUkIXVAWSWyaEC
+MVLAJEJrPlXcQAcip2J4VFYE6A0UFBBpnxdhdkNjiOkXRIjUJTrQc+FtOtEBSXKQJqUXRSWE
+DHxShiB//uUJ5KlAE+R3ZEMDpFVCq6hyNECSJZw60H/qhRdbfQDMCgAC+SnmUAB5yoBprx8d
+4IIQGgz6H6jhvTfgBucBEIET64HYkAMyQEotSQ7csFxB/yVQLBTzHQoeci4skd97CVkrBAeD
+rvsRtKtS958A4Iaa23QA3CvQbBc0m9AAb5UQl8AmUWwXVf8BQEB+sIrmMAAcyDBneOYWRDCr
+GK9E6r8whCfQh1UOMPK7NvIrkKXMtcwSuuSK6uN64/EVg3XbMVXrigMdEGO2PssUQHg+YDpv
+vTIYC0AJp3lcIgC/CoFm1DdRbdcBCQMIthDGMizQ0euNoCSvZMtk7Msn5PdU/gjGaiChrPnx
+MG3dM4XnLKBNrAdECSVkDYUP7jKuAQUe5Ccq4WVDkUEBEYRwAxL5HSEEEeE1AeXp5K73AOaZ
+K2HaqhrMywQHM4RXg+ca3NC4EDQELkMEAbNekgPhpZAWBwdEsEN+FRgRHgzWUtBuBBQUod8C
+JVwqfEoUuBCeEREc4IALIVSQ3w4f2E5BnpO7UAIFi4aHxOQhaLB9xjJMDYUE0gkGQMyhotB5
+ItCYAfwmbVDoQdeCdT+SHEB34XkB41wgA8bpID+JexzjZFDB7JUABfrBwQbp1sCMBEB8FNjd
+DQoQHhMIBEZMocATLiSQqdDnNAFIXXgwAAAYaSB8/sIqIa6Sp4HsfaUEPzwAoMLjGwUcwDAK
+UMDy9AM9BdxAiTdwogumGB4WKMAFRYwRVtxHASAK8Yk0GsATAwOlCpaRQwYZQHhkUEQldU8I
+HUBQDSiALRmY5gZ8AWF+RJCmAiiAAoHRk5LeF77uDIACJESVmG5wrTGGQHqRNE8QDLPBGyQy
+g+uBAQdCQMEk1S9dQMgPhBaiREQaEStK0RN1ehUBKHFAAReLyHkG4IAi6gl0GDzd6ZC4gvwg
+ByKtTEtWBBaAJNnPIuEiyHZil589rs8B1lqhQPCTnxZNxCtLEiJDoimQ7ZwGgcfsoQu0CYD4
+CUecJPmYswZSAE8K5GPr/kmnOrWJwEbBMyQU+ks9uzazfB4kAC5YUpy6+U+Aao6e9iTI0Mg5
+EIQuaV43aqhOHvSwG+ioIMXSZ0UTyoL8zEejHaEQTOoZToMkTKQQTcLXUJpS8bA0ePhsAQHq
+RJAC5EA/d6JpRigkAUoGr6AtQFgMbkVP/SxIqBih0BBamhAfxSYBMcBQZ/QzT6j+BApUVUgQ
+jnkbG2ygAQlIAAK15tVUvQAKRy3IBtJJAG5ZCAqXa+tEEJqDvC6kAis4iAHWpB+9UsSiDIDp
+QVKYkLpayAkENeyz1lmABCjWIIxViJc+ZIF/SXay2rTsQzIbke0M7rMHpSyWeIon/0nEtKhF
+/ghC2QmAojCEtK+NUmwL4rlc2nYhuJVIWk4r2QIUgAO0FYgAggpc11IkLRHIpV75KCPpFsa5
+e8EKcaGapFVhJLgTgRJ2vbodbH13vBLxiog+O4AgXjcjA4jrbiEC3vnGpL72ZQl+84sQHFFE
+AGltbUUM4E2vVoa5qnkoQRrgThIgOLgBNQ9yMhADnRUkXAc6UgPUs0qMgScIT03wX+IE4rQ+
+J2UDgbCCqzNhvIZ4IBgWj3JPzFRqOYgEBU7WihvG0YFYmDjYjbB9WqweEOQ4xjAxgIpwTDbw
+NIBIQbjVgf5yoKUqRL3P1BJrARDjJ0PHwkiuVRD822QZpwcKLELU/o6TpZ4ggIDMA4kMlC4m
+ZBarGSZifmqMVaRTzIFnPAQAjw3eM2WDCAACIGhzh3t4uivV+cItHo+S6RWgGMsnxy37M0GW
+ZpNCV1U9T01KCQb3aIIgeSACIFKFudxiCIAnBgj2sIwJYoCjxeA5f/FMQTytkFLDONIFyfOp
+wRXlumnapXQaiI9s0CIBHG3RCPG1QE5dkElT+8xb7tWxO6OivzwnCBvIwAb4TJTjOCUDR6I2
+gYgE7G0uGdOomuuPUU2COg1JRTYgwYsRMtjKVOapiVF2C+ZNK+S4WmepDrg44S0ThvP34RCP
++Gr3Dc+5VmYCDg8SCCqT7YwoC6U2OilD/Awwr8vymzQM+bhGX/0ckxNEReCeq49/bIA2JSA3
+AkQIgNXs8vsJmkg4Vk+n8VpgAfLnMwwOFY5ezag2B5poRVKRABykGJU3dEoCOBBuhL5VKBBE
+AG1u89SjHh64TcBBApRP2cMDAav/U9C3eRDYoUP0rmdIgAKYk2WFk3PwoFtmeOcyR4Hudnje
+iwDd1nF4WDv3GDQA0QI0ADf3nlaZ+T3nWQIA18FTb4q+3akAmDtuEDLR48x9Pbj5c981h/nz
+2FU4hRenxTmuXK4nJOn0AsBgy54dea/+717PvABAFYSh97yhWs+4xD8y944vHyQNqIzyn0/9
+6lv/+hEPCAA7
+"""
+
+root = Tk()        
+NSLinkTool(root)
+root.mainloop()
+

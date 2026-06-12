@@ -1,0 +1,233 @@
+.TH "nslinktool" "8" "8 December 2007" "(c) Comtrol Corp." "Comtrol"
+.SH "NAME" 
+nslinktool \- X11 GUI for DeviceMaster administration
+.PP 
+.SH "SYNOPSIS" 
+.PP 
+\fBnslinktool\fP
+.PP 
+.SH "DESCRIPTION" 
+
+.PP 
+\fBnslinktool\fP is an X11 based GUI front end that allows the
+user to perform common administrative tasks related to the
+DeviceMaster. \fBnslinktool\fP is written in Python
+using the Tkinter package and both must be installed to run
+\fBnslinktool\fP.
+.PP
+\fBnslinktool\fP performs three major functions:
+.IP " 1." 4
+Start/stop/restart the NS-Link device driver and its
+associated daemon. It also allows the user to control whether
+the driver will be started automatically at system boot.
+.IP " 2." 4
+Edit the configuration file \fI/etc/nslink.conf\fP.
+.IP " 3." 4
+Examine and configure the IP addressing information in
+DeviceMasters.
+
+.SS Driver Administration
+.PP
+The initial window that is seen when \fBnslinktool\fP is started
+is the driver administration window. It contains three lines
+of status information and seven buttons:
+.PP
+\fBStatus Lines\fP
+.PP 
+The three status lines below are updated every time
+nslinktool makes a change to system configuration and are also
+updated once every second while nslinktool is idle.
+.IP "Kernel module:"
+Shows whether the nslink kernel module is currently running in
+the kernel. This is based on the information available in
+/proc/modules.
+.IP "Daemon:"
+Shows whether the daemon \fInslinkd\fP is currently running.
+This is based on the file /var/run/nslinkd.pid and the
+existence of a matching PID in /proc.
+.IP "Driver startup:"
+Shows whether the driver and daemon are configured to be
+loaded/run at system boot. This is based on examining symbolic
+links in /etc/rc.d/rcN.d or /etc/rcN.d directories.
+.PP
+\fBCommand Buttons\fP
+.IP "Hub IP Admin"
+Opens the IP administration window which allows the examination
+and configuration of static IP addressing information contained
+in a DeviceMaster's non-volatile memory.
+.IP "Config Driver"
+Opens the driver configuration editor window which allows the
+user to edit the contents of the nslink.conf(8) file.
+.IP "Start Driver"
+Loads the driver kernel module and starts the daemon using the
+nslink script installed in /etc/rc.d or /etc/rc.d/init.d.
+.IP "Stop Driver"
+Stops the daemon and unloads the driver kernel module using the
+nslink script installed in /etc/rc.d or /etc/rc.d/init.d.
+.IP "Restart Driver"
+Restarts the driver/daemon using the nslink script installed in
+/etc/rc.d or /etc/rc.d/init.d. The driver must be restarted in
+order for changes to the nslink.conf file to take effect.
+.IP "Enable Driver"
+Configures the system so that the driver is started when the system
+enters run states 2, 3, or 5. The "/sbin/chkconfig" program
+is used if available. Otherwise,
+symbolic links in /etc/rc.d/rcN.d or /etc/rcN.d
+directories will be manipulated directly.
+.IP "Disable Driver"
+Configures the system so that the driver is not started
+automatically. The "/sbin/chkconfig" program
+is used if available. Otherwise,
+symbolic links in /etc/rc.d/rcN.d or /etc/rcN.d
+directories are manipulated directly.
+.IP "Driver Status"
+Open a window to monitor the device driver status present in
+/proc/driver/nslink/status. This window does the equivalent of the shell
+command:
+.RS 10
+.nf
+while sleep 1; do cat /proc/driver/nslink/status; date; done
+.fi
+.RE
+.IP "Port Status"
+Open a window to monitor the port status present in
+/proc/driver/nslink/ports. This window does the equivalent of the shell
+command:
+.RS 10
+.nf
+while sleep 1; do cat /proc/driver/nslink/ports; date; done
+.fi
+.RE
+.IP "Help"
+Displays this man page in a pop-up window.
+
+.SS IP Administration
+.PP
+This window allows the user to examine and configure the static
+IP addressing information in the DeviceMaster's non-volatile
+memory. It is a front end for the \fInslinkadmin\fP(8) command
+line utility.
+.PP
+The four main panels in the editor are the main list window,
+the IP Config panel, the Ethernet panel, and the DeviceMaster
+panel.
+.IP Ethernet
+The text entry field controls the Ethernet device used. The
+Scan button queries the Ethernet network to construct a list
+of the DeviceMasters present on the network. This list is 
+then displayed in the main list window.
+.IP "Main List Window"
+This window displays a list of DeviceMasters found on the
+network and allows the user to select which one is to be
+accessed.
+.IP Hub
+This window contains buttons to perform general functions
+.RS 8
+.IP Load
+Downloads an application binary file to the selected 
+DeviceMaster. The DeviceMaster does not require downloading 
+in order to access IP configuration. This operation takes 
+1-3 seconds. It is not required if a DeviceMaster is already 
+in the running state (as shown at the right-hand side of the 
+main list window).
+.IP Reset
+Sends a reset request to the DeviceMaster. This causes it to
+return to the idle state. A DeviceMaster must be reset before 
+any IP configuration changes will take effect.
+.IP Quit
+Closes the IP administration window.
+.RE
+.IP "IP Config"
+This window contains the controls used to examine and change the
+IP addressing information in the DeviceMaster.
+.RS 8
+.IP Get
+Reads the IP configuration from the selected DeviceMaster. 
+This is the static IP configuration information in non-volatile 
+memory. Blank values indicate that the DeviceMaster will 
+attempt to use DHCP to obtain an IP address, netmask, and 
+gateway address. The information obtained by the DeviceMaster 
+using DHCP is not shown.
+.IP Set
+Writes the currently shown IP configuration to non-volatile
+memory in the selected DeviceMaster. You will be warned if the 
+gateway is not on the network calculated based on the address 
+and netmask values.
+.IP Erase
+Erase the IP configuration in the selected DeviceMaster. 
+This results in the DeviceMaster attempting to use DHCP to 
+obtain an IP address the next time it is reset.
+.IP "IP Address, Net Mask, Gateway"
+Entry fields containing the configuration data read from or to
+be written to the selected DeviceMaster. These values should 
+be entered in decimal, dotted-quad notation (e.g. 192.168.1.15 
+or 255.255.255.0).
+.RE
+.SS Driver Configuration
+This is an editor for the information in the \fInslink.conf\fP(5) file.
+The main list window shows a one-line summary of each of the
+DeviceMasters configurations found. The buttons along the 
+bottom of the window are:
+.IP Edit
+Opens a hub-editor window that allows the user to change the
+configuration of the DeviceMaster selected in the main list 
+window.
+.IP New
+Creates a new DeviceMaster configuration and opens a hub-editor 
+window.
+.IP Delete
+Deletes the selected DeviceMaster.
+.IP Save
+Saves the current configuration to the \fInslink.conf\fP(5) file.
+.IP Quit
+Closes the driver configuration window.
+
+.SH NOTES
+.PP
+You are not warned if you quit with unsaved changes. You are
+not asked for confirmation when you delete something. Closing
+the initial driver administration window (the one with the logo
+at the top) will close all of the other windows also.
+.PP
+This program has been tested on a RedHat 6.2 and 7.2 systems with 
+Python 1.52, 2.1, 2.2. It should work with the /etc/rc.d 
+structure used by Debian systems.
+
+.SH "ENVIRONMENT"
+.PP 
+\fBnslinktool\fP does not use any environment variables other
+than those used by the Python and Tkinter packages.
+
+.SH FILES
+.IP \fB/etc/nslink.conf\fP
+Configuration file which is edited by the Driver Config
+function of \fBnslinktool\fP.
+.IP \fB/sbin/nslinkadmin\fP
+Executable utility used by \fBnslinktool\fP to interface with
+DeviceMasters when administering IP addressing
+information.
+.IP \fB/proc/modules\fP
+Used to determine if the nslink module is loaded.
+.IP " \fB/var/run/nslinkd.pid\fP and \fB/proc/<pid>\fP"
+Used to determine if the NS-Link daemon is running.
+.IP "\fB/etc/rc.d/nslink\fP or \fB/etc/rc.d/init.d/nslink\fP"
+Shell script used to start/stop the driver and daemon.
+.IP "\fB/etc/rc.d/rc[2-5].d/[sS]83nslink\fP or
+\fB/etc/rc[2-5].d/[sS]83nslink\fP"
+Symbolic links to the shell-script mentioned above that determine
+if the driver is started when the system boots.
+.SH "SEE ALSO" 
+.PP 
+\fInslinkd\fP(8), \fInslink\fP(8), \fInslinkadmin\fP(8),
+\fInslinkrelease\fP(8),
+\fInslink.conf\fP(5)
+
+.SH "BUGS" 
+.PP 
+Check the release notes file for an up-to-date list\&.
+
+.SH "FTP LOCATION"
+.PP 
+ftp://ftp\&.comtrol\&.com/
+
+

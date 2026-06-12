@@ -1,0 +1,773 @@
+alpi*highlight:                 orange
+alpi*borderColor:               yellow
+alpi*foreground:                black
+alpi*background:                grey
+alpi.x:                         2
+alpi.y:                         22
+
+!
+! usable fonts are: terminal_bold_narrow14 (5000/200) and
+!                   courier_bold12 (5000/133) or -bitstream ...
+!                   nothing on vxt
+!
+
+alpi*font: lucidasans-10
+
+! main page
+
+alpi*highlightThickness                 :1
+alpi*main_box.defaultDistance           :20
+alpi*main_box.background                :saddlebrown
+alpi*main_box.borderWidth               :1
+
+alpi*main_lab.height                    :40
+alpi*main_lab.width                     :180
+alpi*main_lab.resize                    :FALSE
+alpi*main_lab.background                :lightgoldenrod
+alpi*main_lab.label                     :alpi control system
+alpi*main_warn_lab.height               :40
+alpi*main_warn_lab.width                :270
+alpi*main_warn_lab.resize               :FALSE
+alpi*main_warn_lab.background           :white
+alpi*main_warn_lab.label                :alpi warning area
+!alpi*main_warn_lab.font                 :-adobe-courier-bold-r-normal--14-140-75-75-m-90-iso8859-15
+alpi*main_warn_lab.font                 :lucidasans-10
+alpi*rf_but.height                      :40
+alpi*rf_but.width                       :120
+alpi*rf_but.resize                      :FALSE
+alpi*rf_but.label                       :rf resonators
+alpi*he_but.height                      :40
+alpi*he_but.width                       :120
+alpi*he_but.resize                      :FALSE
+alpi*he_but.label                       :helium
+alpi*va_but.height                      :40
+alpi*va_but.width                       :120
+alpi*va_but.resize                      :FALSE
+alpi*va_but.label                       :vacuum
+alpi*ma_but.height                      :40
+alpi*ma_but.width                       :120
+alpi*ma_but.resize                      :FALSE
+alpi*ma_but.label                       :magnets
+alpi*exit_but.height                    :40
+alpi*exit_but.width                     :120
+alpi*exit_but.resize                    :FALSE
+alpi*exit_but.label                     :exit
+
+! confirm page
+
+alpi*condis_box.background              :magenta
+alpi*condis_box.hSpace                  :20
+alpi*condis_box.vSpace                  :20
+alpi*condis_box.width                   :400
+alpi*condis_yes_but.height              :40
+alpi*condis_yes_but.width               :120
+alpi*condis_yes_but.resize              :FALSE
+alpi*condis_yes_but.label               :confirm
+alpi*condis_dism_but.height             :40
+alpi*condis_dism_but.width              :120
+alpi*condis_dism_but.resize             :FALSE
+alpi*condis_dism_but.label              :dismiss
+
+! dialog page
+
+alpi*dialog_box.background              :khaki
+alpi*dialog_box.hSpace                  :20
+alpi*dialog_box.vSpace                  :20
+alpi*dialog.background                  :darkkhaki
+alpi*dialog.foreground                  :red
+alpi*dialog.defaultDistance             :20
+alpi*dialog.width                       :300
+alpi*dialog_confirm.background          :lemonchiffon
+alpi*dialog_confirm.height              :30
+alpi*dialog_confirm.width               :120
+alpi*dialog_confirm.resize              :FALSE
+alpi*dialog_confirm.label               :confirm
+alpi*dialog_dismiss.background          :lemonchiffon
+alpi*dialog_dismiss.height              :30
+alpi*dialog_dismiss.width               :120
+alpi*dialog_dismiss.resize              :FALSE
+alpi*dialog_dismiss.label               :dismiss
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! magnets global page
+
+alpi.mashell_box.background             :purple
+alpi.mashell_box.defaultDistance        :10
+
+alpi*macom_box.background               :saddlebrown
+alpi*macom_box.defaultDistance          :17
+
+alpi*ma_lab.background                  :white
+alpi*ma_lab.height                      :40
+alpi*ma_lab.width                       :180
+alpi*ma_lab.resize                      :FALSE
+alpi*ma_lab.label                       :magnets page
+
+alpi*maalarm_lab.background             :white
+alpi*maalarm_lab.height                 :40
+alpi*maalarm_lab.width                  :180
+alpi*maalarm_lab.resize                 :FALSE
+alpi*maalarm_lab.label                  :p.s. in test
+alpi*maalarm_lab.font                   :lucidasans-10
+
+alpi*maexit_but.height                  :40
+alpi*maexit_but.width                   :120
+alpi*maexit_but.resize                  :FALSE
+alpi*maexit_but.label                   :exit
+
+alpi*masave_but.height                  :40
+alpi*masave_but.width                   :120
+alpi*masave_but.resize                  :FALSE
+alpi*masave_but.label                   :save
+
+alpi*maprint_but.height                  :40
+alpi*maprint_but.width                   :120
+alpi*maprint_but.resize                  :FALSE
+alpi*maprint_but.label                   :print
+
+alpi*maread_but.height                  :40
+alpi*maread_but.width                   :120
+alpi*maread_but.resize                  :FALSE
+alpi*maread_but.label                   :load
+
+alpi*maalarm_but.height                  :40
+alpi*maalarm_but.width                   :120
+alpi*maalarm_but.resize                  :FALSE
+alpi*maalarm_but.label                   :alarm
+
+alpi*maresetall_but.height               :40
+alpi*maresetall_but.width                :120
+alpi*maresetall_but.resize               :FALSE
+alpi*maresetall_but.label                :reset
+
+alpi*fast_save_but.height               :40
+alpi*fast_save_but.width                :40
+alpi*fast_save_but.resize               :FALSE
+alpi*fast_save_but.label                :S
+
+alpi*fast_load_but.height               :40
+alpi*fast_load_but.width                :40
+alpi*fast_load_but.resize               :FALSE
+alpi*fast_load_but.label                :L
+
+alpi*maallon_but.height               	:40
+alpi*maallon_but.width                	:120
+alpi*maallon_but.resize               	:FALSE
+alpi*maallon_but.label                	:all MPS on
+
+alpi*mazecurall_but.height               :40
+alpi*mazecurall_but.width                :120
+alpi*mazecurall_but.resize               :FALSE
+alpi*mazecurall_but.label                :zero current
+
+alpi*maremall_but.height                 :40
+alpi*maremall_but.width                  :120
+alpi*maremall_but.resize                 :FALSE
+alpi*maremall_but.label                  :remote
+
+alpi*mawarning_lab.height                  :40
+alpi*mawarning_lab.width                   :600
+alpi*mawarning_lab.resize                  :FALSE
+alpi*mawarning_lab.label                   :
+alpi*mawarning_lab.background              :saddlebrown
+alpi*mawarning_lab.borderColor		   :saddlebrown
+
+alpi*mawarning_but.height                  :40
+alpi*mawarning_but.width                   :40
+alpi*mawarning_but.resize                  :FALSE
+alpi*mawarning_but.label                   :OK
+alpi*mawarning_but.background              :saddlebrown
+alpi*mawarning_but.borderColor		   :saddlebrown
+
+alpi*button_box.background		:white
+alpi*button_box*font                    :lucidasans-10
+
+alpi*button_box*borderWidth		:8
+
+alpi*button_1.borderColor		:white
+alpi*button_2.borderColor		:white
+alpi*button_3.borderColor		:white
+alpi*button_4.borderColor		:white
+alpi*button_5.borderColor		:white
+alpi*button_6.borderColor		:white
+alpi*button_7.borderColor		:white
+alpi*button_8.borderColor		:white
+alpi*button_9.borderColor		:white
+alpi*button_10.borderColor		:white
+alpi*button_11.borderColor		:white
+alpi*button_12.borderColor		:white
+alpi*button_13.borderColor		:white
+alpi*button_14.borderColor		:white
+alpi*button_15.borderColor		:white
+alpi*button_16.borderColor		:white
+alpi*button_17.borderColor		:white
+alpi*button_18.borderColor		:white
+alpi*button_19.borderColor		:white
+alpi*button_20.borderColor		:white
+alpi*button_21.borderColor		:white
+alpi*button_22.borderColor		:white
+alpi*button_23.borderColor		:white
+alpi*button_24.borderColor		:white
+alpi*button_25.borderColor		:white
+alpi*button_26.borderColor		:white
+alpi*button_27.borderColor		:white
+alpi*button_28.borderColor		:white
+alpi*button_29.borderColor		:white
+alpi*button_30.borderColor		:white
+alpi*button_31.borderColor		:white
+alpi*button_32.borderColor		:white
+alpi*button_33.borderColor		:white
+alpi*button_34.borderColor		:white
+alpi*button_35.borderColor		:white
+alpi*button_36.borderColor		:white
+alpi*button_37.borderColor		:white
+alpi*button_38.borderColor		:white
+alpi*button_39.borderColor		:white
+alpi*button_40.borderColor		:white
+alpi*button_41.borderColor		:white
+alpi*button_42.borderColor		:white
+alpi*button_43.borderColor		:white
+alpi*button_44.borderColor		:white
+alpi*button_45.borderColor		:white
+alpi*button_46.borderColor		:white
+alpi*button_47.borderColor		:white
+alpi*button_48.borderColor		:white
+alpi*button_49.borderColor		:white
+alpi*button_50.borderColor		:white
+alpi*button_51.borderColor		:white
+
+
+
+alpi*ma_setup_box.background            :purple4
+alpi*ma_setup_box*borderColor           :purple1
+
+alpi*ma_refr_onoff_but.width		:120
+alpi*ma_magexit_but.width		:120
+alpi*ma_next_but.width			:120
+alpi*ma_previous_but.width		:120
+alpi*ma_refr_onoff_but.height		:30
+alpi*ma_magexit_but.height		:30
+alpi*ma_next_but.height			:30
+alpi*ma_previous_but.height		:30
+alpi*ma_refr_onoff_but.label		:display
+alpi*ma_magexit_but.label		:exit
+alpi*ma_next_but.label			:next
+alpi*ma_previous_but.label		:previous
+alpi*ma_refr_onoff_but.borderWidth        :4
+alpi*ma_magexit_but.borderWidth           :4
+alpi*ma_next_but.borderWidth              :4
+alpi*ma_previous_but.borderWidth          :4
+
+alpi*ma_box_a.borderWidth		:4
+alpi*ma_box_b.borderWidth		:4
+alpi*ma_box_c.borderWidth		:4
+alpi*ma_box_a.background		:LightSteelBlue3
+alpi*ma_box_b.background		:LightSteelBlue3
+alpi*ma_box_c.background		:LightSteelBlue3
+alpi*ma_box_a.vertDistance		:2
+alpi*ma_box_b.vertDistance		:2
+alpi*ma_box_c.vertDistance		:2
+
+alpi*ma_name_label.font			:lucidasans-10
+alpi*ma_name_label.background 		:white
+alpi*ma_name_label.width		:250
+alpi*ma_name_label.height		:35
+alpi*ma_name_label.resize		:FALSE
+
+alpi*ma_onoff_but.font			:lucidasans-10
+alpi*ma_onoff_but.width			:160
+alpi*ma_onoff_but.height		:35
+alpi*ma_onoff_but.horizDistance		:50
+alpi*ma_onoff_but.label			:ON
+
+alpi*ma_remloc_but.font			:lucidasans-10
+alpi*ma_remloc_but.width		:160
+alpi*ma_remloc_but.height		:35
+alpi*ma_remloc_but.horizDistance	:50
+alpi*ma_remloc_but.label		:REMOTE
+
+alpi*ma_reset_but.font			:lucidasans-10
+alpi*ma_reset_but.width			:160
+alpi*ma_reset_but.height		:35
+alpi*ma_reset_but.horizDistance		:50
+alpi*ma_reset_but.label			:RESET
+
+alpi*ma_cur_lab.vertDistance		:30
+alpi*ma_cur_lab.width			:120
+alpi*ma_cur_lab.resize			:FALSE
+alpi*ma_cur_lab.font			:lucidasans-10
+alpi*ma_cur_lab.label			:CURRENT :
+
+alpi*ma_curimp_name_lab.vertDistance	:30
+alpi*ma_curimp_name_lab.width		:100
+alpi*ma_curimp_name_lab.resize		:FALSE
+alpi*ma_curimp_name_lab.font		:lucidasans-10
+alpi*ma_curimp_name_lab.label		:IMPOSED 
+
+alpi*ma_curimp_lab.vertDistance		:30
+alpi*ma_curimp_lab.width		:200
+alpi*ma_curimp_lab.resize		:FALSE
+alpi*ma_curimp_lab.font			:lucidasans-10
+
+alpi*ma_curimp_perc_lab.vertDistance	:30
+alpi*ma_curimp_perc_lab.width		:200
+alpi*ma_curimp_perc_lab.resize		:FALSE
+alpi*ma_curimp_perc_lab.font		:lucidasans-10
+
+alpi*ma_curatt_name_lab.vertDistance	:15
+alpi*ma_curatt_name_lab.width		:100
+alpi*ma_curatt_name_lab.resize		:FALSE
+alpi*ma_curatt_name_lab.font		:lucidasans-10
+alpi*ma_curatt_name_lab.label		:ACTUAL
+
+alpi*ma_curatt_lab.vertDistance		:15
+alpi*ma_curatt_lab.width		:200
+alpi*ma_curatt_lab.resize		:FALSE
+alpi*ma_curatt_lab.font			:lucidasans-10
+
+alpi*ma_curatt_perc_lab.vertDistance	:15
+alpi*ma_curatt_perc_lab.width		:200
+alpi*ma_curatt_perc_lab.resize		:FALSE
+alpi*ma_curatt_perc_lab.font		:lucidasans-10
+
+alpi*ma_curdwn_fast_but.bitmap		:bottgiu_fast
+alpi*ma_curdwn_fast_but.vertDistance	:20
+alpi*ma_curdwn_fast_but.horizDistance	:100
+
+alpi*ma_curdwn_but.bitmap		:bottgiu
+alpi*ma_curdwn_but.vertDistance		:20
+
+alpi*ma_cur_ruler.vertDistance		:20
+alpi*ma_cur_ruler.background  		:LightSteelBlue1
+
+alpi*ma_curup_but.bitmap		:bottsu
+alpi*ma_curup_but.vertDistance		:20
+
+alpi*ma_curup_fast_but.bitmap		:bottsu_fast
+alpi*ma_curup_fast_but.vertDistance	:20
+
+alpi*ma_volt_text_lab.width		:245
+alpi*ma_volt_text_lab.resize		:FALSE
+alpi*ma_volt_text_lab.label		:VOLT                %
+alpi*ma_volt_text_lab.vertDistance	:20
+
+alpi*ma_temp_text_lab.width		:120
+alpi*ma_temp_text_lab.resize		:FALSE
+alpi*ma_temp_text_lab.label		:TEMP.
+alpi*ma_temp_text_lab.vertDistance	:20
+
+alpi*ma_trans_text_lab.width		:120
+alpi*ma_trans_text_lab.resize		:FALSE
+alpi*ma_trans_text_lab.label		:TRANS. Vce
+alpi*ma_trans_text_lab.vertDistance	:20
+
+alpi*ma_v1_text_lab.width		:120
+alpi*ma_v1_text_lab.resize		:FALSE
+alpi*ma_v1_text_lab.label		:INT. +15
+alpi*ma_v1_text_lab.vertDistance	:20
+
+alpi*ma_v2_text_lab.width		:120
+alpi*ma_v2_text_lab.resize		:FALSE
+alpi*ma_v2_text_lab.label		:INT. -15
+alpi*ma_v2_text_lab.vertDistance	:20
+
+alpi*ma_v3_text_lab.width		:120
+alpi*ma_v3_text_lab.resize		:FALSE
+alpi*ma_v3_text_lab.label		:INT. +5
+alpi*ma_v3_text_lab.vertDistance	:20
+
+alpi*ma_volt_lab.width			:120
+alpi*ma_volt_lab.resize			:FALSE
+alpi*ma_volt_lab.label		:
+
+alpi*ma_volt_perc_lab.width		:120
+alpi*ma_volt_perc_lab.resize		:FALSE
+alpi*ma_volt_perc_lab.label	:
+
+alpi*ma_temp_lab.width			:120
+alpi*ma_temp_lab.resize			:FALSE
+alpi*ma_temp_lab.label		:
+
+
+alpi*ma_trans_lab.width			:120
+alpi*ma_trans_lab.resize		:FALSE
+alpi*ma_trans_lab.label		:
+
+
+
+alpi*ma_v1_lab.width			:120
+alpi*ma_v1_lab.resize			:FALSE
+alpi*ma_v1_lab.label		:
+
+
+alpi*ma_v2_lab.width			:120
+alpi*ma_v2_lab.resize			:FALSE
+alpi*ma_v2_lab.label		:
+
+
+alpi*ma_v3_lab.width			:120
+alpi*ma_v3_lab.resize			:FALSE
+alpi*ma_v3_lab.label		:
+
+
+
+
+alpi*ma_status_lab_1.width		:150
+alpi*ma_status_lab_1.height		:22
+alpi*ma_status_lab_1.resize		:FALSE
+alpi*ma_status_lab_1.horizDistance	:10
+alpi*ma_status_lab_1.vertDistance	:10
+alpi*ma_status_lab_1.borderWidth	:0
+alpi*ma_status_lab_1.font		:lucidasans-10
+
+alpi*ma_status_lab_2.width		:150
+alpi*ma_status_lab_2.height		:22
+alpi*ma_status_lab_2.resize		:FALSE
+alpi*ma_status_lab_2.horizDistance	:10
+alpi*ma_status_lab_2.vertDistance	:10
+alpi*ma_status_lab_2.borderWidth	:0
+alpi*ma_status_lab_2.font		:lucidasans-10
+
+alpi*ma_status_lab_3.width		:150
+alpi*ma_status_lab_3.height		:22
+alpi*ma_status_lab_3.resize		:FALSE
+alpi*ma_status_lab_3.horizDistance	:10
+alpi*ma_status_lab_3.vertDistance	:10
+alpi*ma_status_lab_3.borderWidth	:0
+alpi*ma_status_lab_3.font		:lucidasans-10
+
+alpi*ma_status_lab_4.width		:150
+alpi*ma_status_lab_4.height		:22
+alpi*ma_status_lab_4.resize		:FALSE
+alpi*ma_status_lab_4.horizDistance	:10
+alpi*ma_status_lab_4.vertDistance	:10
+alpi*ma_status_lab_4.borderWidth	:0
+alpi*ma_status_lab_4.font		:lucidasans-10
+
+alpi*ma_status_lab_5.width		:150
+alpi*ma_status_lab_5.height		:22
+alpi*ma_status_lab_5.resize		:FALSE
+alpi*ma_status_lab_5.horizDistance	:10
+alpi*ma_status_lab_5.vertDistance	:10
+alpi*ma_status_lab_5.borderWidth	:0
+alpi*ma_status_lab_5.font		:lucidasans-10
+			
+alpi*ma_status_lab_6.width		:150
+alpi*ma_status_lab_6.height		:22
+alpi*ma_status_lab_6.resize		:FALSE
+alpi*ma_status_lab_6.horizDistance	:10
+alpi*ma_status_lab_6.vertDistance	:10
+alpi*ma_status_lab_6.borderWidth	:0
+alpi*ma_status_lab_6.font		:lucidasans-10
+
+alpi*ma_status_lab_7.width		:150
+alpi*ma_status_lab_7.height		:22
+alpi*ma_status_lab_7.resize		:FALSE
+alpi*ma_status_lab_7.horizDistance	:10
+alpi*ma_status_lab_7.vertDistance	:10
+alpi*ma_status_lab_7.borderWidth	:0
+alpi*ma_status_lab_7.font		:lucidasans-10
+
+alpi*ma_status_lab_8.width		:150
+alpi*ma_status_lab_8.height		:22
+alpi*ma_status_lab_8.resize		:FALSE
+alpi*ma_status_lab_8.horizDistance	:10
+alpi*ma_status_lab_8.vertDistance	:10
+alpi*ma_status_lab_8.borderWidth	:0
+alpi*ma_status_lab_8.font		:lucidasans-10
+
+alpi*ma_status_lab_9.width		:150
+alpi*ma_status_lab_9.height		:22
+alpi*ma_status_lab_9.resize		:FALSE
+alpi*ma_status_lab_9.horizDistance	:10
+alpi*ma_status_lab_9.vertDistance	:10
+alpi*ma_status_lab_9.borderWidth	:0
+alpi*ma_status_lab_9.font		:lucidasans-10
+			
+alpi*ma_status_lab_10.width		:150
+alpi*ma_status_lab_10.height		:22
+alpi*ma_status_lab_10.resize		:FALSE
+alpi*ma_status_lab_10.horizDistance	:10
+alpi*ma_status_lab_10.vertDistance	:10
+alpi*ma_status_lab_10.borderWidth	:0
+alpi*ma_status_lab_10.font		:lucidasans-10
+
+alpi*ma_status_lab_11.width		:150
+alpi*ma_status_lab_11.height		:22
+alpi*ma_status_lab_11.resize		:FALSE
+alpi*ma_status_lab_11.horizDistance	:10
+alpi*ma_status_lab_11.vertDistance	:10
+alpi*ma_status_lab_11.borderWidth	:0
+alpi*ma_status_lab_11.font		:lucidasans-10
+
+alpi*ma_status_lab_12.width		:150
+alpi*ma_status_lab_12.height		:22
+alpi*ma_status_lab_12.resize		:FALSE
+alpi*ma_status_lab_12.horizDistance	:10
+alpi*ma_status_lab_12.vertDistance	:10
+alpi*ma_status_lab_12.borderWidth	:0
+alpi*ma_status_lab_12.font		:lucidasans-10
+
+alpi*ma_status_lab_13.width		:150
+alpi*ma_status_lab_13.height		:22
+alpi*ma_status_lab_13.resize		:FALSE
+alpi*ma_status_lab_13.horizDistance	:10
+alpi*ma_status_lab_13.vertDistance	:10
+alpi*ma_status_lab_13.borderWidth	:0
+alpi*ma_status_lab_13.font		:lucidasans-10
+			
+alpi*ma_status_lab_14.width		:150
+alpi*ma_status_lab_14.height		:22
+alpi*ma_status_lab_14.resize		:FALSE
+alpi*ma_status_lab_14.horizDistance	:10
+alpi*ma_status_lab_14.vertDistance	:10
+alpi*ma_status_lab_14.borderWidth	:0
+alpi*ma_status_lab_14.font		:lucidasans-10
+
+alpi*ma_status_lab_15.width		:150
+alpi*ma_status_lab_15.height		:22
+alpi*ma_status_lab_15.resize		:FALSE
+alpi*ma_status_lab_15.horizDistance	:10
+alpi*ma_status_lab_15.vertDistance	:10
+alpi*ma_status_lab_15.borderWidth	:0
+alpi*ma_status_lab_15.font		:lucidasans-10
+
+alpi*ma_status_lab_16.width		:150
+alpi*ma_status_lab_16.height		:22
+alpi*ma_status_lab_16.resize		:FALSE
+alpi*ma_status_lab_16.horizDistance	:10
+alpi*ma_status_lab_16.vertDistance	:10
+alpi*ma_status_lab_16.borderWidth	:0
+alpi*ma_status_lab_16.font		:lucidasans-10
+
+alpi*ma_grip.vertDistance		:20
+alpi*ma_grip.horizDistance       	:10
+alpi*ma_grip.width			:80
+alpi*ma_grip.height                     :30
+alpi*ma_grip.resize			:FALSE
+alpi*ma_grip.foreground                 :lemonchiffon
+alpi*ma_grip.borderWidth                :1
+
+alpi*ma_incdec.font			:lucidasans-10
+alpi*ma_incdec.vertDistance      	:20
+alpi*ma_incdec.horizDistance      	:10
+alpi*ma_incdec.label	        	:50
+alpi*ma_incdec.width	        	:80
+alpi*ma_incdec.height                   :30
+alpi*ma_incdec.resize			:FALSE
+alpi*ma_incdec.foreground               :black
+alpi*ma_incdec.background               :lemonchiffon
+alpi*ma_incdec.borderWidth              :1
+
+! 2q3q box
+
+alpi*ma2q3q_box.borderWidth		:4
+alpi*ma2q3q_box.vertDistance		:20
+alpi*ma2q3q_box.background		:thistle2
+
+alpi*ma2q3q_label.vertDistance		:20
+alpi*ma2q3q_label.horizDistance       	:10
+alpi*ma2q3q_label.font			:lucidasans-10
+alpi*ma2q3q_label.width 		:250
+alpi*ma2q3q_label.height		:35
+alpi*ma2q3q_label.resize		:FALSE
+alpi*ma2q3q_label.borderColor		:DeepPink1
+alpi*ma2q3q_label.background		:white
+
+alpi*ma2q3q_I_lab.vertDistance		:20
+alpi*ma2q3q_I_lab.horizDistance       	:10
+alpi*ma2q3q_I_lab.font			:lucidasans-10
+alpi*ma2q3q_I_lab.width 		:200
+alpi*ma2q3q_I_lab.height		:30
+alpi*ma2q3q_I_lab.resize		:FALSE
+alpi*ma2q3q_I_lab.borderColor		:DeepPink1
+alpi*ma2q3q_I_lab.foreground		:black
+alpi*ma2q3q_I_lab.background		:white
+
+alpi*ma2q3q_D_lab.vertDistance		:20
+alpi*ma2q3q_D_lab.horizDistance       	:10
+alpi*ma2q3q_D_lab.font			:lucidasans-10
+alpi*ma2q3q_D_lab.width 		:200
+alpi*ma2q3q_D_lab.height		:30
+alpi*ma2q3q_D_lab.resize		:FALSE
+alpi*ma2q3q_D_lab.borderColor		:DeepPink1
+alpi*ma2q3q_D_lab.foreground		:black
+alpi*ma2q3q_D_lab.background		:white
+
+alpi*ma2q3q_I_griplab.vertDistance	:20
+alpi*ma2q3q_I_griplab.horizDistance     :10
+alpi*ma2q3q_I_griplab.font		:lucidasans-10
+alpi*ma2q3q_I_griplab.width 		:80
+alpi*ma2q3q_I_griplab.height		:30
+alpi*ma2q3q_I_griplab.resize		:FALSE
+alpi*ma2q3q_I_griplab.foreground	:black
+alpi*ma2q3q_I_griplab.background	:lemonchiffon
+
+alpi*ma2q3q_D_griplab.vertDistance	:20
+alpi*ma2q3q_D_griplab.horizDistance    	:10
+alpi*ma2q3q_D_griplab.font		:lucidasans-10
+alpi*ma2q3q_D_griplab.width 		:80
+alpi*ma2q3q_D_griplab.height		:30
+alpi*ma2q3q_D_griplab.resize		:FALSE
+alpi*ma2q3q_D_griplab.foreground	:black
+alpi*ma2q3q_D_griplab.background	:lemonchiffon
+
+alpi*ma2q3q_I_ruler.vertDistance	:20
+alpi*ma2q3q_I_ruler.horizDistance      	:10
+alpi*ma2q3q_I_ruler.borderColor		:DeepPink1
+alpi*ma2q3q_I_ruler.foreground		:black
+alpi*ma2q3q_I_ruler.background		:MediumPurple1
+
+alpi*ma2q3q_D_ruler.vertDistance	:20
+alpi*ma2q3q_D_ruler.horizDistance      	:10
+alpi*ma2q3q_D_ruler.borderColor		:DeepPink1
+alpi*ma2q3q_D_ruler.foreground		:black
+alpi*ma2q3q_D_ruler.background		:plum1
+
+alpi*ma2q3q_I_grip.vertDistance		:20
+alpi*ma2q3q_I_grip.horizDistance       	:10
+alpi*ma2q3q_I_grip.width 		:80
+alpi*ma2q3q_I_grip.height		:30
+alpi*ma2q3q_I_grip.resize		:FALSE
+alpi*ma2q3q_I_grip.borderWidth		:1
+alpi*ma2q3q_I_grip.foreground		:lemonchiffon
+
+alpi*ma2q3q_D_grip.vertDistance		:20
+alpi*ma2q3q_D_grip.horizDistance       	:10
+alpi*ma2q3q_D_grip.width 		:80
+alpi*ma2q3q_D_grip.height		:30
+alpi*ma2q3q_D_grip.resize		:FALSE
+alpi*ma2q3q_D_grip.borderWidth		:1
+alpi*ma2q3q_D_grip.foreground	      	:lemonchiffon
+
+alpi*st_page_but.height                  :30
+alpi*st_page_but.width                   :120
+alpi*st_page_but.resize                  :FALSE
+alpi*st_page_but.label                   :steerers
+alpi*st_page_but.borderWidth		 :4
+
+!alpi*st_name_lab.width 	         :301
+!alpi*st_name_lab.height                 :301
+!alpi*st_name_lab.resize                 :FALSE
+!alpi*st_name_lab.bitmap                 :prova.xbm
+
+
+
+
+
+alpi*st_curdwn_fast_but_1.bitmap		:bottgiu_fast
+alpi*st_curdwn_fast_but_1.vertDistance		:20
+alpi*st_curdwn_fast_but_1.horizDistance		:10
+
+alpi*st_curdwn_but_1.bitmap			:bottgiu
+alpi*st_curdwn_but_1.vertDistance		:20
+
+alpi*st_cur_ruler_1.vertDistance		:20
+alpi*st_cur_ruler_1.background  		:LightSteelBlue1
+
+alpi*st_curup_but_1.bitmap			:bottsu
+alpi*st_curup_but_1.vertDistance		:20
+
+alpi*st_curup_fast_but_1.bitmap			:bottsu_fast
+alpi*st_curup_fast_but_1.vertDistance		:20
+
+
+alpi*st_grip_1.vertDistance			:20
+alpi*st_grip_1.horizDistance       		:10
+alpi*st_grip_1.width				:80
+alpi*st_grip_1.height                     	:30
+alpi*st_grip_1.resize				:FALSE
+alpi*st_grip_1.foreground			:lemonchiffon
+alpi*st_grip_1.borderWidth			:1
+
+
+alpi*st_incdec_1.font				:lucidasans-10
+alpi*st_incdec_1.vertDistance      		:20
+alpi*st_incdec_1.horizDistance      		:10
+alpi*st_incdec_1.label	        		:50
+alpi*st_incdec_1.width	        		:80
+alpi*st_incdec_1.height              		:30
+alpi*st_incdec_1.resize				:FALSE
+alpi*st_incdec_1.foreground			:black
+alpi*st_incdec_1.background 			:lemonchiffon
+alpi*st_incdec_1.borderWidth              	:1
+
+alpi*st_real_1.font				:lucidasans-10
+alpi*st_real_1.vertDistance      		:17
+alpi*st_real_1.horizDistance      		:10
+alpi*st_real_1.label	        		:
+alpi*st_real_1.width	        		:600
+alpi*st_real_1.height              		:36
+alpi*st_real_1.resize				:FALSE
+alpi*st_real_1.foreground			:red
+alpi*st_real_1.background 			:gainsboro
+alpi*st_real_1.borderWidth              	:0
+
+
+
+alpi*st_curdwn_fast_but_2.bitmap		:bottgiu_fast
+alpi*st_curdwn_fast_but_2.vertDistance		:20
+alpi*st_curdwn_fast_but_2.horizDistance		:10
+
+alpi*st_curdwn_but_2.bitmap			:bottgiu
+alpi*st_curdwn_but_2.vertDistance		:20
+
+alpi*st_cur_ruler_2.vertDistance		:20
+alpi*st_cur_ruler_2.background  		:LightSteelBlue1
+
+alpi*st_curup_but_2.bitmap			:bottsu
+alpi*st_curup_but_2.vertDistance		:20
+
+alpi*st_curup_fast_but_2.bitmap			:bottsu_fast
+alpi*st_curup_fast_but_2.vertDistance		:20
+
+
+alpi*st_grip_2.vertDistance			:20
+alpi*st_grip_2.horizDistance       		:10
+alpi*st_grip_2.width				:80
+alpi*st_grip_2.height                     	:30
+alpi*st_grip_2.resize				:FALSE
+alpi*st_grip_2.foreground			:lemonchiffon
+alpi*st_grip_2.borderWidth			:1
+
+
+alpi*st_incdec_2.font				:lucidasans-10
+alpi*st_incdec_2.vertDistance      		:20
+alpi*st_incdec_2.horizDistance      		:10
+alpi*st_incdec_2.label	        		:50
+alpi*st_incdec_2.width	        		:80
+alpi*st_incdec_2.height              		:30
+alpi*st_incdec_2.resize				:FALSE
+alpi*st_incdec_2.foreground			:black
+alpi*st_incdec_2.background 			:lemonchiffon
+alpi*st_incdec_2.borderWidth              	:1
+
+
+alpi*st_real_2.font				:lucidasans-10
+alpi*st_real_2.vertDistance      		:17
+alpi*st_real_2.horizDistance      		:10
+alpi*st_real_2.label	        		:
+alpi*st_real_2.width	        		:600
+alpi*st_real_2.height              		:36
+alpi*st_real_2.resize				:FALSE
+alpi*st_real_2.foreground			:red
+alpi*st_real_2.background 			:gainsboro
+alpi*st_real_2.borderWidth              	:0
+
+
+
+alpi*st_display_lab.width	        	:301
+alpi*st_display_lab.height 	        	:301
+!alpi*st_display_lab.bitmap			:prova.xbm
+alpi*st_display_lab.label			: 
+alpi*st_display_lab.resize			:FALSE
+alpi*st_display_lab.background			:white
+
+
+alpi*st_name_lab.font				:lucidasans-10
+alpi*st_name_lab.background 			:white
+alpi*st_name_lab.width				:250
+alpi*st_name_lab.height				:35
+alpi*st_name_lab.resize				:FALSE
+

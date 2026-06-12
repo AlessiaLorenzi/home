@@ -1,0 +1,148 @@
+     1	cd iperbuncher 
+     2	vi callbacks-c. 
+     3	vi callbacks-c.c 
+     4	vi callbacks-c.c 
+     5	bx & 
+     6	vi callbacks-c.c 
+     7	nslookup www.serverseekers.com 
+     8	cd 
+     9	ls -lt | more 
+    10	rm core 
+    11	cp -r iperbuncher iperbuncher_bck66 
+    12	nslookup 
+    13	cd iperbuncher 
+    14	./main-c sinot_verbose 
+    15	vi callbacks-c.c 
+    16	make 
+    17	./main-c sinot_verbose 
+    18	vi callbacks-c.c 
+    19	make 
+    20	./main-c sinot_verbose 
+    21	vi callbacks-c.c 
+    22	make 
+    23	./main-c sinot_verbose 
+    24	vi callbacks-c.c 
+    25	cd 
+    26	ls -lt | more 
+    27	cp -r iperbuncheriperbuncher_bck67 
+    28	cp -r iperbuncher iperbuncher_bck67 
+    29	cd iperbuncher 
+    30	ls 
+    31	vi callbacks-c.c 
+    32	make 
+    33	./main-c sinot_verbose 
+    34	vi callbacks-c.c 
+    35	make 
+    36	./main-c sinot_verbose 
+    37	vi callbacks-c.c 
+    38	vi callbacks-c.c 
+    39	make 
+    40	./main-c sinot_verbose 
+    41	vi callbacks-c.c 
+    42	make 
+    43	./main-c sinot_verbose 
+    44	vi callbacks-c.c 
+    45	vi callbacks-c.c 
+    46	make 
+    47	vi +6545 callbacks-c.c 
+    48	history 
+    49	maake 
+    50	make 
+    51	vi +6370 callbacks-c.c 
+    52	make 
+    53	vi +6370 callbacks-c.c 
+    54	make 
+    55	vi +6370 callbacks-c.c 
+    56	a2ps -1 -r -L50 -o pp.ps main-c.c 
+    57	showps pp.ps 
+    58	bg 
+    59	a2ps -1 -r -j -L50 -o pp.ps main-c.c 
+    60	a2ps -1 -r -B -L50 -o pp.ps main-c.c 
+    61	a2ps -1 -r --borders=no -L50 -o pp.ps main-c.c 
+    62	vi callbacks-c.c 
+    63	make 
+    64	vi callbacks-c.c 
+    65	make 
+    66	./main-c sinot_verbose 
+    67	vi callbacks-c.c 
+    68	make 
+    69	./main-c sinot_verbose 
+    70	vi callbacks-c.c 
+    71	make 
+    72	./main-c sinot_verbose 
+    73	./main-c sinot_verbose 
+    74	vi callbacks-c.c 
+    75	make 
+    76	./main-c sinot_verbose 
+    77	cd /disk1/andrea 
+    78	ls 
+    79	cd 
+    80	ls 
+    81	cd /disk1/andrea 
+    82	ls 
+    83	cd xephem-3.2.0 
+    84	ls 
+    85	cd GUI 
+    86	ls 
+    87	cd xephem 
+    88	./xephem 
+    89	cd 
+    90	cd iperbuncher 
+    91	vi callbacks-c.c 
+    92	make 
+    93	./xephem 
+    94	./main-c sinot_verbose 
+    95	./main-c sinot_verbose 
+    96	vi callbacks-c.c 
+    97	make 
+    98	./main-c sinot_verbose 
+    99	rm parameters/.crash 
+   100	./main-c sinot_verbose 
+   101	vi callbacks-c.c 
+   102	make 
+   103	vi callbacks-c.c 
+   104	mae 
+   105	make 
+   106	./main-c sinot_verbose 
+   107	vi callbacks-c.c 
+   108	make 
+   109	./main-c sinot_verbose 
+   110	r 
+   111	rm parameters/.crash 
+   112	./main-c sinot_verbose 
+   113	rm parameters/.crash 
+   114	vi callbacks-c.c 
+   115	vi callbacks-c.c 
+   116	make 
+   117	./main-c sinot_verbose 
+   118	rm parameters/.crash 
+   119	vi callbacks-c.c 
+   120	cd 
+   121	ls 
+   122	cd ups-2.45.2 
+   123	ls 
+   124	cd 
+   125	cd iperbuncher 
+   126	vi callbacks-c.c 
+   127	make 
+   128	./main-c sinot_verbose 
+   129	rm parameters/.crash 
+   130	vi callbacks-c.c 
+   131	./main-c sinot_verbose 
+   132	rm parameters/.crash 
+   133	vi callbacks-c.c 
+   134	make 
+   135	./main-c sinot_verbose 
+   136	rm parameters/.crash 
+   137	vi callbacks-c.c 
+   138	make 
+   139	./main-c sinot_verbose 
+   140	vi callbacks-c.c 
+   141	vi callbacks-c.c 
+   142	make 
+   143	./main-c sinot_verbose 
+   144	rm core 
+   145	rm parameters/.crash 
+   146	./main-c sinot_verbose 
+   147	./main-c sinot_verbose 
+   148	history > xxxx 

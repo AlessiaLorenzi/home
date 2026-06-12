@@ -1,0 +1,4 @@
+#
+../steerer/st_server 3200 &
+sleep 1
+echo "3200 in alpi1"

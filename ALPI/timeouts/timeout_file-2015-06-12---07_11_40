@@ -1,0 +1,66 @@
+
+
+FIRST  TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Fri Jun  5 07:17:22 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI5 alim = 5 ** ÿ ** Fri Jun  5 07:17:26 CEST 2015
+SECOND TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Fri Jun  5 07:17:30 CEST 2015
+SECOND TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Fri Jun  5 07:17:32 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI18 alim = 48 **  ** i = 0 0  Wed Jun 10 16:02:04 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI18 alim = 48 **  ** Wed Jun 10 16:02:08 CEST 2015
+SECOND TIMEOUT /dev/ttySI18 alim = 48 **  ** i = 0 0  Wed Jun 10 16:02:12 CEST 2015
+SECOND TIMEOUT /dev/ttySI18 alim = 48 **  ** i = 0 0  Wed Jun 10 16:02:14 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI18 alim = 49 **  ** i = 0 0  Wed Jun 10 16:02:16 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI18 alim = 49 **  ** Wed Jun 10 16:02:20 CEST 2015
+SECOND TIMEOUT /dev/ttySI18 alim = 49 **  ** i = 0 0  Wed Jun 10 16:02:24 CEST 2015
+SECOND TIMEOUT /dev/ttySI18 alim = 49 **  ** i = 0 0  Wed Jun 10 16:02:26 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI19 alim = 44 **  ** i = 0 0  Wed Jun 10 16:34:11 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI19 alim = 44 **  ** Wed Jun 10 16:34:15 CEST 2015
+SECOND TIMEOUT /dev/ttySI19 alim = 44 **  ** i = 0 0  Wed Jun 10 16:34:19 CEST 2015
+SECOND TIMEOUT /dev/ttySI19 alim = 44 **  ** i = 0 0  Wed Jun 10 16:34:21 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI19 alim = 45 **  ** i = 0 0  Wed Jun 10 16:34:23 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI19 alim = 45 **  ** Wed Jun 10 16:34:27 CEST 2015
+SECOND TIMEOUT /dev/ttySI19 alim = 45 **  ** i = 0 0  Wed Jun 10 16:34:31 CEST 2015
+SECOND TIMEOUT /dev/ttySI19 alim = 45 **  ** i = 0 0  Wed Jun 10 16:34:33 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI16 alim = 38 **  ** i = 0 0  Wed Jun 10 16:35:26 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI16 alim = 38 **  ** Wed Jun 10 16:35:30 CEST 2015
+SECOND TIMEOUT /dev/ttySI16 alim = 38 **  ** i = 0 0  Wed Jun 10 16:35:34 CEST 2015
+SECOND TIMEOUT /dev/ttySI16 alim = 38 **  ** i = 0 0  Wed Jun 10 16:35:36 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI16 alim = 39 **  ** i = 0 0  Wed Jun 10 16:35:38 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI16 alim = 39 **  ** Wed Jun 10 16:35:42 CEST 2015
+SECOND TIMEOUT /dev/ttySI16 alim = 39 **  ** i = 0 0  Wed Jun 10 16:35:46 CEST 2015
+SECOND TIMEOUT /dev/ttySI16 alim = 39 **  ** i = 0 0  Wed Jun 10 16:35:48 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI3 alim = 29 **  ** i = 0 0  Wed Jun 10 16:58:45 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI3 alim = 29 **  ** Wed Jun 10 16:58:49 CEST 2015
+SECOND TIMEOUT /dev/ttySI3 alim = 29 **  ** i = 0 0  Wed Jun 10 16:58:53 CEST 2015
+SECOND TIMEOUT /dev/ttySI3 alim = 29 **  ** i = 0 0  Wed Jun 10 16:58:55 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI3 alim = 30 **  ** i = 0 0  Wed Jun 10 16:58:57 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI3 alim = 30 **  ** Wed Jun 10 16:59:01 CEST 2015
+SECOND TIMEOUT /dev/ttySI3 alim = 30 **  ** i = 0 0  Wed Jun 10 16:59:05 CEST 2015
+SECOND TIMEOUT /dev/ttySI3 alim = 30 **  ** i = 0 0  Wed Jun 10 16:59:07 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI4 alim = 6 ** !. ** i = 0 0  Wed Jun 10 17:29:08 CEST 2015
+SECOND TIMEOUT /dev/ttySI4 alim = 6 ** ..!...  ** i = 0 0  Wed Jun 10 17:29:10 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI4 alim = 9 ** 0  ** i = 0 0  Wed Jun 10 17:29:19 CEST 2015
+SECOND TIMEOUT /dev/ttySI4 alim = 9 **  ** i = 0 0  Wed Jun 10 17:29:23 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI4 alim = 7 ** .... ** i = 0 0  Wed Jun 10 17:30:26 CEST 2015
+Fri Jun 12 07:11:40 CEST 2015

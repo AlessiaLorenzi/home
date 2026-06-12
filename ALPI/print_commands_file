@@ -1,0 +1,5 @@
+a2ps -o currentes.ps  /home/alpi/ALPI/file_to_print
+
+%-8s  %-8.4f A    %-8.4f%%    ON
+%-8s  %-8.4f A    %-8.4f%%    OFF
+%-8s  STUB

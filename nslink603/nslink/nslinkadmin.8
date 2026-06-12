@@ -1,0 +1,134 @@
+.TH "nslinkadmin" "8" "27 May 2009" "(c) Comtrol Corp." "Comtrol"
+.SH "NAME" 
+nslinkadmin \- IP admin utility for the DeviceMaster
+.PP 
+.SH "SYNOPSIS" 
+.PP 
+\fBnslinkadmin\fP [options]
+.PP 
+.SH "DESCRIPTION" 
+
+.PP 
+\fBnslinkadmin\fP is a command-line utility used to query, erase,
+or set the IP address information stored in non-volatile memory
+in a Comtrol DeviceMaster. It communicates with the
+DeviceMaster using raw Ethernet packets. Therefore, the 
+DeviceMaster being administered must be on the same Ethernet 
+segment as the host running \fBnslinkadmin\fP, and the Linux 
+kernel must have support for the raw packet interface.
+
+.PP
+\fBnslinkadmin\fP has the ability to
+query the network and allow the user to choose from a list of
+DeviceMasters found. Alternatively, the user may specify the
+Ethernet address of the DeviceMaster on the command line.
+.PP
+The user may use the program via an interactive menu, or
+specify operations to be performed on the command line using
+the options explained below.
+
+.SS Booting the DeviceMaster 
+.PP
+The DeviceMaster must have an application binary (see FILES)
+downloaded to it before any operations may be performed.
+.PP
+If the selected DeviceMaster is idle and not owned by another
+host, then the application binary will be automatically
+downloaded by \fBnslinkadmin\fP unless the \fI-n\fP option has
+been specified. If the DeviceMaster is automatically loaded by
+\fBnslinkadmin\fP, then it will be reset when
+\fBnslinkadmin\fP exits. If the DeviceMaster is loaded
+\fImanually\fP, either with the \fI-l\fP option or via a menu
+selection, then it will not be reset on exit.
+
+.SS Batch Options
+.PP
+Note that some options will place \fBnslinkadmin\fP into a
+non-interactive batch mode, which requires that the
+DeviceMaster Ethernet address be specified on the command line
+with the \fI-e\fB option.
+.PP 
+.SH "OPTIONS" 
+.PP
+.IP "\fB-d\fP \fIether-device\fP"
+Specifies the Ethernet device to be used. Defaults to 'eth0'.
+.IP "\fB-x\fP \fIdebug-lvl\fP"
+Specifies a debugging level from 0 (least verbose) to 9 (most
+verbose).
+.IP "\fB-n\fP"
+No do not automatically load the selected DeviceMaster on startup,
+or reset it on exit.
+.IP "\fB-e\fP \fIEth-addr"
+Specifies the Ethernet address of the DeviceMaster to be
+accessed. The address should be in the form xx:xx:xx:xx:xx:xx
+where xx is a 2-digit hex number.
+This options is required if any of the batch mode options are
+specified. If this option is not specified,
+\fBnslinkadmin\fP will query the network and ask the user to
+choose from a list of DeviceMasters found.
+.IP "\fB-r\fP"
+Tell the DeviceMaster to perform a reset operation. 
+[batch option: see note above]
+.IP "\fB-l\fP"
+Load the application binary into the DeviceMaster and
+start execution. [batch option: see note above]
+.IP "\fB-f\fP \fIfilename\fP"
+Use the specified file instead of the default application
+binary when performing load operations.
+.IP "\fB-q\fP"
+Query the DeviceMaster for its current IP configuration data and
+write the data to stdout. 
+[batch option: see note above]
+.IP "\fB-E\fP"
+Tell the DeviceMaster to erase its IP configuration data. If no
+new IP configuration data is written to the DeviceMaster, it 
+attempts to use DHCP after it is next reset.
+[batch option: see note above]
+.IP "\fB-L\fP"
+List the DeviceMasters found on the network and then exit.
+.IP "\fB-a\fP \fIip-addr\fP"
+Configure the DeviceMaster to use \fIip-addr\fP as its IP address.
+ip-addr must be in decimal dotted quad notation:
+ddd.ddd.ddd.ddd where ddd is a decimal number from 0 to 255. If
+\fB-a\fP is specified, the \fB-m\fP and \fB-g\fP options
+must also be specified.
+[batch option: see note above]
+.IP "\fB-m\fP \fIip-mask\fP"
+Configure the DeviceMaster to use \fIip-mask\fP as its IP network mask.
+ip-mask must be in decimal dotted quad notation:
+ddd.ddd.ddd.ddd where ddd is a decimal number from 0 to 255. If
+\fB-m\fP is specified, the \fB-a\fP and \fB-g\fP options
+must also be specified.
+[batch option: see note above]
+.IP "\fB-g\fP \fIip-gateway\fP"
+Configure the DeviceMaster to use \fIip-gateway\fP as the address of
+the default gateway.
+ip-gateway must be in decimal dotted quad notation:
+ddd.ddd.ddd.ddd where ddd is a decimal number from 0 to 255. If
+\fB-g\fP is specified, the \fB-a\fP and \fB-m\fP options
+must also be specified. 
+[batch option: see note above]
+.PP
+.SH "ENVIRONMENT" 
+.PP 
+\fBnslinkadmin\fP does not use any environment variables.
+.PP
+.SH "FILES" 
+.PP 
+.IP "\fB/etc/devmast.bin\fP" 
+Application binary file downloaded to DeviceMaster by the
+load operation.
+.PP 
+.SH "SEE ALSO" 
+.PP 
+\fInslinkd\fP(8), \fInslink\fP(8)
+.PP 
+.SH "BUGS" 
+.PP 
+Check the release notes file for an up-to-date list\&.
+.PP 
+.SH "FTP LOCATION"
+.PP 
+ftp://ftp\&.comtrol\&.com/
+
+

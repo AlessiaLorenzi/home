@@ -1,0 +1,37 @@
+/home/magnets/ALPI/ma_server_test/ma_server 3000  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3001  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3002  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3003  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3004  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3005  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3006  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3007  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3008  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3009  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3100  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3101  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3102  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 3103  &
+usleep 100000
+
+/home/magnets/ALPI/ma_server_test/ma_server 4000  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 4001  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 4002  &
+usleep 100000
+/home/magnets/ALPI/ma_server_test/ma_server 4003  &
+usleep 100000

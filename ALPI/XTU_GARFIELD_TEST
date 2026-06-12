@@ -1,0 +1,10 @@
+cd /home/alpi/ALPI
+mv ./timeout_file ./timeouts/timeout_file-`date +%F---%T`
+xrdb -quiet ./ma_Xdefaults
+./START_MA_SERVERS_TEST > /dev/null
+#./START_ST_SERVERS_TEST 
+sleep 1
+clear
+/home/alpi/COMMON/netm/netm /home/alpi/ALPI/xtu_garfield_test.conf 2000 alpi_process > /dev/null &
+sleep 5
+/home/alpi/COMMON/graphics/alpi localhost 2000 nerbose alpi_process > /dev/null

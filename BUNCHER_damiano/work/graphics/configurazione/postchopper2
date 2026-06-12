@@ -1,0 +1,11 @@
+post chopper tandem
+10MHZ.AND
+5451.0 2170.0 29830.0 10.0
+localhost 6103
+localhost 6201 2
+localhost 6201 8 1
+10 100 600 1.000000
+10 8
+10 2
+3
+100 0.040000

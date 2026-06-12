@@ -1,0 +1,9 @@
+cd /home/alpi/ALPI
+date >> ./timeout_file
+mv ./timeout_file ./timeouts/timeout_file-`date +%F---%T`
+xrdb -quiet ./ma_Xdefaults
+./START_MA_SERVERS
+./MR_START_ST_SERVERS
+/home/alpi/COMMON/netm/netm /home/alpi/ALPI/definitivo_test 2000 alpi_process > /dev/null &
+sleep 5
+/home/alpi/COMMON/graphics/alpi localhost 2000 nerbose alpi_process 

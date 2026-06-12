@@ -1,0 +1,851 @@
+Linux NSLink (TM) Driver For Comtrol DeviceMaster, RPSH-SI and RPSH Devices
+Part # 1800026
+
+REVISION HISTORY
+============================================================================
+
+version 6.03
+============
+2 Oct 2012
+
+  NSLink driver version 5.03: Fix problem of open ports not
+  reconnecting when an RTS unit is rebooted or power-cycled
+  [ISS-006409].  devmast.bin 8.04: Fix problem that caused RTS unit to
+  report a spurious drop in modem status lines (e.g. CD) when
+  reconnecting ports that were open when the RTS unit was
+  reset/rebooted [ISS-006409].  Fix bug in handling of multiple SSL
+  packets received in a single TCP packet when NSLink driver is set up
+  with encryption enabled [ISS-006392].
+
+version 6.02
+============
+20 June 2012
+
+   NSLink driver version 5.02: Fix bug caused by "simultaneous" calls
+   to write() and open()/close() for different ports on a hub.
+   ISS-006352, ISS-005358.
+
+version 6.01
+============
+6 June 2012
+
+   NSLink driver version 5.01: Fix for Linux kernel 3.4 compatibility.
+   Fix for MAC mode connection retransmit/timeout problem that showed
+   up with kernel version 3.2 and later when large numbers of ports
+   are run at high baud rates.
+   
+   devmast.bin 8.03: fix drop in throughput at very high baud rates
+   (>= 230K) in RTS when it is configured for DHCP mode. Remove limit
+   on RC4 block cipher that forced SSL connections to be dropped and
+   re-established after transferring 1GB of data. Fix bug that caused
+   existing NS-Link connections to pause during SSL handshaking and
+   session setup for new NS-Link connections.
+
+version 6.00
+============
+   1 Dec 2011
+
+   Change to download process to work better with units that have
+   "native NS-Link" firmware: don't download until we see an ID
+   response from SocketServer so that we don't "override" the native
+   NSLink app after a unit is reset.  Update devmast.bin to 8.00,
+   NSLink driver to 5.00.
+
+
+version 5.30
+============
+30 Nov 2011
+
+   Fix handling of IXANY flow control termios flag: it didn't used to
+   work at all.
+
+version 5.29
+============
+23 Nov 2011
+
+   Fix handling of open() when clocal is not set: the call wasn't
+   blocking until CD active as it should have.
+
+version 5.28
+============
+22 Nov 2011
+
+   Fix handling of open() on port that is already open so that in-use
+   port isn't re-initialized and flushed.
+
+version 5.27
+============
+21 Nov 2011
+
+   Change nslinkd to create temporary device file in /dev instead of
+   /tmp.
+
+version 5.26.2
+==============
+30 Oct 11
+
+   Beta-test version that works more smoothly with native NSLink
+   firmware when devices get rebooted during use.
+
+version 5.26.1
+==============
+17 Oct 11
+
+   Beta-test version that supports encryption of TCP link between
+   NS-Link host and DeviceMaster.  Requires resident NSLink firmware
+   on all units.
+
+version 5.26
+============
+16 Sep 11
+
+   Fix for kernel crashes that happened when network link to hub went
+   down and came back up.  Fixed kernel header incompatibility with
+   some versions of RH 2.6.18 kernels.
+
+version 5.25
+============
+26 Aug 11
+
+   Fix for kernel crash that happened when MAC mode packets were
+   re-transmitted (e.g. when an Ethernet cable was unplugged while
+   port was in-use) under Linux 2.6.28 and later.
+
+version 5.24
+============
+24 Aug 11
+
+   Fix for "scheduling while atomic" problems that occurred due to a
+   Linux tty layer limitation when the low_latency flag was set in MAC
+   mode -- low_latency is no longer allowed in MAC mode.
+
+   Fix problems when comparing calculated times to current "jiffies"
+   that caused a variety of problems when the kernel jiffies counter
+   was about to roll over: repeated TCP link timeouts, hanging when
+   closing port, etc.
+
+   Update devmast.bin to 7.30
+
+
+version 5.23
+============
+   9 Aug 11
+
+   Added support for kernel version 3.0.
+
+   Fixed bug that caused "scheduling while atomic" error messages from
+   2.6.3x kernels.  This fix makes the driver incompatible with 2.4
+   kernels and 2.6 kernels prior to 2.6.16.  Fix will be back-ported
+   for old kernels in a future release.
+
+   Updated devmast.bin to 7.28
+
+
+version 5.22
+============
+21 May 11
+
+   Added support for kernel version 2.6.39.
+
+version 5.21
+============
+18 Apr 11
+
+   Added support for custom baud rates set via setserial and
+   spd_cust/baud_base/divisor fields.  Fixed termios ioctl handler so
+   that it no longer ignores changes made via "new" termios struct in
+   which only baud rate is changed.  Updated devmast.bin to 7.26.
+
+version 5.20
+============
+17 Mar 11
+
+   Updated devmast.bin to version 7.25.
+
+version 5.19
+============
+13 Jan 11
+
+   Fixed typo in HISTORY file.
+
+version 5.18
+============
+05 Jan 11
+
+   Fixed compatibility problem with kernel 2.6.37 due to change of
+   location of smp lock function declarations in kernel include files.
+
+version 5.17
+============
+20 Oct 10
+
+   Fixed compatibility problem with kernel 2.6.36 due to removal of
+   locked ioctl method from char device driver API.  Fixed shutdown
+   code that was attempting to remove /proc entries that were never
+   created.  This was causing run-time warnings.  Remove last of
+   support for obsoleted DeviceMaster 2.
+
+version 5.16
+============
+27 Apr 10
+
+   Removed support for obsoleted DeviceMaster 2.  Increased buffer
+   size to accommodate a full trace dump through port 4607.  Added the
+   reporting of the firmware version to port 4607 upon connection.
+   Updated help file for RTS Toggle and Pre/Post RTS Hold Time
+   options.  Added Pre/Post RTS Hold Time parameters to PortVision
+   HTTP API.  Spelling fixes and minor improvements.
+
+version 5.15
+============
+11 Feb 10
+
+   Fixed kernel panic due to NULL pointer dereference.
+   Fixed repeated TCP link timeouts when hub is idle.
+   Fixed long connection time after PC reboot in MAC mode.
+   Fixed an issue where driver won't load automatically with
+   OpenSuse 10/11.
+   Fixed repeated "protocol fe11 is buggy" kernel messages in MAC mode.
+   Added support for Linux kernel 2.6.33.
+   Fixed compiler warnings on x86_64 system.
+   Changed period calculation to use 5 periods instead of 20.
+   Fixed HDLC frame timeout code that was causing spurious
+   retransmits.  
+   Added rx/tx buffer flush to port open.
+
+version 5.14
+============
+28 Sep 09
+
+   Added support for Linux kernel 2.6.31.
+
+version 5.13
+============
+24 Aug 09
+
+   Added work-around for bug in Linux kernel's tty-layer code that is
+   broken on 64-bit systems.  The bug causes calls to tcdrain() to
+   return immediately rather than wait for data to be sent.
+
+version 5.12
+============
+09 Jul 09
+
+   Fixed compile errors and a few other issues on kernel 2.6.30.
+   Added RS485 4-wire Master and Slave capability to DM RTS 2 port.
+   Fixed Data lost on large serial port writes.
+
+version 5.11
+============
+04 Mar 09
+
+   Made ACK and Retransmit timers user configurable.  Fixed compile
+   errors on the 2.4 kernel and 2.6.26 and later kernels.  Changed the
+   port closing delay to fix Kernel oops after cycling DeviceMaster
+   power.  Updated the DeviceMaster RTS Linux history file
+
+version 5.10
+============
+16 Sept 08
+
+   Corrected 10MB hub issue found in the ICS1893 phy. Added code to
+   reset phy/switch functions to properly set the Samsung mac duplex
+   mode for the 2p-1e unit based upon auto negotiation returned
+   values. The acs101 chip doesn't care for us changing the value so I
+   decided to leave it alone for later investigation. The kendin has
+   to run in half duplex so it hard coded to use half. The 2p-2e
+   requires full duplex so it is hard coded to use full.
+
+version 5.09
+============
+08 Sept 08
+
+   Fix Ethernet driver problems in  1-port and 2-port models.
+
+version 5.08
+============
+12 Jun 08
+
+   Fixed inconsistent recovery from power interruptions.  Added
+   support for DM RTS 2P models.
+
+version 5.07
+============
+17 Apr 08
+
+   Converted line endings of source files.
+
+version 5.06
+============
+15 Apr 08
+
+   Corrected kernel oops when devices are written to before the
+   termios is placed in a non-default state.
+
+version 5.05
+============
+14 Apr 08
+
+   Updated devmast.bin file to version 6.09
+
+version 5.04
+============
+25 Mar 08
+
+   Added support for DeviceMaster 500 product line.  Corrected to
+   detect baud rates higher than 460.8K.
+
+version 5.03
+============
+30 Jan 08
+
+   Corrected issue where ports 7 and 23 may not open on newer kernels.
+
+version 5.02
+============
+24 Jan 08
+
+   Fixed problem with MAC mode operation.  Updated man pages.
+   Included latest DeviceMaster binaries.
+
+version 5.01
+============
+27 Dec 07
+
+   Corrected code to run on newer (latest) SMP and x86_64 kernels.
+   Corrected issue where driver could not load unit while in TCP mode.
+   Removed rpshsi*.bin files from distribution assembly.
+
+version 5.00
+============
+22 Nov 07
+
+   Added support for DM2
+
+version 4.07
+============
+15 Nov 07
+
+   Added shutdown call before socket close, in order to disconnect
+   politely.  Fixed socket disconnect bug in firmware when user
+   initiates a platform reset.  Changes were made to nslinkd to stay
+   compatible with newer kernels.
+
+version 4.06
+============
+28 Dec 06
+
+   Modified driver to implement 64-bit support.
+
+version 4.05
+============
+06 Nov 06
+
+   Corrected version string in version.h.
+
+version 4.04
+============
+25 Oct 06
+
+   Fixed compile errors in kernel versions 2.6.16 and 2.6.18.  Changes
+   to line discipline layer API in 2.6.16 and the removal of devfs in
+   2.6.18 prevented compilation.  Updated line discipline layer API.
+   Eliminated devfs from builds in kernel version 2.6.18 and later.
+
+version 4.03
+============
+21 July 06
+
+   Added check so that we don't call tty_unregester_driver unless we
+   had previously called tty_register_driver successfully.  If set_tcp
+   or set_mac IOCTL is called without previously registering the
+   driver, print a more detailed error message warning the user that
+   the nslink daemon may be out of date.  Fixes problem caused by
+   installing new kernel module, w/o installing corresponding version
+   of daemon.
+
+   Updated version.h file to reflect new version number & date of
+   assy.  Added new devmast.bin version 5.16.
+
+version 4.02
+============
+14 Nov 05
+
+   Fixed compiler errors affecting kernel versions 2.6.10 and later.
+
+   Fixed a bug in nslinkadmin that hung the connection between the
+   driver and the DeviceMaster blocking transfer of any commands or
+   data.
+
+   Fixed system abort caused by dereferencing a null pointer.
+
+   Fixed a reset/load problem.  DeviceMaster did not respond to reset
+   commands from the driver and therefore could not be loaded w/
+   nslink firmware. Fix is in driver ioctl() code.
+
+   Changed tty port creation to create only those ports defined in the
+   nslink.conf file.  This allows 256 ports to be defined as desired
+   and relieves the limit of 8 DeviceMasters that previously applied
+   under 2.6 kernels.
+
+   Fixed errors generating the following syslog entries:
+   "devfs_mk_dev: could not append to parent for tts/SIn" "Badness in
+   local_bh_enable at kernel/softirq.c:136"
+
+version 4.00
+============
+28 Feb 05
+
+   Added support for the RTS 1 Port 5-30VDC models.
+   Added support for Linux kernel version 2.6.
+
+
+version 3.07
+============
+15 Jul 04
+
+   Changed the ADMIN_ID_QUERY to broadcast in the daemon, needed for
+   wireless devices.
+
+
+version 3.06
+============
+28 Jun 04
+
+   Added support for DeviceMaster Air 1 port.
+
+
+version 3.05
+============
+05 Feb 04
+
+   Added support for DeviceMaster Pro and Serial Hub models.
+
+
+version 3.04
+============
+18 June 03
+
+   Fixed PPP problem - unable to establish connection.  Fixed system
+   hang condition when entering CTRL-C while closing ports.
+
+version 3.03
+============
+10 June 03
+
+   Fixed compile problem with RedHat 6.2 and kernel versions 2.2.
+   Made code compatible with kernel version 2.6 by removing cli/sti
+   calls and using spinlocks.
+
+version 3.02
+============
+23 Jan 03
+
+   Increased number the max number of hubs from 4 to 64.  Changed
+   watchdog strobe interval.  Fixed ethernet buffer leak that resulted
+   in 2port devices hanging.  Fixed SetTXoff so that it works more
+   reliably when data is present.
+   
+version 3.01
+===========
+20 DEC 02
+
+   Fixed RS485 mode in the DeviceMaster 1 port.
+
+version 3.00
+============
+20 Dec 02
+
+   Fixed timer so 1ms interrupt happens every 1ms.
+   Fixed ACK handling so that ACK's are sent after 6 receive packets.
+   Fixed ACK handling so that tx queue isn't retransmitted when all
+   that is needed is a bare ACK.
+
+version 2.39
+============
+04 Oct 02
+
+   Added support for the DeviceMaster RTS 1 port model.
+   
+version 2.38
+============ 
+02 Sep 02
+
+   Added support for the DeviceMaster RM16/32 models.
+
+version 2.37
+============ 
+28 May 02
+
+   Fix incompatibility with 2.4.18 kernel (RH 7.3).
+   
+   Change Makefile so that it no longer tries to guess where kernel
+   sources are.  They must be in /usr/src/linux.  If they're not,
+   display message and abort make.
+
+version 2.36
+============
+17 Apr 02       
+
+   Incorporated new binary for 2-port hubs that has lower latencies
+   and fixes TCP/IP link timeout problem.
+
+   Fixed bug in port numbering that cause hubs to "overlap" if all
+   hubs weren't on the network when the driver was started.
+
+version 2.35
+============
+18 Mar 02 
+
+   Fixed timing problem: open() was returning before port was ready to
+   receive data.
+
+   Fixed Makefile so that it looks in the right place for kernel
+   include files on RH7.2 systems.
+
+version 2.34
+============
+14 Mar 02
+
+   Fixed a bug in 422/485 modes.
+   
+version 2.33
+============
+13 Mar 02
+
+   Fixed bug in watchdog initialization that was causing boards to
+   reset 2 seconds after the app started.
+
+   Added inter-character timeout detection and selectable scan period.
+   
+   Fixed a bug in mail task that was using up all of the sockets Added
+   support for Intel 28F320C3 flash ROM
+
+version 2.32
+============
+14 Feb 02
+
+   This version addresses a bug in which RS 422 and 485 modes were
+   inoperative in DeviceMaster RTS units.
+
+version 2.31
+============
+7 Jan 02
+
+   This version removes the configuration language code that was
+   introduced with Phase I of programmability.
+
+version 2.30
+============
+18 Dec 01       
+
+   DeviceMaster hub changes: 
+
+   Added gateway request to DHCP packets so that it requests _all_ of
+   the parameters we want (gateway, netmask, etc.) added Phase I of
+   programmability
+
+   Added configurable TCP keepalive timeout.
+   
+   Added IP configuration web page.
+
+   Added reboot button to main web page.
+
+   Fixed AIOPIC init code that caused AIOPIC to lock up if it was
+   receiving data on port 0 during boot-up.
+
+Version 2.29
+============
+26 Sep 01
+
+   Added email client support.
+
+Version 2.28
+============
+
+30 Jul 01
+
+   Added 'L' command to nslinkadmin so that a file can be loaded but
+   not executed. Increased delay after 'r'eset command in nslinkadmin
+   from 2 to 3 seconds.
+
+   Added paragraph to nslink(8) man page describing error states.
+
+   Incorporate new version of devmast.bin file that fixes bug that
+   caused port configuration to not be set correctly when a port is
+   shared between socket server and NS-Link driver.
+
+Version 2.27
+============
+
+25 Jul 01
+
+   Fixed bug that caused seg-fault after port was closed and tty
+   struct was deallocated by line-discipline layer.  Changed error
+   that is returned after hub refuses connection (was EIO, now
+   ENOTCONN).
+
+   Fixed bug in handling of a refused open-port request while the
+   ttySI port is open and blocked on a read or write.
+
+
+Version 2.26
+============
+20 Jul 01
+
+   No changes.  2.25 was archived with the wrong rev letter, and this
+   is the only way I can figure out to get it fixed. :(
+
+Version 2.25
+============
+18 Jul 01
+
+   Fixed bug that caused nslinkd (MAC mode) to try to download to a
+   hub that was already owned (download in-progress).
+
+   Added nslinkrelease utility and support for corresponding ioctl()
+   in driver code.
+
+   Removed individual port activity timeouts.
+
+   Re-designed link timeout logic:
+
+    * It is now directly configurable via the nslink.conf file.
+
+    * A link timeout value of 0 disables link timeout.
+
+    * Added a third-party port release command to the hub protocol so
+      that the user can force a port to be freed.
+
+    * read() and write() operations now return EIO errors if the port
+      has been released via a third party or if hub refuses the
+      request because the caller no longer owns the port (due to a
+      link timeout).
+
+Version 2.24
+============
+26 Jun 01
+
+   Fixed SI compatibility code (adding support for 2.4/2.2.18 broke
+   some of the compatibility fixes in 2.20 that went in for
+   compatibility with older SI/2-port).
+
+   Incorporate DM binaries that include DHCP fixes for compatibility
+   with servers that don't provide T1/T2 values.
+
+
+Version 2.23
+============
+14 Jun 01
+
+   Added support for 2.4 and 2.2.18 kernels.  Minor fixes to makefile
+   and setup script to support Debian and Mandrake.
+
+Version 2.22
+============
+24 May 01
+
+   Incorporated DM binary with fixed telnet error message.
+
+Version 2.21
+============
+22 May 01
+
+   Incorporated DM binary with log fixed on web page.
+
+Version 2.20
+============
+16 May 01
+
+   Fixed bug in daemon that caused problem with Si Hubs in TCP/IP mode
+   if the Hubs had already been booted up before the driver was
+   started.
+
+   Fixed install script so that devmast.bin gets copied into /etc.
+   
+   Changed layout of hub config dialog so that it will
+   fit on smaller screens.
+
+Version 2.19
+============
+11 May 01
+
+   Incorporate new DM binary that fixes Rx flow control.
+
+   Fixed support for user-specified bootfiles (including DeviceMaster
+   bootfile).  Added support for 16-port device in nslinktool hub
+   config editor.
+
+Version 2.18
+============
+18 Apr 01
+
+   Incorporate new DM binary with watchdog timer support.
+
+Version 2.17
+============
+11 Apr 01
+
+   Add support for DeviceMaster.  Fixed xon/xoff control problems:
+   wasn't enabling xon/xoff if it was enabled after port was
+   opened. Wasn't configuring xon/xoff characters.
+
+Version 2.16
+============
+15 Jan 01
+
+   Incorporate new 2-port binary that supports new vendor for FLASH
+   memory.
+
+Version 2.15
+============
+12 Jan 01
+
+   Fix "send break" function.
+
+Version 2.14
+============
+8 Jan 01
+
+   Fix driver code to enable Xon/Xoff flow control in hub when ioctl()
+   has configured port that way.
+   
+   Fix RTS/CTS flow control so that both are enabled and disabled at
+   the same time.
+
+Version 2.13
+============
+14 Dec 00
+
+   Incorporate new 2-Port binary to fix problem with even parity
+   operation.
+
+Version 2.12
+============
+04 Dec 00
+
+   Incorporate new 2-Port binary to fix problem with multiple TCP/IP
+   connections.
+
+Version 2.11
+============
+28 Nov 00
+
+   Added support for 2-port IA hub.
+
+   Fixed port timeout code so that it resets timer on all data writes
+   (it was missing some of them).
+
+Version 2.10
+============
+15 Aug 00
+
+   Fixed link timeout value for cases when some ports on a hub are
+   configured with finite timeouts and some are not.
+
+Version 2.09
+============
+10 Aug 00
+
+   Fixed handling of dropped TCP/IP connections.
+
+   Fixed conflicts with vs1000 driver (major device number conflict
+   and kernel name-space conflict).
+
+   Added port-idle timeout support (including TCP link timeout
+   dependency on port-idle timeout settings).
+
+   Added /proc filesystem support.
+   
+   Added monitor window in rpshtool.
+
+Version 2.08
+============
+13 Jul 00
+
+   Fixed Makefile to eliminate warning about kernel version and cpp
+   warnings about re-defined names.  Fixed Makefile so that current
+   kernel version is correctly extracted from include files.
+
+   Incorporated new version of rpshsi2p.bin file that implements
+   correct length field for device ID command and eliminates TCP
+   packet losses when talking to MS Windows systems.
+
+   Fixed minor bugs in rpshtool error message formatting Added code to
+   rpshtool to update status lines once per second.
+
+   Incorporated new version of rpshsi2p.bin file that fixes problem in
+   TCP/IP communications with Windows hosts.
+
+   Changed commands in Makefile used for tarfile target
+
+Version 2.07
+============
+28 Jun 00
+
+   Incorporated new version of rpshsi2p.bin file that has performance
+   improvements in Ethernet and UART drivers for 2-port platform.
+
+Version 2.06
+============
+09 Jun 00
+
+   Added man pages: rpshadmin.8, rpshsi.8, rpshsi.conf.5, rpshsid.8,
+   rpshtool.8
+   Added rpshtool administration GUI.
+   Added rpshadmin IP administration utility.
+   Added support for RPSH-Si 2-port.
+   Fixed some syntax problems in shell scripts and makefiles.
+
+version 2.05
+============
+04-13-00
+
+   Free the file structure after the TCP socket closes.
+
+version 2.04
+============
+11-30-99
+
+   Do not create device for ports configured off.
+
+version 2.03
+============
+11-23-99
+
+   Fix bad configuration parse for RS422 and RS485.
+
+version 2.02
+============
+11-19-99 
+
+   Fix modem signals getting passed to server at port open.
+
+version 2.01
+============
+11-18-99
+
+   Added the ability to turn off a view of a physical port.
+
+version 2.00
+============
+11-11-99
+
+   Replace multi-server feature with port sharing.
+
+version 1.01
+============
+9-16-99
+
+   Fix so the hub can ignore NULL characters (rpshsi.bin).
+
+   Fixes from initial release that support multiple RPSH-Si from the
+   same server.
+
+Version 1.00
+============
+8-24-99
+
+   Initial release.
+
+Document Number: 8000169

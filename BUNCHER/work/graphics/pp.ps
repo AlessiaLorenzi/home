@@ -1,0 +1,1291 @@
+%!PS-Adobe-3.0
+%%Title: main-c.c
+%%For: Andrea Battistella
+%%Creator: a2ps version 4.10.2
+%%CreationDate: Thu Jun 10 09:05:41 1999
+%%BoundingBox: 24 24 571 818
+%%DocumentData: Clean7Bit
+%%Orientation: Landscape
+%%Pages: 7
+%%PageOrder: Ascend
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: font Courier
+%%+ font Courier-Bold
+%%+ font Courier-BoldOblique
+%%+ font Courier-Oblique
+%%+ font Helvetica
+%%+ font Helvetica-Bold
+%%+ font Symbol
+%%+ font Times-Bold
+%%+ font Times-Roman
+%%DocumentProcessColors: Black 
+%%DocumentSuppliedResources: procset a2ps-a2ps-hdr
+%%+ procset a2ps-black+white-Prolog
+%%+ encoding ISO-8859-1Encoding
+%%EndComments
+/a2psdict 200 dict def
+a2psdict begin
+%%BeginProlog
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+
+% EPSF import as in the Red Book
+/BeginInclude {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack 
+  userdict begin
+    0 setgray 0 setlinecap
+    1 setlinewidth 0 setlinejoin
+    10 setmiterlimit [ ] 0 setdash newpath
+    gs_languagelevel 1 ne {
+      false setstrokeadjust false setoverprint 
+    } if
+} bind def
+
+/EndInclude {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+/BeginEPSF {
+  BeginInclude
+  /showpage { } def
+} bind def
+
+/EndEPSF {
+  EndInclude
+} bind def
+
+% Page prefeed
+/page_prefeed {         % bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} bind def
+
+/deffont {
+  findfont exch scalefont def
+} bind def
+
+/reencode_font {
+  findfont reencode 2 copy definefont pop def
+} bind def
+
+% Function c-show (str => -)
+% centers text only according to x axis.
+/c-show { 
+  dup stringwidth pop
+  2 div neg 0 rmoveto
+  show
+} bind def
+
+% Function l-show (str => -)
+% prints texts so that it ends at currentpoint
+/l-show {
+  dup stringwidth pop neg 
+  0 
+  rmoveto show
+} bind def
+
+% center-fit show (str w => -)
+% show centered, and scale currentfont so that the width is less than w
+/cfshow {
+  exch dup stringwidth pop
+  % If the title is too big, try to make it smaller
+  3 2 roll 2 copy
+  gt
+  { % if, i.e. too big
+    exch div
+    currentfont exch scalefont setfont
+  } { % ifelse
+    pop pop 
+  }
+  ifelse
+  c-show			% center title
+} bind def
+
+% Return the y size of the current font
+% - => fontsize
+/currentfontsize {
+  currentfont /FontMatrix get 3 get 1000 mul
+} bind def
+
+% reencode the font
+% <encoding-vector> <fontdict> -> <newfontdict>
+/reencode { %def
+  dup length 5 add dict begin
+    { %forall
+      1 index /FID ne 
+      { def }{ pop pop } ifelse
+    } forall
+    /Encoding exch def
+
+    % Use the font's bounding box to determine the ascent, descent,
+    % and overall height; don't forget that these values have to be
+    % transformed using the font's matrix.
+    FontBBox
+    FontMatrix transform /Ascent exch def pop
+    FontMatrix transform /Descent exch def pop
+    /FontHeight Ascent Descent sub def
+
+    % Define these in case they're not in the FontInfo (also, here
+    % they're easier to get to.
+    /UnderlinePosition 1 def
+    /UnderlineThickness 1 def
+    
+    % Get the underline position and thickness if they're defined.
+    currentdict /FontInfo known {
+      FontInfo
+      
+      dup /UnderlinePosition known {
+	dup /UnderlinePosition get
+	0 exch FontMatrix transform exch pop
+	/UnderlinePosition exch def
+      } if
+      
+      dup /UnderlineThickness known {
+	/UnderlineThickness get
+	0 exch FontMatrix transform exch pop
+	/UnderlineThickness exch def
+      } if
+      
+    } if
+    currentdict 
+  end 
+} bind def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul neg 2 div 0 rmoveto
+    f# setfont
+    c-show
+  grestore
+} bind def
+
+% -------- Some routines to enlight plain b/w printings ---------
+
+% Underline
+% width --
+/dounderline {
+  currentpoint
+  gsave
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    0 rlineto
+    stroke
+  grestore
+} bind def
+
+% Underline a string
+% string --
+/dounderlinestring {
+  stringwidth pop
+  dounderline
+} bind def
+
+/UL {
+  /ul exch store
+} bind def
+
+% Draw a box of WIDTH wrt current font
+% width --
+/dobox {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    stroke
+  grestore
+} bind def
+
+/BX {
+  /bx exch store
+} bind def
+
+% Box a string
+% string --
+/doboxstring {
+  stringwidth pop
+  dobox
+} bind def
+
+%
+% ------------- Color routines ---------------
+%
+/FG /setrgbcolor load def
+
+% Draw the background
+% width --
+/dobackground {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    bgcolor aload pop setrgbcolor
+    fill
+  grestore
+} bind def
+
+% Draw bg for a string
+% string --
+/dobackgroundstring {
+  stringwidth pop
+  dobackground
+} bind def
+
+
+/BG {
+  dup /bg exch store
+  { mark 4 1 roll ] /bgcolor exch store } if
+} bind def
+
+
+/Show {
+  bg { dup dobackgroundstring } if
+  ul { dup dounderlinestring } if
+  bx { dup doboxstring } if
+  show
+} bind def
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T {
+  cw mul x0 add
+  bg { dup currentpoint pop sub dobackground } if
+  ul { dup currentpoint pop sub dounderline } if
+  bx { dup currentpoint pop sub dobox } if
+  y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n {
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+/S {
+  Show
+} bind def
+
+%%BeginResource: procset a2ps-a2ps-hdr 2.0 2
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Function title: prints page header.
+% <ct> <rt> <lt> are passed as argument
+/title { 
+  % 1. Draw the background
+  x v get y v get moveto
+  gsave
+    0 th 2 div neg rmoveto 
+    th setlinewidth
+    0.95 setgray
+    pw 0 rlineto stroke
+  grestore
+  % 2. Border it
+  gsave
+    0.7 setlinewidth
+    pw 0 rlineto
+    0 th neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+  % stk: ct rt lt
+  x v get y v get th sub 1 add moveto
+%%IncludeResource: font Helvetica
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  % 3. The left title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    fnfs 0.8 mul hm rmoveto
+    show			% left title
+  grestore
+  exch
+  % stk: ct ltw rt
+  % 4. the right title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    dup
+    pw exch stringwidth pop fnfs 0.8 mul add sub
+    hm
+    rmoveto
+    show			% right title
+  grestore
+  % stk: ct ltw rtw
+  % 5. the center title
+  gsave
+    pw 3 1 roll
+    % stk: ct pw ltw rtw
+    3 copy 
+    % Move to the center of the left room
+    sub add 2 div hm rmoveto
+    % What is the available space in here?
+    add sub fnfs 0.8 mul sub fnfs 0.8 mul sub
+    % stk: ct space_left
+%%IncludeResource: font Helvetica-Bold
+  fHelvetica-Bold fnfs scalefont setfont
+    cfshow
+  grestore
+} bind def
+
+% Function border: prints virtual page border
+/border { %def
+  gsave				% print four sides
+    0 setgray
+    x v get y v get moveto
+    0.7 setlinewidth		% of the square
+    pw 0 rlineto
+    0 ph neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+} bind def
+
+% Function water: prints a water mark in background
+/water { %def
+  gsave
+    scx scy moveto rotate
+%%IncludeResource: font Times-Bold
+  fTimes-Bold 100 scalefont setfont
+    .97 setgray
+    dup stringwidth pop 2 div neg -50 rmoveto
+    show
+  grestore
+} bind def
+
+% Function rhead: prints the right header
+/rhead {  %def
+  lx ly moveto
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  l-show
+} bind def
+
+% Function footer (cf rf lf -> -)
+/footer {
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  dx dy moveto
+  show
+
+  snx sny moveto
+  l-show
+  
+  fnx fny moveto
+  c-show
+} bind def
+%%EndResource
+%%BeginResource: procset a2ps-black+white-Prolog 2.0 1
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T { 
+  cw mul x0 add y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n { %def
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+}  bind def
+
+/S {
+  Show
+} bind def
+
+/p {
+  false UL
+  false BX
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/sy {
+  false UL
+  false BX
+  fSymbol bfs scalefont setfont
+  Show
+} bind def
+
+/k {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/K {
+  false UL
+  false BX
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/c {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/C {
+  false UL
+  false BX
+  fCourier-BoldOblique bfs scalefont setfont
+  Show 
+} bind def
+
+/l {
+  false UL
+  false BX
+  fHelvetica bfs scalefont setfont
+  Show
+} bind def
+
+/L {
+  false UL
+  false BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show 
+} bind def
+
+/str{
+  false UL
+  false BX
+  fTimes-Roman bfs scalefont setfont
+  Show
+} bind def
+
+/e{
+  false UL
+  true BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show
+} bind def
+
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier
+%%IncludeResource: font Courier-Oblique
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Symbol
+%%IncludeResource: font Courier-BoldOblique
+%%BeginResource: encoding ISO-8859-1Encoding
+/ISO-8859-1Encoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright 
+/parenleft /parenright /asterisk /plus /comma /minus /period /slash 
+/zero /one /two /three /four /five /six /seven 
+/eight /nine /colon /semicolon /less /equal /greater /question 
+/at /A /B /C /D /E /F /G 
+/H /I /J /K /L /M /N /O 
+/P /Q /R /S /T /U /V /W 
+/X /Y /Z /bracketleft /backslash /bracketright /asciicircum /underscore 
+/quoteleft /a /b /c /d /e /f /g 
+/h /i /j /k /l /m /n /o 
+/p /q /r /s /t /u /v /w 
+/x /y /z /braceleft /bar /braceright /asciitilde /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclamdown /cent /sterling /currency /yen /brokenbar /section 
+/dieresis /copyright /ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron 
+/degree /plusminus /twosuperior /threesuperior /acute /mu /paragraph /bullet 
+/cedilla /dotlessi /ordmasculine /guillemotright /onequarter /onehalf /threequarters /questiondown 
+/Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla 
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis 
+/Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply 
+/Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls 
+/agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla 
+/egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis 
+/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide 
+/oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis 
+] def
+%%EndResource
+% Initialize page description variables.
+/sh 595 def
+/sw 842 def
+/llx 24 def
+/urx 818 def
+/ury 571 def
+/lly 24 def
+/#copies 1 def
+/th 20.000000 def
+/fnfs 15 def
+/bfs 9.921104 def
+/cw 5.952663 def
+
+% Dictionary for ISO-8859-1 support
+/latin1dict 8 dict begin
+  /fCourier ISO-8859-1Encoding /Courier reencode_font
+  /fCourier-Bold ISO-8859-1Encoding /Courier-Bold reencode_font
+  /fCourier-BoldOblique ISO-8859-1Encoding /Courier-BoldOblique reencode_font
+  /fCourier-Oblique ISO-8859-1Encoding /Courier-Oblique reencode_font
+  /fHelvetica ISO-8859-1Encoding /Helvetica reencode_font
+  /fHelvetica-Bold ISO-8859-1Encoding /Helvetica-Bold reencode_font
+  /fTimes-Bold ISO-8859-1Encoding /Times-Bold reencode_font
+  /fTimes-Roman ISO-8859-1Encoding /Times-Roman reencode_font
+currentdict end def
+/bgcolor [ 0 0 0 ] def
+/bg false def
+/ul false def
+/bx false def
+% The font for line numbering
+/f# /Helvetica findfont bfs .6 mul scalefont def
+/fSymbol /Symbol findfont def
+/hm fnfs 0.25 mul def
+/pw
+   cw 132.400000 mul
+def
+/ph
+   502.999995 th add
+def
+/pmw 0 def
+/pmh 0 def
+/v 0 def
+/x [
+  0
+] def
+/y [
+  pmh ph add 0 mul ph add
+] def
+/scx sw 2 div def
+/scy sh 2 div def
+/snx urx def
+/sny lly 2 add def
+/dx llx def
+/dy sny def
+/fnx scx def
+/fny dy def
+/lx snx def
+/ly ury fnfs 0.8 mul sub def
+/sx 0 def
+/tab 8 def
+/x0 0 def
+/y0 0 def
+%%EndSetup
+
+%%Page: (1) 1
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(/*) c n
+( * README: Portions of this file are merged at file generation) N
+( * time. Edits can be made *only* in between specified code blocks, look) N
+( * for keywords <Begin user code> and <End user code>.) N
+( */) N
+(/*) N
+( * Generated by the ICS Builder Xcessory \(BX\).) N
+( *) N
+( * Builder Xcessory 4.0) N
+( * Code Generator Xcessory 2.0 \(09/09/96\)) N
+( *) N
+( */) N
+(/*) N
+( * Motif required Headers) N
+( */) N
+(#include) K
+( <X11/StringDefs.h>) p n
+(#include) K
+( <Xm/Xm.h>) p n
+(#include) K
+( <Xm/DialogS.h>) p n
+(#if) K
+( \(XmVersion >= 1002\)) p n
+(#include) K
+( <Xm/RepType.h>) p n
+(#endif) K n
+(#include) S
+( <Xm/MwmUtil.h>) p n
+() N
+(/*) c n
+( * Globally included information.) N
+( */) N
+(#include) K
+( ") p
+(defs.h) str
+(") p n
+(#include) K
+( ") p
+(w_defs.h) str
+(") p n
+() N
+(/*) c n
+( * Headers for classes used in this program) N
+( */) N
+() p n
+(/*) c n
+( * Common constant and pixmap declarations.) N
+( */) N
+(#include) K
+( ") p
+(creation-c.h) str
+(") p n
+() N
+(/*) c n
+( * Convenience functions from utilities file.) N
+( */) N
+(extern) K
+( ) p
+(void) k
+( RegisterBxConverters\(\);) p n
+(extern) K
+( XtPointer CONVERT\(\);) p n
+(extern) K
+( XtPointer DOUBLE\(\);) p n
+(extern) K
+( XtPointer SINGLE\(\);) p n
+(extern) K
+( ) p
+(void) k
+( MENU_POST\(\);) p n
+(extern) K
+( Pixmap XPM_PIXMAP\(\);) p n
+(extern) K
+( ) p
+(void) k
+( SET_BACKGROUND_COLOR\(\);) p n
+() N
+(/*) c n
+(main-c.c) (Page 1/7) (Jun 08, 99 14:34) title
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(main-c.c) (1/7) (Thursday June 10, 1999) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (2) 2
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+( * Declarations for timer procs.) c n
+( */) N
+(void) k
+( save_crash\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+(void) k
+( display_error\(\);) p n
+() N
+(/* Begin user code block <globals> */) c n
+() p n
+(Widget sin_buttons[20];) N
+() N
+(/* End user code block <globals> */) c n
+() p n
+(/*) c n
+( * Change this line via the Output Application Names Dialog.) N
+( */) N
+(#define) K
+( BX_APP_CLASS ") p
+(BuilderProduct) str
+(") p n
+() N
+(int) k
+( main\(argc, argv\)) p n
+( ) S
+(int) k
+( argc;) p n
+( ) S
+(char) k
+( **argv;) p n
+({) N
+(    Widget       parent;) N
+(    XtAppContext app;) N
+(    Arg          args[256];) N
+(    Cardinal     ac;) N
+(    Boolean      argok=False;) N
+(    Widget   bulletinBoard2;) N
+(    Widget   bulletinBoard6;) N
+(    Widget   bulletinBoard7;) N
+(    Widget   bulletinBoard14;) N
+(    Widget   sinottico;) N
+(    ) N
+(    ) S
+(/* Begin user code block <declarations> */) c n
+(    ) p
+(/* End user code block <declarations> */) c n
+(    ) p n
+(    ) S
+(/*) c n
+(     * The applicationShell is created as an unrealized) N
+(     * parent for multiple topLevelShells.  The topLevelShells) N
+(     * are created as popup children of the applicationShell.) N
+(main-c.c) (Page 2/7) (Jun 08, 99 14:34) title
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(main-c.c) (2/7) (Thursday June 10, 1999) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (3) 3
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(     * This is a recommendation of Paul Asente & Ralph Swick in) c n
+(     * _X_Window_System_Toolkit_ p. 677.) N
+(     */) N
+(    ) p n
+(    parent = XtVaAppInitialize \( &app, BX_APP_CLASS, ) S
+(NULL) K
+(, 0, ) p n
+(#ifndef) K
+( XlibSpecificationRelease) p n
+(    \(Cardinal *\) &argc, ) N
+(#else) K n
+(#if) S
+( \(XlibSpecificationRelease>=5\)) p n
+(    &argc, ) N
+(#else) K n
+(    \(Cardinal *\) &argc, ) p n
+(#endif) K n
+(#endif) N
+(    argv, ) p
+(NULL) K
+(, ) p n
+(    ) S
+(NULL) K
+( \);) p n
+(    ) N
+(    RegisterBxConverters\(app\);) N
+(#if) K
+( \(XmVersion >= 1002\) ) p n
+(    XmRepTypeInstallTearOffModelConverter\(\);) N
+(#endif) K n
+(    ) p n
+(    ) S
+(/* Begin user code block <create_shells> */) c n
+() p n
+(/******************************************************************************/) c n
+(/******************************************************************************/) N
+(/*'''*/) N
+() p n
+() N
+(system\(") S
+(clear) str
+("\);) p n
+() N
+() N
+(if) K
+( \( argc == 2 \)) p n
+() S 8 T ({) N
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(sinot_verbose) str
+(", argv[1]\) == 0\) sinot_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(debug_verbose) str
+(", argv[1]\) == 0\) debug_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(calibr_verbose) str
+(", argv[1]\) == 0\) calibr_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(open_verbose) str
+(", argv[1]\) == 0\) open_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(net_verbose) str
+(", argv[1]\) == 0\) net_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(set_verbose) str
+(", argv[1]\) == 0\) set_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(field_verbose) str
+(", argv[1]\) == 0\) field_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(loop_verbose) str
+(", argv[1]\) == 0\) loop_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(attenuation_verbose) str
+(", argv[1]\) == 0\) loop_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(power_verbose) str
+(", argv[1]\) == 0\) loop_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(phase_verbose) str
+(", argv[1]\) == 0\) phase_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(a_gain_verbose) str
+(", argv[1]\) == 0\) loop_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(f_gain_verbose) str
+(", argv[1]\) == 0\) loop_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(bit_verbose) str
+(", argv[1]\) == 0\) bit_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(auto_verbose) str
+(", argv[1]\) == 0\) auto_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(soft_verbose) str
+(", argv[1]\) == 0\) soft_verbose = 1;) p n
+(main-c.c) (Page 3/7) (Jun 08, 99 14:34) title
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(main-c.c) (3/7) (Thursday June 10, 1999) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (4) 4
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S
+(if) K
+( \(strcmp\(") p
+(chopper_verbose) str
+(", argv[1]\) == 0\) chopper_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(ls_verbose) str
+(", argv[1]\) == 0\) ls_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(config_verbose) str
+(", argv[1]\) == 0\) config_verbose = 1;) p n
+() S 8 T () S
+(if) K
+( \(strcmp\(") p
+(all_verbose) str
+(", argv[1]\) == 0\) ) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T (open_verbose = 1;) N
+() S 8 T () S 16 T (debug_verbose = 1;) N
+() S 8 T () S 16 T (}) N
+(        ) S
+(if) K
+( \(strcmp\(") p
+(rf_verbose) str
+(", argv[1]\) == 0\)) p n
+(                {) N
+() S 8 T () S 16 T (field_verbose = 1;) N
+() S 8 T () S 16 T (power_verbose = 1;) N
+() S 8 T () S 16 T (attenuation_verbose = 1;) N
+() S 8 T () S 16 T (loop_verbose = 1;) N
+() S 8 T () S 16 T (a_gain_verbose = 1;) N
+() S 8 T () S 16 T (f_gain_verbose = 1;) N
+() S 8 T () S 16 T (}) N
+() N
+() S 8 T (}) N
+() N
+(leggiconf\(\);) N
+() N
+(opennetwork\(\); ) N
+() N
+() N
+(prec_sottop_selez = 9999 ;) N
+(prec_selezionato = 9999 ;) N
+() N
+(/******************************************************************************/) c n
+(/******************************************************************************/) N
+() p n
+(    ) S
+(/* End user code block <create_shells> */) c n
+(    ) p n
+(    ) S
+(/*) c n
+(     * Create classes and widgets used in this program. ) N
+(     */) N
+(    ) p n
+(    ) S
+(/* Begin user code block <create_sovrascrivi> */) c n
+(    ) p
+(/* End user code block <create_sovrascrivi> */) c n
+(    ) p n
+(    bulletinBoard18 = \(Widget\)CreatebulletinBoard18\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_tunerinput> */) c n
+(    ) p
+(/* End user code block <create_tunerinput> */) c n
+(    ) p n
+(    bulletinBoard2 = \(Widget\)CreatebulletinBoard2\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_fase> */) c n
+(    ) p
+(/* End user code block <create_fase> */) c n
+(    ) p n
+(main-c.c) (Page 4/7) (Jun 08, 99 14:34) title
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(main-c.c) (4/7) (Thursday June 10, 1999) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (5) 5
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    finestraFG = \(Widget\)CreatefinestraFG\(parent\);) p n
+(    ) N
+(    ) S
+(/* Begin user code block <create_le_phase> */) c n
+(    ) p
+(/* End user code block <create_le_phase> */) c n
+(    ) p n
+(    finestraFH = \(Widget\)CreatefinestraFH\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_chopper> */) c n
+(    ) p
+(/* End user code block <create_chopper> */) c n
+(    ) p n
+(    finestraFF = \(Widget\)CreatefinestraFF\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_buncher> */) c n
+(    ) p
+(/* End user code block <create_buncher> */) c n
+(    ) p n
+(    finestraFD = \(Widget\)CreatefinestraFD\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_postchopper> */) c n
+(    ) p
+(/* End user code block <create_postchopper> */) c n
+(    ) p n
+(    finestraFB = \(Widget\)CreatefinestraFB\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_paginachopper> */) c n
+(    ) p
+(/* End user code block <create_paginachopper> */) c n
+(    ) p n
+(    bulletinBoard11 = \(Widget\)CreatebulletinBoard11\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_maintenance> */) c n
+(    ) p
+(/* End user code block <create_maintenance> */) c n
+(    ) p n
+(    bulletinBoard13 = \(Widget\)CreatebulletinBoard13\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_paginabuncher> */) c n
+(    ) p
+(/* End user code block <create_paginabuncher> */) c n
+(    ) p n
+(    bulletinBoard12 = \(Widget\)CreatebulletinBoard12\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_paginapostchopper> */) c n
+(    ) p
+(/* End user code block <create_paginapostchopper> */) c n
+(    ) p n
+(    bulletinBoard1 = \(Widget\)CreatebulletinBoard1\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_automagico> */) c n
+(    ) p
+(/* End user code block <create_automagico> */) c n
+(    ) p n
+(    bulletinBoard3 = \(Widget\)CreatebulletinBoard3\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_mass_input> */) c n
+(    ) p
+(/* End user code block <create_mass_input> */) c n
+(    ) p n
+(main-c.c) (Page 5/7) (Jun 08, 99 14:34) title
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(main-c.c) (5/7) (Thursday June 10, 1999) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (6) 6
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    bulletinBoard6 = \(Widget\)CreatebulletinBoard6\(parent\);) p n
+(    ) N
+(    ) S
+(/* Begin user code block <create_charge_input> */) c n
+(    ) p
+(/* End user code block <create_charge_input> */) c n
+(    ) p n
+(    bulletinBoard7 = \(Widget\)CreatebulletinBoard7\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_energy_input> */) c n
+(    ) p
+(/* End user code block <create_energy_input> */) c n
+(    ) p n
+(    bulletinBoard14 = \(Widget\)CreatebulletinBoard14\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_errore> */) c n
+(    ) p
+(/* End user code block <create_errore> */) c n
+(    ) p n
+(    bulletinBoard15 = \(Widget\)CreatebulletinBoard15\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_file_selector> */) c n
+(    ) p
+(/* End user code block <create_file_selector> */) c n
+(    ) p n
+(    fileSelectionBox = \(Widget\)CreatefileSelectionBox\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_crash> */) c n
+(    ) p
+(/* End user code block <create_crash> */) c n
+(    ) p n
+(    bulletinBoard23 = \(Widget\)CreatebulletinBoard23\(parent\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <create_sinottico> */) c n
+(    ) p
+(/* End user code block <create_sinottico> */) c n
+(    ) p n
+(    ac = 0;) N
+(    XtSetArg\(args[ac], XmNx, 1248\); ac++;) N
+(    XtSetArg\(args[ac], XmNy, 1778\); ac++;) N
+(    XtSetArg\(args[ac], XmNwidth, 1024\); ac++;) N
+(    XtSetArg\(args[ac], XmNheight, 830\); ac++;) N
+(    sinottico = XtCreatePopupShell\(") S
+(sinottico) str
+(",) p n
+(        topLevelShellWidgetClass,) N
+(        parent,) N
+(        args, ) N
+(        ac\);) N
+(    bulletinBoard = \(Widget\)CreatebulletinBoard\(sinottico\);) N
+(    XtManageChild\(bulletinBoard\);) N
+(    XtPopup\(XtParent\(bulletinBoard\), XtGrabNone\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <app_procedures> */) c n
+(VisualizzaMyPixmap\(bulletinBoard, \(XtPointer\)0, \(XtPointer\)0\);) p n
+() N
+(crash_cbk\(\);) N
+() N
+(strcpy\(file_da_scrivere, ") S
+(parameters/parametri) str
+("\);) p n
+(main-c.c) (Page 6/7) (Jun 08, 99 14:34) title
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(main-c.c) (6/7) (Thursday June 10, 1999) footer
+end % of latin1dict
+pagesave restore
+showpage
+%%Page: (7) 7
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate
+90 rotate
+%%EndPageSetup
+latin1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.166864 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(load_cbk\(\);) p n
+(init_controllers\(\);) N
+(init_pass\(\);) N
+() N
+() N
+(    ) S
+(/* End user code block <app_procedures> */) c n
+(    ) p n
+(    ) S
+(/*) c n
+(     * Timers used by this program.) N
+(     */) N
+(    XtAppAddTimeOut\(app, 30000, save_crash, \(XtPointer\)0\);) p n
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    XtAppAddTimeOut\(app, 1, display_error, \(XtPointer\)0\);) N
+(    ) N
+(    ) S
+(/* Begin user code block <main_loop> */) c n
+(    ) p
+(/* End user code block <main_loop> */) c n
+(    ) p n
+(    XtAppMainLoop\(app\);) N
+(    ) N
+(    ) S
+(/*) c n
+(     * A return value regardless of whether or not the main loop ends. ) N
+(     */) N
+(     ) p
+(return) K
+(\(0\); ) p n
+(}) N
+(main-c.c) (Page 7/7) (Jun 08, 99 14:34) title
+% End of virtual page
+grestore
+(Printed by Andrea Battistella) rhead
+(main-c.c) (7/7) (Thursday June 10, 1999) footer
+end % of latin1dict
+pagesave restore
+showpage
+
+%%Trailer
+end
+%%EOF

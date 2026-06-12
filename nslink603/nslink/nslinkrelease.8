@@ -1,0 +1,85 @@
+.TH "nslinkrelease" "8" "19 August 2009" "(c) Comtrol Corp." "Comtrol"
+.SH "NAME" 
+nslinkrelease \- force a port to be released on a DeviceMaster.
+.PP 
+.SH "SYNOPSIS" 
+.PP 
+\fBnslinkrelease\fP /dev/ttySIXX
+.PP
+\fBnslinkrelease\fP xx:xx:xx:xx:xx:xx [ethX] portnumber
+.PP
+\fBnslinkrelease\fP ipHost portnumber
+.PP 
+.SH "DESCRIPTION" 
+.PP 
+\fBnslinkrelease\fP is a command-line utility used to force an
+in-use port on a DeviceMaster to be released in order to make 
+it available.
+.PP
+\fBnslinkrelease\fP uses one of three methods to force the port
+to be released:
+.IP "\fBnslinkrelease\fP /dev/ttySIXX"
+
+If \fBnslinkrelease\fP is
+invoked with a single parameter, that parameter is assumed to
+be the full path of an nslink device file (e.g. /dev/ttySI0,
+/dev/ttySI23). An ioctl() call will be made on the NS-Link
+driver requesting that an appropriate port-release command be
+sent to the DeviceMaster. The NS-Link driver must be installed 
+and running to use this method.
+.IP "\fBnslinkrelease\fP xx:xx:xx:xx:xx:xx [ethX] portnumber"
+
+If \fBnslinkrelease\fP is invoked with two or three parameters
+and the first parameter is an Ethernet address of the form
+xx:xx:xx:xx:xx:xx, then raw "MAC-mode" Ethernet communications
+will be used to send the port-release command directly to the
+DeviceMaster. The Ethernet interface to be used may be 
+optionally specified. If no Ethernet interface is specified, 
+"eth0" is used. Using this method on a host that is also 
+using the NS-Link driver in MAC mode is not recommended.
+.IP "\fBnslinkrelease\fP ipHost portnumber"
+
+If \fBnslinkrelease\fP is invoked with two parameters and the
+first parameter is not an Ethernet address, then TCP/IP
+communications is used to send the port-release command
+directly to the DeviceMaster. The first parameter may be 
+either a host name or IP address in dotted-quad notation. 
+This method may be used on any host -- including one 
+running the NS-Link driver either in MAC or TCP mode.
+.PP
+\fBnslinkrelease.c\fP is the C source code. For examples of how
+to force a port release see the functions devRelease(),
+macRelease() and tcpRelease(). \fBnslinkrelease.py\fP is the
+same program written in Python (it requires Python 2.0 or
+newer).
+.PP
+.SH "RETURN VALUE"
+.PP
+nslinkrelease will produce no output and return success if the
+DeviceMaster responded as expected. A error (non-zero) exit 
+code can be caused by a number of errors: invalid device 
+specified, wrong IP or Ethernet address, invalid hostname, 
+invalid port number. If there is an error, an error message 
+should be generated on stderr.
+.PP
+NB: If an invalid port number is provided in TCP or Ethernet
+mode, there will be no response from the DeviceMaster, and 
+nslinkrelease will timeout and return an error.
+.PP
+.SH "ENVIRONMENT" 
+.PP 
+\fBnslinkrelease\fP does not use any environment variables.
+.PP
+.SH "SEE ALSO" 
+.PP 
+\fInslinkd\fP(8), \fInslink\fP(8), \fInslinkadmin\fP(8)
+.PP 
+.SH "BUGS" 
+.PP 
+Check the release notes file for an up-to-date list\&.
+.PP 
+.SH "FTP LOCATION"
+.PP 
+ftp://ftp\&.comtrol\&.com/
+
+

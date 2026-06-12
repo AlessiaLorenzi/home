@@ -1,0 +1,9 @@
+xrdb -merge /home/alpi/BUNCHER/work/.Xdefaults
+cd /home/alpi/BUNCHER/work
+./ipcfile
+rm ./ipcfile
+sleep 1
+./start_servers_nuovi
+sleep 1
+cd graphics
+./main-c

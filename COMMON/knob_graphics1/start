@@ -1,0 +1,16 @@
+#
+
+xrdb ./ma_Xdefaults
+
+./start_steerers
+
+./start_servers
+
+../net_st/netm ../net_st/cavenago 2000 &
+
+sleep 2
+
+./alpi alpi1 2000 nerbose &
+
+#alpi  console4 2000 nerbose &
+

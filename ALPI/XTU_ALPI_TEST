@@ -1,0 +1,9 @@
+cd /home/magnets/ALPI
+date >> ./timeout_file
+mv ./timeout_file ./timeouts/timeout_file-`date +%F---%T`
+xrdb -quiet ./ma_Xdefaults
+./START_MA_SERVERS
+./START_ST_SERVERS
+/home/magnets/COMMON/netm/netm /home/magnets/ALPI/definitivo_test 2000 alpi_process &
+sleep 5
+/home/magnets/COMMON/graphics.bck.3/alpi localhost 2000 nerbose alpi_process 

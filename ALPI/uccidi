@@ -1,0 +1,23 @@
+#
+rm ./kill_local
+ps ax |awk '{print $1, $0}'|grep alpi_process|awk '{print "kill ",$1}' > kill_local
+chmod 755  kill_local
+./kill_local >/dev/null
+echo "all processes killed"
+echo "wait 80 seconds before restarting application"
+sleep 10
+echo "wait 70 seconds before restarting application"
+sleep 10
+echo "wait 60 seconds before restarting application"
+sleep 10
+echo "wait 50 seconds before restarting application"
+sleep 10
+echo "wait 40 seconds before restarting application"
+sleep 10
+echo "wait 30 seconds before restarting application"
+sleep 10
+echo "wait 20 seconds before restarting application"
+sleep 10
+echo "wait 10 seconds before restarting application"
+sleep 10
+

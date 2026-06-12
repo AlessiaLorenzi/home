@@ -1,0 +1,7 @@
+
+
+FIRST  TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Thu May 14 07:32:43 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI5 alim = 5 ** ÿ ** Thu May 14 07:32:47 CEST 2015
+SECOND TIMEOUT /dev/ttySI5 alim = 5 ** ÿ ** i = 0 0  Thu May 14 07:32:51 CEST 2015
+SECOND TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Thu May 14 07:32:53 CEST 2015
+Thu May 14 07:34:49 CEST 2015

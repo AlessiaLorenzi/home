@@ -1,0 +1,7 @@
+/home/magnets/alpi_alpimag_RH8/st_server/st_server 3200  > /dev/null &
+sleep 1
+/home/magnets/alpi_alpimag_RH8/st_server/st_server 3201  > /dev/null &
+
+./servers_piave/piave_st_server/st_server 4200  &
+
+./servers_piave/alpi_st_server/st_server 4201  &

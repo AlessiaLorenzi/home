@@ -1,0 +1,7 @@
+../server_per_term_serv/ma_server 3000  &
+sleep 1
+../server_per_term_serv/ma_server 3001  &
+sleep 1
+../server_per_term_serv/ma_server 3002  &
+sleep 1
+echo "3000 3001 3002 in alpi1"

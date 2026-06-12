@@ -1,0 +1,37 @@
+
+
+FIRST  TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Tue May 12 09:52:12 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI5 alim = 5 **  ** Tue May 12 09:52:16 CEST 2015
+SECOND TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Tue May 12 09:52:20 CEST 2015
+SECOND TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Tue May 12 09:52:22 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI4 alim = 9 **  ** i = 0 0  Tue May 12 09:52:25 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI4 alim = 9 **  ** Tue May 12 09:52:29 CEST 2015
+SECOND TIMEOUT /dev/ttySI4 alim = 9 **  ** i = 0 0  Tue May 12 09:52:33 CEST 2015
+SECOND TIMEOUT /dev/ttySI4 alim = 9 **  ** i = 0 0  Tue May 12 09:52:35 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI4 alim = 10 **  ** i = 0 0  Tue May 12 09:52:37 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI4 alim = 10 **  ** Tue May 12 09:52:41 CEST 2015
+SECOND TIMEOUT /dev/ttySI4 alim = 10 **  ** i = 0 0  Tue May 12 09:52:45 CEST 2015
+SECOND TIMEOUT /dev/ttySI4 alim = 10 **  ** i = 0 0  Tue May 12 09:52:47 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI6 alim = 57 **  ** i = 0 0  Tue May 12 09:53:02 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI6 alim = 57 **  ** Tue May 12 09:53:06 CEST 2015
+SECOND TIMEOUT /dev/ttySI6 alim = 57 **  ** i = 0 0  Tue May 12 09:53:10 CEST 2015
+SECOND TIMEOUT /dev/ttySI6 alim = 57 **  ** i = 0 0  Tue May 12 09:53:12 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI6 alim = 58 **  ** i = 0 0  Tue May 12 09:53:14 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI6 alim = 58 **  ** Tue May 12 09:53:18 CEST 2015
+SECOND TIMEOUT /dev/ttySI6 alim = 58 **  ** i = 0 0  Tue May 12 09:53:22 CEST 2015
+SECOND TIMEOUT /dev/ttySI6 alim = 58 **  ** i = 0 0  Tue May 12 09:53:24 CEST 2015
+
+
+FIRST  TIMEOUT /dev/ttySI6 alim = 57 **  ** i = 0 0  Tue May 12 09:54:39 CEST 2015
+A ERRORE INDIRIZZO /dev/ttySI6 alim = 57 **  ** Tue May 12 09:54:43 CEST 2015
+SECOND TIMEOUT /dev/ttySI6 alim = 57 **  ** i = 0 0  Tue May 12 09:54:47 CEST 2015
+SECOND TIMEOUT /dev/ttySI6 alim = 57 **  ** i = 0 0  Tue May 12 09:54:49 CEST 2015
+Thu May 14 07:32:13 CEST 2015

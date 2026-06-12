@@ -1,0 +1,46 @@
+Wed Apr  3 15:54:20 WET DST 1996
+
+- mkc file di comandi che consente lo scaling (totale o parziale)
+      delle correnti sui magneti salvate in un certo file. crea
+      un nuovo file. Usa: "comandi", crea il file temporaneo "vvv"
+      SPOSTATI in "current_scaling": mkc, comandi
+
+- file_to_print: creato da "alpi", il file da stampare
+
+/* tipo pagine magneti ===>>>
+ -1: nulla
+  1: 1 alimentatore S8000 (es. dipolo ID1) - obj2.alim1
+  2: 2 alimentatori S8000 con steerer      - obj2.alim1 e obj2.alim2
+  3: 3 alimentatori S8000                  - obj1.alim1, obj2.alim1, obj3.alim1
+  4: 2 alimentatori S8000 senza steerer    - obj2.alim1 e obj2.alim2
+5,6: non usate (come 3) 
+  7: solo 1 alim. steerer
+  8: solo 2 alim. steerer */
+
+Wed Jul  3 13:42:05 WET DST 1996
+1) eseguita pulizia di main.c e alpi_vars.h (eliminate
+le vars non usate)
+
+Fri Jul  5 11:05:19 WET DST 1996
+1) eliminati i pulsanti rf, helium, vacuum dalla alpi-page (obsoleti)
+2) fatto in modo che dopo i comandi zero-current, remote e load FILE
+si aggiorni anche la pagina magnete eventualmente aperta.
+3) fatto in modo che si possa sovrascrivere un file di SETTINGS gia'
+esistente (fa' beep, ma esegue)
+4) il refresh (pulsante alarm) del sinottico ora parte da solo
+5) il refresh (pulsante REFRESH ON) della pagina magnete
+ora parte da solo
+
+Mon Jul  8 15:59:01 WET DST 1996
+tentato di ottimizzare (per l'esecuzione) il codice di alarm.c,
+modificando la sequenza e le modalita' dei tests.
+
+Thu Jul 11 11:31:48 WET DST 1996
+cambiato le modalita' di aggiornamento della pagina di power
+supply danphisyk, migliorato un po' la forma del codice
+(eliminando inutili ripetizioni), forse ora e' piu' veloce;
+file modificato: timeout.c
+
+VERSIONE ORA CONGELATA, COMPATIBILE CON I MAGNETI ALPI, ALPI-TANDEM,
+ALPI-3RD_HALL ...
+

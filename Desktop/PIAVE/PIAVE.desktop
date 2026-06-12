@@ -1,0 +1,14 @@
+
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=No name
+Type=Application
+Exec=/home/alpi/PIAVE/MAGSTART
+TryExec=
+Icon=/home/alpi/BITMAPS/piave.png
+X-GNOME-DocPath=
+Terminal=true
+Name[en_US]=PIAVE
+GenericName[en_US]=
+Comment[en_US]=

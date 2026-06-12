@@ -1,0 +1,5 @@
+/home/alpi/COMMON/MRoetta/st_server/dist/Debug/GNU-Linux-x86/st_server 3200  alpi_process   &
+sleep 1
+/home/alpi/COMMON/MRoetta/st_server/dist/Debug/GNU-Linux-x86/st_server 3201  alpi_process   &
+sleep 1
+

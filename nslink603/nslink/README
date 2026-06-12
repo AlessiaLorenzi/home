@@ -1,0 +1,467 @@
+Comtrol NS-Link(TM) Driver for Linux(R)
+Driver Assembly Part Number: 1800026
+
+[NOTE]
+
+Version 5.23 and later of driver assembly (4.25 and later of the
+driver module itself) are not compatible with 2.4 kernels or with 2.6
+kernels prior to 2.6.16.  A fix for this is being worked on.
+
+[NOTE]
+
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+PRODUCT OVERVIEW
+----------------
+This driver provides a loadable kernel driver for the Comtrol
+DeviceMaster families, which are virtual remote access servers
+providing up to 32 serial ports per DeviceMaster via Ethernet. 
+This device driver supports up to 256 total serial ports.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+SYSTEM REQUIREMENTS
+-------------------
+The driver requires Linux kernel version 2.4 or 2.6. 
+
+In order to build the driver, the kernel sources (or just the headers)
+are required. These are located by the driver using a symlink, which
+points to the base of the kernel source tree. By convention, this
+symlink is /lib/modules/<kernel version>/build, which is created by all
+major Linux distribution, RPM installs or by running make dep on the
+source. This symlink must point to the same kernel source version as
+is running on the machine.
+
+If a build symlink is not found, the driver will search for a symlink 
+named /usr/src/linux pointing to the source tree. Users who have no 
+build symlink can create this in order to build the driver.
+
+For example, if the kernel version (uname -r) is 2.4.20, and the source
+is installed in /usr/src/linux-2.4.20, the alternative symlink can be
+created by:
+    cd /usr/src
+    ln -s /usr/src/linux-2.4.20 linux
+
+The nslinktool(8) GUI administration tool requires Python 1.52 or 
+later and Tkinter.
+
+The nslinkadmin(8) program requires a kernel that supports the raw 
+packet interface to the Ethernet device. This may either be compiled 
+into the kernel or loaded as kernel module af_packet.
+
+The nslinkrelease.py program requires Python 2.0 or later.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+DRIVER USAGE
+------------
+The NS-Link driver implements a low-level serial device that runs 
+underneath the same tty line discipline layer as do other serial devices.
+That means that a DeviceMaster (/dev/ttySIxx) is used almost 
+identically to any other serial port. See nslink(8) for more details.
+
+When configured, the DeviceMaster ports are accessible as Linux serial
+devices with /dev/ttySI0 through /dev/ttySI31 (depending on the model) 
+as the port names. If you have multiple devices installed, the mapping 
+of port names to serial ports displays in /proc/drivers/nslink/status.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+IP OR MAC ADDRESSING ISSUES
+---------------------------
+IP and MAC addressing issues may affect how you configure the DeviceMaster
+with a brief discussion of advantages of either method.
+
+The IP addressing scheme has the following advantages:
+
+*  Uses an industry standard protocol.
+
+*  Allows you to configure systems to use ports on the DeviceMaster that 
+   are outside of the host system's Ethernet segment. 
+   
+   NOTE: This IP address must be a unique reserved IP address, do not 
+         use an address from a dynamic address pool. If necessary, see 
+         the system administrator for an IP address.
+
+The MAC addressing method has the following advantages:
+
+*  Simplifies implementation and ongoing support by eliminating the 
+   address administration issues inherent in network protocols. MAC 
+   addresses are predefined by Comtrol and there is no potential for 
+   an "address conflict" at setup. 
+
+*  It is isolated from foreign LAN segments minimizing potential 
+   security issues.
+
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Configuration Overview
+----------------------
+If the DeviceMaster is on the same LAN segment as the Linux server is 
+on, then you can use either IP or MAC addressing. The network interface 
+is normally eth0, unless you have multiple Ethernet cards. If you have 
+multiple Ethernet cards, you should set the interface which is servicing 
+the Ethernet LAN to be the same as where the DeviceMaster resides.
+
+If the DeviceMaster is on the same LAN segment as the Linux server, you 
+can optionally use MAC addressing. During configuration use the 
+DeviceMaster's hardware address, the server's Ethernet interface, and 
+the number of ports available on this unit. 
+
+The MAC address is on a label on the DeviceMaster and has this format: 
+00:C0:4E:##:##:##.
+
+If the DeviceMaster is on a different LAN segment than the Linux server, 
+then you must use IP addressing. During configuration use the 
+DeviceMaster's IP address and the number of ports available on the 
+DeviceMaster. The DeviceMaster gets its IP address through the network's 
+DHCP server or with static configuration.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+PORT SHARING
+------------
+The DeviceMaster can be shared with multiple systems on a network. To 
+do so, follow INSTALLATION PROCEDURES for each system that you want to 
+permit access to the serial ports.
+
+You can implement the port sharing feature in several ways. You can 
+share the same port with multiple systems or you can set up multiple 
+systems to share specific ports on the DeviceMaster.
+
+NOTE: Most applications do not release ports, so you may not be able 
+      to use port sharing across multiple systems with the same port. 
+      Also, if using port sharing, make sure that two computers do 
+      not try to access the same port at the same time. Only one 
+      computer can control a given port at a given time.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+Daisy-Chaining DeviceMaster Units (Upstream and Downstream Ports)
+-----------------------------------------------------------------
+Some DeviceMaster models follow the IEEE specifications for standard 
+Ethernet topologies. When using the UP and DOWN ports, the DeviceMaster 
+is classified as a switch. When using the UP port only, it is a simple 
+end node device.
+
+The maximum number of DeviceMaster units, and the maximum distance 
+between units is based on the Ethernet standards and will be determined 
+by your own environment and the conformity of your network to these 
+standards. 
+
+Comtrol has tested with seven DeviceMaster units daisy-chained 
+together using 10 foot CAT5 cables, but this is not the theoretical 
+limit. You may experience a performance hit on the devices at the 
+end of the chain, so it is recommended that you overload and test 
+for performance in your environment. The OS and the application may 
+also limit the total number of ports that may be installed.
+Following are some quick guidelines and URLs of additional information.
+Please note that standards and URLs do change.
+
+*  Ethernet 10BASE-T Rules
+   -  The maximum number of repeater hops is four.
+   -  You can use Category 3 or 5 twisted-pair 10BASE-T cables. 
+   -  The maximum length of each cable is 100m (328ft).
+   Note: Category 3 or 5 twisted pair cables look the same as 
+         telephone cables but they are not the same. The network 
+         will not work if telephone cables are used to connect the 
+         equipment.
+
+*  Fast Ethernet 100BASE-TX rules
+   -  The maximum number of repeater hops is two (for a Class II 
+      hub). A Class II hub can be connected directly to one other 
+      Class II Fast Ethernet hub. A Class I hub cannot be connected 
+      directly to another Fast Ethernet hub.
+   -  You must use Category 5 twisted-pair 100BASE-TX cables. 
+   -  The maximum length of each twisted-pair cable is 100m (328ft). 
+   -  The total length of twisted-pair cabling (across directly 
+      connected hubs) must not exceed 205m (672ft).
+   -  Category 5 twisted pair cables look the same as telephone 
+      cables but they are not the same. The network will not work 
+      if telephone cables are used to connect the equipment.
+
+*  IEEE 802.3 specification: A network using repeaters between 
+   communicating stations (PCs) is subject to the "5-4-3" rule of 
+   repeater placement on the network:
+   -  Five segments connected on the network.
+   -  Four repeaters.
+   -  Three segments of the 5 segments can have stations connected. 
+      The other two segments must be inter-repeater link segments 
+      with no stations connected. 
+
+      See http://www.optronics.gr/Tutorials/ethernet.htm for more 
+      specific information.
+
+      Additional information may be found at 
+      http://compnetworking.about.com/cs/ethernet1/ or by 
+      searching the web.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+INSTALLATION PROCEDURES
+-----------------------
+For detailed hardware installation procedures, see the DeviceMaster
+documentation for your model.
+
+NOTE: If the Status or Power LED is lit on the DeviceMaster, it 
+      indicates that the DeviceMaster has power and it has completed 
+      the boot cycle. 
+
+      The Status or Power LED flashes while booting and it takes 
+      approximately 15 seconds for the bootloader to complete the boot 
+      cycle.
+
+Connect each DeviceMaster to your network. The DeviceMaster may be on 
+the same local LAN as the Linux box which you wish to use to control 
+the DeviceMaster or the traffic may be routed using normal IP routing 
+methods.
+
+1.  Copy the tar file to a build directory (e.g. /usr/src)
+
+        cp [devicemaster-filename.tgz] /usr/src
+
+2.  Untar the file using GNU tar:
+
+		cd /usr/src
+		tar xzvf [devicemaster-filename.tar.gz]
+
+3.  The tar command unpacks the driver source into an nslink
+    subdirectory that contains the NS-Link driver and associated 
+    files. Change directories into this directory:
+
+		cd nslink
+
+4.  Compile the NS-Link driver (must be root):
+
+		make clean
+		make
+
+    If there is an error message about not being able to find
+    the include file <net/tcp.h>, then kernel sources are not
+    being found. Kernel sources are expected to be located at
+    either /usr/src/linux or /usr/src/linux-<version>.
+
+5.  Install the NS-Link driver (must be root):
+
+		make install
+
+6.  You will need to edit the /etc/nslink.conf file to reflect
+    the boot file, network addressing method, and port modes.
+    Network addressing is either a MAC address or an IP address.
+
+    This may be done with any text editor or with the
+    nslinktool(8) administration program. For the format of the
+    configuration file see the nslink.conf(5) man page.
+
+    If the DeviceMaster is on the same local LAN that this Linux server
+    is, then you may use MAC addressing. To do so, provide the
+    DeviceMaster's hardware address (MAC), the server's Ethernet 
+    interface, and the number of ports available on this DeviceMaster.
+    The Ethernet hardware address may be found on the back or side 
+    of the DeviceMaster, and will look like this: 00:C0:4E:06:00:4F. 
+    The network interface is normally eth0, unless you have
+    multiple Ethernet cards, in which case you should set the
+    interface which is servicing the Ethernet LAN on which the
+    NS-Link driver resides.
+
+    MAC Address Example:
+    This example illustrates configuring a 4-Port device to use MAC 
+    addressing. Ports 1 and 2 are configured to use RS-232 and Ports 3 
+    and 4 are configured to use RS-485.
+
+       # /etc/nslink.conf --- configuration file for NS-Link
+       # Ethernet MAC address interface number of ports (2/4/8/16)
+       00:C0:4E:07:FF:F0 eth0 4
+       # Port Number (1-8) RsMode (232,422,485, or Off)
+       1  232
+       2  232
+       3  485
+       4  485
+
+    If you need to route traffic between the Linux server and
+    the DeviceMaster then you must use IP addressing and provide the
+    DeviceMaster's IP address and the number of ports available on 
+    the DeviceMaster. The DeviceMaster gets its IP address through 
+    the network's DHCP server or from static configuration.
+
+    There is several ways to configure static addresses:
+
+    *  telnet to the DeviceMaster while the bootloader is active and 
+       use the command line interface to set the IP address. 
+       See the DeviceMaster documentation for details.
+
+    *  nslinkadmin (command line) - see nslinkadmin(8)
+
+    *  nslinktool (X11 GUI) - see nslinktool(8)
+
+    Most DeviceMaster models have selectable modes (RS-232, RS-422, or
+    RS-485). For each DeviceMaster configured you have 
+    to define the modes for each ports. This section has to 
+    immediately follow the addressing line. Define the mode 
+    for each port, even if you are only using some of the ports. 
+    It is recommended that you remove any hardware from the 
+    DeviceMaster's ports before changing the mode.
+
+    IP Programming Example:
+    This example illustrates configuring a 4-Port device to use IP 
+    addressing. Ports 1 and 2 are configured to use RS-232 and Ports 3 
+    and 4 are configured to use RS-485.
+
+       # /etc/nslink.conf --- configuration file for NS-Link
+       # IP address interface number of ports (2/4/8/16)
+       192.168.1.13 4
+       # Port Number (1-8) RsMode (232,422,485, or Off)
+       1  232
+       2  232
+       3  485
+       4  485
+
+7.  If you are using a non-RedHat or Debian system, you will
+    need to edit your boot scripts to properly run the
+    NS-Link setup script.
+
+8.  You may reboot the system to start and reload the NS-Link
+    drivers. If you do not wish to reboot your machine, you may
+    also use the following command to start using the NS-Link
+    devices immediately:
+
+      /etc/rc.d/init.d/nslink start
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Port Configuration Examples
+---------------------------
+
+  File Transfer
+  -------------
+  You can transfer a file using the following information. The default 
+  settings are 9600, 8, n, 1.
+
+  To send a file you can redirect output to a device; for example: 
+     Cat /etc/inittab > /dev/ttySI0
+
+  Sends the contents of the /etc/inittab file to the ttySI0 device at 
+  9600 baud, 8, n, 1.
+
+  Changing Serial Port Settings (stty)
+  ------------------------------------
+  Use the following if you need help changing or viewing the baud 
+  rate settings.
+
+  To change the baud rate, use the following example, which changes 
+  the baud rate to 19200:
+     stty 19200 </dev/ttySI0
+
+  To view the current serial port settings for ttySI0, enter:
+     stty -a </dev/ttySI0
+
+  Note: Settings changes via stty are only valid during current 
+        log in session. For permanent setting changes, use the 
+        /etc/inittab file.
+
+  Setting Up Terminals and Modems(mgetty, getty)
+  ----------------------------------------------
+  Add the appropriate line or lines to the /etc/inittab then restart:
+
+  Terminal Example:
+     T0:23:respawn:/sbin/getty -L ttySI0 57600 vt100
+
+  Modem Example:
+     T1:23:respawn:+/sbin/mgetty -m '"" AT&F OK' -D -x9 -s 115200 ttySI0
+
+  Note: If necessary, see the manual pages for more information on 
+        mgetty.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+HOTPLUG AND LINUX KERNEL VERSION 2.6
+------------------------------------
+Linux Kernel version 2.6 includes a hotplug feature. When the NS-Link
+driver is loaded and the hotplug feature is enabled, a tty.agent script
+will be started for each of the 256 possible serial ports. This loads
+down some systems so much that the Linux system will appear to have 
+lockedup. Also, the syslog will contain one line for each of these 
+256 ports.
+
+The tty.agent can be disabled by modifying the "/etc/sysconfig/hotplug" 
+file so that the "tty" events will be skipped. The following line shows  
+the variable to be modified.
+
+      HOTPLUG_SKIP_EVENTS="tty"
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+TROUBLESHOOTING
+---------------
+If you are having trouble with the DeviceMaster, try the following.
+
+NOTE: Most customer problems reported to Comtrol Technical Support are 
+      eventually traced to cabling or network problems. See 
+      http://www.comtrol.com/support/ to locate DeviceMaster 
+      documentation.
+
+1.  Verify that you are using the correct types of cables in the correct 
+    places and that all cables are connected securely.
+
+2.  Reboot the server.
+
+3.  Verify that the Ethernet hub and any other network devices between 
+    the server and unit are powered up and operating.
+
+4.  Isolate the unit from the network. See http://www.comtrol.com/
+    support/ to locate DeviceMaster documentation. 
+
+5.  Use minicom to test the serial ports. Make sure that you configure 
+    the serial ports in the minicom setup. 
+    For example, A - Serial Device: /dev/ttySI0.
+
+6.  Verify that the unit is powered on. 
+
+7.  Verify that the network (MAC) address in the driver matches the MAC
+    address on the DeviceMaster.
+
+8.  Verify that the network IP address is what the DeviceMaster 
+    acquired from the DHCP server or was manually entered. If you are 
+    using IP addressing, the server should be able to ping the 
+    DeviceMaster.
+
+9.  If you have a spare unit, try replacing the unit. If this corrects 
+    the problem, the DeviceMaster that you have removed from service may 
+    be defective or in need of repair.
+
+10. Remove and reinstall the driver.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+TECHNICAL SUPPORT
+-----------------
+When reporting problems where your system crashes, please send:
+*  The stack trace printed by the kernel (if any)
+*  /tmp/nslink.map.old (if the system has since been rebooted)
+*  /tmp/nslink.map (if the system hasn't been rebooted after the kernel
+   stack dump)
+*  Distribution and version number
+*  Kernel version, using uname -a
+
+The idea here is for you to send the /tmp/nslink.map file at the 
+time of the crash, so we can interpret the stack trace and see what 
+part of the driver may have caused your system to crash. If the system 
+loads NS-Link driver at boot, the NS-Link rc script will move the old 
+nslink.map file to nslink.map.old.) 
+
+Phone:     763.494.4100
+Web:       http://www.comtrol.com/
+FAQ/forum: http://forum.comtrol.com/
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Document number: 8000168 v5.02
+

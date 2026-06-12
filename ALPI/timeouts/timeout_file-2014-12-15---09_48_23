@@ -1,0 +1,79 @@
+
+
+FIRST  TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Mon Dec 15 09:33:32 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI5 alim = 5 **  ** Mon Dec 15 09:33:36 CET 2014
+SECOND TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Mon Dec 15 09:33:40 CET 2014
+SECOND TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Mon Dec 15 09:33:42 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI4 alim = 6 **  ** i = 0 0  Mon Dec 15 09:33:44 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI4 alim = 6 **  ** Mon Dec 15 09:33:48 CET 2014
+SECOND TIMEOUT /dev/ttySI4 alim = 6 **  ** i = 0 0  Mon Dec 15 09:33:52 CET 2014
+SECOND TIMEOUT /dev/ttySI4 alim = 6 **  ** i = 0 0  Mon Dec 15 09:33:54 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI4 alim = 7 **  ** i = 0 0  Mon Dec 15 09:33:56 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI4 alim = 7 **  ** Mon Dec 15 09:34:00 CET 2014
+SECOND TIMEOUT /dev/ttySI4 alim = 7 **  ** i = 0 0  Mon Dec 15 09:34:04 CET 2014
+SECOND TIMEOUT /dev/ttySI4 alim = 7 **  ** i = 0 0  Mon Dec 15 09:34:06 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI4 alim = 9 **  ** i = 0 0  Mon Dec 15 09:34:08 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI4 alim = 9 **  ** Mon Dec 15 09:34:12 CET 2014
+SECOND TIMEOUT /dev/ttySI4 alim = 9 **  ** i = 0 0  Mon Dec 15 09:34:16 CET 2014
+SECOND TIMEOUT /dev/ttySI4 alim = 9 **  ** i = 0 0  Mon Dec 15 09:34:18 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI4 alim = 10 **  ** i = 0 0  Mon Dec 15 09:34:20 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI4 alim = 10 **  ** Mon Dec 15 09:34:24 CET 2014
+SECOND TIMEOUT /dev/ttySI4 alim = 10 **  ** i = 0 0  Mon Dec 15 09:34:28 CET 2014
+SECOND TIMEOUT /dev/ttySI4 alim = 10 **  ** i = 0 0  Mon Dec 15 09:34:30 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI7 alim = 60 **  ** i = 0 0  Mon Dec 15 09:34:47 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI7 alim = 60 **  ** Mon Dec 15 09:34:51 CET 2014
+SECOND TIMEOUT /dev/ttySI7 alim = 60 **  ** i = 0 0  Mon Dec 15 09:34:55 CET 2014
+SECOND TIMEOUT /dev/ttySI7 alim = 60 **  ** i = 0 0  Mon Dec 15 09:34:57 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI7 alim = 61 **  ** i = 0 0  Mon Dec 15 09:34:59 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI7 alim = 61 **  ** Mon Dec 15 09:35:03 CET 2014
+SECOND TIMEOUT /dev/ttySI7 alim = 61 **  ** i = 0 0  Mon Dec 15 09:35:07 CET 2014
+SECOND TIMEOUT /dev/ttySI7 alim = 61 **  ** i = 0 0  Mon Dec 15 09:35:09 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI8 alim = 62 **  ** i = 0 0  Mon Dec 15 09:35:11 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI8 alim = 62 **  ** Mon Dec 15 09:35:15 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 62 **  ** i = 0 0  Mon Dec 15 09:35:19 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 62 **  ** i = 0 0  Mon Dec 15 09:35:21 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI8 alim = 63 **  ** i = 0 0  Mon Dec 15 09:35:23 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI8 alim = 63 **  ** Mon Dec 15 09:35:27 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 63 **  ** i = 0 0  Mon Dec 15 09:35:31 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 63 **  ** i = 0 0  Mon Dec 15 09:35:33 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI8 alim = 64 **  ** i = 0 0  Mon Dec 15 09:35:35 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI8 alim = 64 **  ** Mon Dec 15 09:35:39 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 64 **  ** i = 0 0  Mon Dec 15 09:35:43 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 64 **  ** i = 0 0  Mon Dec 15 09:35:45 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI8 alim = 65 **  ** i = 0 0  Mon Dec 15 09:35:47 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI8 alim = 65 **  ** Mon Dec 15 09:35:51 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 65 **  ** i = 0 0  Mon Dec 15 09:35:55 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 65 **  ** i = 0 0  Mon Dec 15 09:35:57 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI8 alim = 67 **  ** i = 0 0  Mon Dec 15 09:35:59 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI8 alim = 67 **  ** Mon Dec 15 09:36:03 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 67 **  ** i = 0 0  Mon Dec 15 09:36:07 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 67 **  ** i = 0 0  Mon Dec 15 09:36:09 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI8 alim = 68 **  ** i = 0 0  Mon Dec 15 09:36:11 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI8 alim = 68 **  ** Mon Dec 15 09:36:16 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 68 **  ** i = 0 0  Mon Dec 15 09:36:20 CET 2014
+SECOND TIMEOUT /dev/ttySI8 alim = 68 **  ** i = 0 0  Mon Dec 15 09:36:22 CET 2014
+Mon Dec 15 09:48:23 CET 2014

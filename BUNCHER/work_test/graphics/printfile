@@ -1,0 +1,70 @@
+Fri Nov 13 16:02:50 CET 2009
+================================+==============================================
+
+                          postchopper1
+
+                          phase = 210
+                          ampl. (V): 2170
+                          loop ph. :  136
+                          power :   24
+                          ampl gain :   24
+                          phase gain :    4
+
+================================+==============================================
+
+                          postchopper2
+
+                          phase = 122
+                          ampl. (V): 2170
+                          loop ph. :   46
+                          power :    6
+                          ampl gain :    3
+                          phase gain :    2
+
+================================+==============================================
+
+                          buttafuori
+
+                          phase = 171
+                          ampl. (V): 632
+                          loop ph. :   66
+                          power :   24
+                          ampl gain :   25
+                          phase gain :    1
+
+================================+==============================================
+
+                             buncher
+
+          valore medio = 0.0000       delta = 0.0000
+          lunghezza tubi : LONG       fase =  169
+
+      ampl. (V): 1100                                   ampl. (V): 510
+      loop ph. :  236                                   loop ph. :   18
+      power :   31                                      power :   32
+      atten. (dB): -2                                   atten. (dB): -4
+      ampl gain :   11                                  ampl gain :   12
+      phase gain :    3                                 phase gain :   10
+
+================================+==============================================
+
+                             chopper
+
+     chopper:OFF                                       chopper:INT
+         5/2^ 6    period = 12.80 us     fast pulsing
+     multiplate delay   32                                 pulse width  126
+
+================================+==============================================
+
+                         low energy phase
+
+    reference signal : INTERNAL                 phase stabilization : ON
+                                   selected device : 
+      phase gain :   48                                 general phase :  200
+
+================================+==============================================
+
+                                   rivelatore di fase
+
+                phase stabilization : ON      
+      reference phase :   15                  phase error attenuation :   55

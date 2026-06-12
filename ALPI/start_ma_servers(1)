@@ -1,0 +1,32 @@
+/home/magnets/piave/ma_server/ma_server 3000  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3001  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3002  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3003  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3004  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3005  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3006  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3007  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3008  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3009  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3010  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3011  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3100  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3101  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3102  &
+sleep 1
+/home/magnets/piave/ma_server/ma_server 3103  &
+sleep 1

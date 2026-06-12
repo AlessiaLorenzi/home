@@ -1,0 +1,5 @@
+sudo ipcrm -m 3670041
+sudo ipcrm -m 3702810
+sudo ipcrm -s 1703950
+sudo ipcrm -s 1736719
+sudo ipcrm -s 1769488

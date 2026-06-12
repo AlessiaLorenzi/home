@@ -1,0 +1,19 @@
+#
+/home/alpi/BUNCHER/work/rf_server/rf_server 6100 /dev/ttySI64 n f &
+sleep 1
+/home/alpi/BUNCHER/work/rf_server/rf_server 6101 /dev/ttySI65 n t &
+sleep 1
+/home/alpi/BUNCHER/work/rf_server/rf_server 6102 /dev/ttySI67 n t &
+sleep 1
+/home/alpi/BUNCHER/work/rf_server/rf_server 6103 /dev/ttySI70 n f &
+sleep 1
+/home/alpi/BUNCHER/work/rf_server/rf_server 6104 /dev/ttySI71 n t &
+sleep 1
+/home/alpi/BUNCHER/work/rf_server/rf_server 6105 /dev/ttySI69 n f &
+sleep 1
+/home/alpi/BUNCHER/work/rf_server/rf_server 6108 /dev/ttySI72 n f &
+sleep 1
+/home/alpi/BUNCHER/work_test/test/mot_server 6200 /dev/ttySI66 n t &
+sleep 1
+/home/alpi/BUNCHER/work_test/test/mot_server 6201 /dev/ttySI68 n f &
+sleep 1

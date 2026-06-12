@@ -1,0 +1,363 @@
+
+#include "server.h"
+#include "server_const.h"
+#include "server_vars.h"
+#include <unistd.h>
+
+#include <sys/types.h>
+#include <sys/time.h>
+
+
+/***********************************************************************
+
+    SERVER DEPENDENT
+    This is the function performing local command execution
+    if ( *mode ) then normal mode, else stub mode
+
+***********************************************************************/
+
+void loop_timeout(alimentatore)
+int alimentatore;
+{
+    extern char myname[ NCHARS ] ;
+    time_t local_time;
+
+    local_time = time((time_t *) 0 );
+    printf( "\n%s timeout occured at %s,  =====   alim = %d\n", myname, ctime(&local_time), alimentatore);
+
+    alim[alimentatore].mode = 0 ;
+    strcpy( device_msg, "STUB" ) ;
+}
+
+
+exec_command( mode, flag_pointer )
+int *mode, *flag_pointer ;
+{
+
+    int i ;
+    char c ;
+
+    extern int verbose, supply_number;
+    extern char client_msg[ BUF_SIZE ], device_msg[ BUF_SIZE ];
+    extern char myname[ NCHARS ] ;
+    extern char *message;
+
+    float valore ;
+    float corrente;
+    float correnteimpostata;
+
+    char to_dev[ BUF_SIZE ] ;
+    char command, answer[ BUF_SIZE ] ;
+
+    char return_string[1000];
+
+    int return_val ;
+    int return_val1 ;
+
+    int ddd;
+
+    fd_set ready, ready1;
+
+    static struct timeval timeout = { (long)3, (long)0 }; /* 3 seconds */
+    static struct timeval timeout1 = { (long)0, (long)0 }; /* 0 seconds */
+
+    printf("messaggio dal server : %s\n", client_msg);
+    message = client_msg + 10;
+    sscanf ( client_msg, "ALIM = %d", &supply_number);
+    sscanf( message, "%c", &command ) ;
+   /* if ( verbose )
+        printf( "\n%s: command received from netm is %s\n",
+                myname, message ) ;*/
+    strcpy( device_msg, NEG_ANSWER ) ;
+
+    switch ( command ) {
+
+        case EOC :
+
+        *flag_pointer = FALSE ;
+        break;
+
+
+	case STAT:
+	
+        if (alim[supply_number].mode == 1 )
+        {
+        message = message + 3 ;
+        sprintf ( to_dev, "%1d\r", alim[supply_number].address) ;
+       /* if ( verbose )*/
+	    printf("\n\n\n\n\n**********************************************************\n");
+	    printf("**********************************************************\n");
+            printf( "%s: alim = %d  mode = %d STAT command to device is %s\n", myname,supply_number, alim[supply_number].mode, to_dev ) ;
+
+
+
+            printf( " -- 5 -- \n");
+
+
+        fprintf (alim[supply_number].rs232w ,"P");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"R");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"T");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"=");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"%d", supply_number);
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"\r");
+        fflush (alim[supply_number].rs232w);
+
+
+
+            printf( " -- 6 -- \n");
+
+       signal( SIGALRM, loop_timeout ) ;
+       alarm(1) ;
+       siginterrupt(SIGALRM, 1);
+
+       fgets(return_string, 1000, alim[supply_number].rs232r);
+
+       signal( SIGALRM, SIG_IGN ) ;
+
+            printf( " -- 7 -- \n");
+/**********************************************/
+
+        fprintf (alim[supply_number].rs232w ,"C");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"H");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"N");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"/");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"\r");
+        fflush (alim[supply_number].rs232w);
+
+strcpy(return_string, "                                                                     ");
+
+
+
+       signal( SIGALRM, loop_timeout ) ;
+       alarm(1) ;
+       siginterrupt(SIGALRM, 1);
+
+       fgets(return_string, 1000, alim[supply_number].rs232r);
+
+       signal( SIGALRM, SIG_IGN ) ;
+
+printf ("-++++++++++++++++++%s+++++++++++++++++++++++++++++++++++\n", return_string);
+
+       sscanf( return_string + 6, "%f", &corrente ) ; 
+
+
+	    if (return_string[4] == '-') corrente = corrente * -1.0;
+	    if (return_string[4] == 13) corrente = 0;
+            printf( "%s: corrente letta = %f     first echo + answer is ^^^%s$$$\n", myname,corrente,  return_string ) ;
+//            } ;
+
+/**********************************************/
+
+
+            printf( " -- 9 -- \n");
+
+        fprintf (alim[supply_number].rs232w ,"C");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"U");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"R");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"/");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"\r");
+        fflush (alim[supply_number].rs232w);
+
+strcpy(return_string, "                                                                      ");
+
+
+            printf( " -- 10 -- \n");
+
+       signal( SIGALRM, loop_timeout ) ;
+       alarm(1) ;
+       siginterrupt(SIGALRM, 1);
+
+            fgets(return_string, 1000, alim[supply_number].rs232r);
+
+       signal( SIGALRM, SIG_IGN ) ;
+
+            printf( " -- 11 -- \n");
+//            FD_CLR(alim[supply_number].fildes, &ready);
+
+            sscanf( return_string + 6, "%f", &correnteimpostata ) ;
+	    if (return_string[4] == '-') correnteimpostata = correnteimpostata * -1.0;
+
+             printf( "%s: corrente impostata = %f     first echo + answer is ^^^%s$$$\n", myname,correnteimpostata,  return_string ) ;
+
+/**********************************************/
+
+
+        if ( return_val == 0 )
+            loop_timeout(supply_number);
+        else
+            /*strcpy( device_msg, return_string ) ;*/
+
+	sprintf ( device_msg, "%1d\ni4  %4.2f  i4  %4.2f  v4   0.0\n>", alim[supply_number].address, correnteimpostata/2.28 , corrente/2.28 );
+	/* da completare per adattare la risposta di bruker a quello che si aspetta la grafica*/
+
+        }
+        else
+        {
+       /* if ( verbose )
+            printf ("DOIT STUB MODE alim. = %d posizione = %d falso \n",
+                     supply_number, alim[supply_number].address);*/
+        strcpy( device_msg, "STUB" ) ;
+
+        }
+
+        break ;
+
+
+        case DOIT:
+
+        /* ma server specific message execution: first char must
+           be '!' */
+
+        if (alim[supply_number].mode == 1 )
+        {
+        
+        message = message + 3 ;
+        sscanf( message, "%f", &valore ) ;
+        sprintf ( to_dev, "%1d %5.2f\r", alim[supply_number].address, valore ) ;
+        /*if ( verbose )*/
+            printf( "\n%s: command to device is %s\n",
+                    myname, to_dev ) ;
+
+
+        fprintf (alim[supply_number].rs232w ,"P");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"R");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"T");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"=");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"%d", supply_number);
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"\r");
+        fflush (alim[supply_number].rs232w);
+
+
+
+       signal( SIGALRM, loop_timeout ) ;
+       alarm(1) ;
+       siginterrupt(SIGALRM, 1);
+
+       fgets(return_string, 1000, alim[supply_number].rs232r);
+
+       signal( SIGALRM, SIG_IGN ) ;
+
+            printf( " -- 1 -- \n");
+
+        fprintf (alim[supply_number].rs232w ,"C");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"U");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"R");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"=");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"%5.2f", valore*2.28);
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"\r");
+        fflush (alim[supply_number].rs232w);
+
+
+
+            printf( " -- 2 -- \n");
+
+
+       signal( SIGALRM, loop_timeout ) ;
+       alarm(1) ;
+       siginterrupt(SIGALRM, 1);
+
+       fgets(return_string, 1000, alim[supply_number].rs232r);
+
+       signal( SIGALRM, SIG_IGN ) ;
+
+/****************************************************************************************************************************************************/
+
+
+            printf( " -- 3 -- \n");
+
+        fprintf (alim[supply_number].rs232w ,"C");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"U");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"R");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"/");
+        fflush (alim[supply_number].rs232w);
+        fprintf (alim[supply_number].rs232w ,"\r");
+        fflush (alim[supply_number].rs232w);
+
+
+       signal( SIGALRM, loop_timeout ) ;
+       alarm(1) ;
+       siginterrupt(SIGALRM, 1);
+
+            fgets(return_string, 1000, alim[supply_number].rs232r);
+
+
+    signal( SIGALRM, SIG_IGN ) ;
+
+
+            printf( " -- 4 -- \n");
+
+            sscanf( return_string + 6, "%f", &corrente ) ;
+	    if (return_string[4] == '-') corrente = corrente * -1.0;
+            if ( verbose ) printf( "\n%s: corrente letta = %f     first echo + answer is ^^^%s$$$\n\n\n",
+                        myname,corrente,  return_string ) ;
+
+
+
+printf("3 il segno e' : %c\n", return_string[3]);
+printf("4 il segno e' : %c\n", return_string[4]);
+printf("5 il segno e' : %c\n", return_string[5]);
+
+
+        if ( return_val == 0 )
+            loop_timeout(supply_number);
+        else
+            /*strcpy( device_msg, return_string ) ;*/
+
+        sprintf ( device_msg, "%1d\ni4  %4.2f  i4  %4.2f  v4   0.0\n>", alim[supply_number].address, correnteimpostata/2.28 , corrente/2.28 );
+        /* da completare per adattare la risposta di bruker a quello che si aspetta la grafica*/
+
+printf("6-----------\n");
+
+
+        }
+
+
+
+
+/****************************************************************************************************************************************************/
+        else
+        {
+        if ( verbose )
+            printf ("DOIT STUB MODE alim. = %d posizione = %d falso \n",
+                     supply_number, alim[supply_number].address);
+        strcpy( device_msg, "STUB" ) ;
+printf("D-----------\n");
+
+        }
+
+        break ;
+        default:
+        printf( "\n%s: unknown command\n", myname ) ;
+        strcpy( device_msg, "NOT DONE" ) ;
+        break ;
+
+    }
+
+}
+

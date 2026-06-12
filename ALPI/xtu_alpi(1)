@@ -1,0 +1,9 @@
+cd /home/magnets
+mv ./ALPI/timeout_file ./ALPI/timeout_file-`date +%F---%T`
+xrdb -quiet /home/magnets/ALPI/ma_Xdefaults
+/home/magnets/ALPI/start_maserver_test > /dev/null
+/home/magnets/ALPI/start_st_servers  > /dev/null
+sleep 1
+clear
+/home/magnets/ALPI/alpi_alpimag_RH8/netm/netm /home/magnets/ALPI/definitivo 2000 > /dev/null &
+/home/magnets/ALPI/alpi_luna-gialla/graphics/alpi localhost 2000 > /dev/null

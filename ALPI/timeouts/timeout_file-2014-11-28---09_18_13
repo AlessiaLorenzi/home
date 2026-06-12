@@ -1,0 +1,25 @@
+
+
+FIRST  TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Wed Nov 19 11:55:39 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI5 alim = 5 **  ** Wed Nov 19 11:55:43 CET 2014
+SECOND TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Wed Nov 19 11:55:47 CET 2014
+SECOND TIMEOUT /dev/ttySI5 alim = 5 **  ** i = 0 0  Wed Nov 19 11:55:49 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI19 alim = 40 ** иииииI╗Ь ** i = 0 0  Thu Nov 27 05:25:13 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI19 alim = 40 ** ?  ** Thu Nov 27 05:25:15 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI19 alim = 42 **  ** i = 0 0  Thu Nov 27 17:51:17 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI19 alim = 45 **  ** i = 0 0  Thu Nov 27 17:51:22 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI19 alim = 45 ** ?  ** Thu Nov 27 17:51:24 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI19 alim = 45 **  ** i = 0 0  Thu Nov 27 17:51:28 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI19 alim = 45 ** ?  ** Thu Nov 27 17:51:30 CET 2014
+
+
+FIRST  TIMEOUT /dev/ttySI19 alim = 44 **  ** i = 0 0  Thu Nov 27 20:49:29 CET 2014
+A ERRORE INDIRIZZO /dev/ttySI19 alim = 44 ** ?  ** Thu Nov 27 20:49:31 CET 2014

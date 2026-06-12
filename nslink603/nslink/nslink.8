@@ -1,0 +1,170 @@
+.TH "nslink" "8" "4 March 2009" "(c) Comtrol Corp." "Comtrol"
+.SH "NAME" 
+nslink \- Device driver for DeviceMaster
+.PP 
+.SH "SYNOPSIS" 
+.PP
+Kernel module
+
+.SH "DESCRIPTION" 
+.PP 
+The \fBnslink\fP device driver provides support for Comtrol
+DeviceMaster network attached serial 
+ports. It provides standard serial port semantics via
+devices /dev/ttySI[0-n].
+.PP 
+The NS-Link driver implements a low-level serial device that
+runs underneath the same tty line discipline layer as do other
+serial devices. That means that usage for a DeviceMaster 
+is almost identical to that of any other serial port.
+It is possible due to network or other hardware problems that
+the host my lose contact with the low-level serial device
+(something that does not usually happen with internal serial
+boards). This means that the NS-Link driver may return errors
+not typically seen when using other serial drivers. The table
+below shows the possible errors:
+.PP
+.nf
+                                                        Reconnect 
+operation  !CLOCAL && !CD   Link Down     Link Timeout  Refusal[3]
+---------  --------------  -----------    ------------  ---------
+                                               
+read()          EOF          block[1]         EIO          EIO    
+                                               
+write()         EIO       success/block[2]    EIO        ENOTCONN 
+                                               
+open()     block till CD      EBUSY          EBUSY        EBUSY
+
+.fi
+.IP "[1]"
+Assuming that the fd is in blocking mode and there is no data
+in the line discipline rx buffer, a read() will block until
+either the connection returns and data is available, or until
+the link times out.
+.IP "[2]"
+Up to 4K of write data will be queued, and subsequent writes
+will block until the connection resumes or the link times out.
+.IP "[3]"
+A reconnect refusal occurs when the network link between the
+host and the DeviceMaster times out and another host opens 
+the port. If the connection to the original host returns and 
+the application still has the device open, the original host 
+attempts to reconnect to the port and be refused by the 
+DeviceMaster since the port is in-use.
+.PP
+Communications with the DeviceMaster may use
+either TCP/IP or the raw packet Ethernet interface.
+
+.SH LATENCY -- WRITE DATA
+.PP
+The default behavior of the NS-Link driver is to consolidate
+network traffic bound towards the DeviceMasters and send data 
+to all DeviceMasters once every 10ms. This can introduce a 
+delay of up to 10ms when data is written to a DeviceMaster.
+.PP
+Setting the \fIlow_latency\fP flag on a DeviceMaster
+causes data written to that device to be sent immediately.
+This reduces the latency in outbound data at the expense of
+increased CPU and network usage.
+.PP
+The \fIlow_latency\fP flag may be set in the
+\fInslink.conf\fP(5) file, by using the \fIsetseral\fP(8)
+utility (see below) or with the underlying TIOCSSERIAL and
+TIOCGSERIAL ioctl() calls.
+
+.SH LATENCY -- READ DATA
+.PP
+By default, serial data received by the DeviceMaster is 
+sent to the NS-Link driver once every 10ms. This can 
+introduce a delay of up to 10ms in the recieve data path.
+In the DeviceMaster, this latency can be reduced in two ways:
+
+.IP "Inter-character timeout"
+It is possible to configure an inter-character timeout that
+causes the DeviceMaster to send queued receive data when a 
+gap is detected in the receive serial data stream. An 
+inter-character timeout may be configured either in the 
+\fInslink.conf\fP(5)file, by using the \fIsetseral\fP(8)
+utility (see below) or with the underlying TIOCSSERIAL 
+and TIOCGSERIAL ioctl() calls.
+
+.IP "Scan period"
+It is also possible to change the DeviceMaster's scan
+period from the default 10ms to a lower value. This also
+decreases latency, but increases CPU and network usage.
+Configuring an inter-character timeout is generally a better
+way to reduce latency in receive data. The scan period is
+configured in the \fInslink.conf\fP(5) file. A value of 0 
+causes the DeviceMaster to use its default scan period (10ms).
+
+.IP "Retransmit Timer"
+It is also possible to change the DeviceMaster's retransmit 
+timer from the default 200ms to a lower value. This decreases 
+the wait before retransmitting a packet, but increases CPU and 
+network usage. The timer is configurable for 40ms to the default 
+value of 200ms, in 20ms intervals. The retransmit timer is 
+configured in the  \fInslink.conf\fP(5) file. A value of 0 
+causes the DeviceMaster to use its default timer value (200ms).
+.PP
+
+.SH "SETSERIAL INTERFACE"
+.PP
+The standard \fIsetserial\fP(8) or the underlying
+TIOCSSERIAL and TIOCGSERIAL ioctl() calls may be
+used to access the following attributes of a DeviceMaster:
+
+.IP "low_latency flag (read-write)"
+When set, causes write() data to be written immediately to 
+the DeviceMaster.
+
+.IP "irq (read-write)"
+The inter-character timeout value (in milliseconds) for the
+port. A value of 0 disables the inter-character timeout
+feature.
+
+.IP "port (read-only)"
+Contains either the IP address or the low-order 32 bits of the
+MAC address of the DeviceMaster.
+
+.IP "line (read-only)" 
+Contains the port number within the DeviceMaster
+(e.g 0-7 for a port on an 8-port DeviceMaster).
+
+.SH "OPTIONS" 
+.PP 
+Configuration of the NS-Link driver is done via the
+configuration file \fB/etc/nslink.conf\fP(5) and via
+\fIsetserial\fP(8) as described above.
+
+.SH "ENVIRONMENT" 
+.PP 
+None
+.PP
+.SH "FILES" 
+.PP
+.IP "\fB/proc/driver/nslink/status\fP"
+If the Linux kernel supports the /proc filesystem, this file
+contains the current status of the DeviceMaster the driver is 
+configured to control.
+.IP "\fB/proc/driver/nslink/ports\fP"
+If the Linux kernel supports the /proc filesystem, this file
+contains the current status of the individual ports for
+which the driver is configured.
+.IP "\fBdevmast.bin\fP" 
+Application binary file downloaded to DeviceMaster by the
+load operation. Search path: current directory, /etc.
+.PP 
+.SH "SEE ALSO" 
+.PP 
+\fInslinkd\fP(8), \fInslinkadmin\fP(8), \fInslinkrelease\fP(8),
+\fInslinktool\fP(8),\fIsetserial\fP(8)
+.PP 
+.SH "BUGS" 
+.PP 
+Check the release notes file for an up-to-date list\&.
+.PP 
+.SH "FTP LOCATION"
+.PP 
+ftp://ftp\&.comtrol\&.com/
+
+

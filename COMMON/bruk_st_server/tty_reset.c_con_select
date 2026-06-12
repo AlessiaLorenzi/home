@@ -1,0 +1,104 @@
+#include "server.h"
+#include "server_const.h"
+#include <sys/time.h>
+
+/***********************************************************************
+    ma-device SERVER DEPENDENT reset function:
+    to see if the device is alive
+***********************************************************************/
+
+tty_reset()
+{
+    extern char tty_name[ NCHARS ] ;
+    extern char myname[ NCHARS ], device_msg[BUF_SIZE] ;
+
+    extern struct supply_data supply[100];
+    extern struct line serial[8];
+static struct timeval timeout = { 2, 0 };
+    int i, line_counter;
+    char c ;
+    fd_set ready;
+    int cont;
+
+
+    char s[BUF_SIZE] ;
+
+    printf( "\n%s: tty reset activated\n", myname ) ;
+
+    for ( line_counter = 0 ; line_counter < 8 ; line_counter++ )
+	{
+/*
+	fprintf( serial[line_counter].rs232w, "002\r" ) ;
+	fflush( serial[line_counter].rs232w ) ; 
+	device_msg[0] = 0 ;
+	i = 0 ;
+	do {
+	   c = fgetc( serial[line_counter].rs232r ) ;
+	   device_msg[i] = c ;
+	   i++ ;
+	   } while ( c != '\r' ) ;
+	device_msg[i] = 0 ;
+	printf( "\n%s: answer is %s\n", myname, device_msg ) ;
+	printf( "\n%s: all right! tty on line\n", myname ) ;
+*/
+	if ( serial[line_counter].mode == 1 )
+		{
+/*
+		strcpy( s, "/bin/stty line 0 9600 raw < " ) ;
+		strcat( s, serial[line_counter].name ) ;
+		system( s ) ;
+		sleep(1) ;
+
+*/
+		fprintf( serial[line_counter].rs232w, "002\r" ) ;
+		fflush( serial[line_counter].rs232w ) ; 
+printf (" -- -- opening line %s\n", serial[line_counter].name);
+
+	i = 0 ;
+	do {
+	   FD_ZERO(&ready);
+	   FD_SET(serial[line_counter].fildes, &ready);
+
+	   printf("linecounter = %d, line = %s\n",line_counter,serial[line_counter].name);
+	   if ( cont = select ( getdtablesize(), &ready, (fd_set *)0, (fd_set *)0, &timeout)> 0 )
+		{
+	   	c = fgetc( serial[line_counter].rs232r ) ;
+	   	printf ("fgets numero %d , carattere %c %d\n", i, c, c);
+	   	device_msg[i] = c ;
+	   	i++ ;
+		}
+	   } while ( cont == 0 ) ;
+
+	device_msg[i] = 0 ;
+	printf ("# # %s\n",device_msg);
+
+
+
+
+		fprintf( serial[line_counter].rs232w, "002\r" ) ;
+		fflush( serial[line_counter].rs232w ) ; 
+
+	i = 0 ;
+	do {
+	   FD_ZERO(&ready);
+	   FD_SET(serial[line_counter].fildes, &ready);
+
+	   printf("linecounter = %d, line = %s\n",line_counter,serial[line_counter].name);
+	   if ( cont = select ( getdtablesize(), &ready, (fd_set *)0, (fd_set *)0, &timeout)> 0 )
+		{
+	   	c = fgetc( serial[line_counter].rs232r ) ;
+	   	printf ("fgets numero %d , carattere %c %d\n", i, c, c);
+	   	device_msg[i] = c ;
+	   	i++ ;
+		}
+	   } while ( cont == 0 ) ;
+
+	device_msg[i] = 0 ;
+	printf ("# # %s\n",device_msg);
+
+
+		}
+	}
+
+}
+

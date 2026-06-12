@@ -1,0 +1,176 @@
+#!/bin/sh
+
+# chkconfig: 2345 95 5
+# description: Driver and daemon for Comtrol RocketPort Serial Hub Si, IA,\
+#              and DeviceMaster
+#
+# Initialization script configuration
+#
+
+### BEGIN INIT INFO
+# Provides:          nslink
+# Required-Start:    $network $syslog
+# Should-Start:      
+# Required-Stop:     
+# Should-Stop:       
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: NS-Link daemon
+# Description:       Start Comtrol NS-Link daemon
+### END INIT INFO
+
+MODULE_REGEXP="nslink\b"
+DRIVER_NAME="NS-Link driver"
+DAEMON=/sbin/nslinkd
+
+KERNEL=`uname -r | awk '{ split($0,a,"[.-]"); print a[1]a[2]}'`
+KERNEL_VERSION=`uname -r | awk '{ split($0,a,"[.-]"); print a[3]}'`
+if [ "$KERNEL" -gt "24" ]
+then
+DRIVER_FN=nslink.ko
+else
+DRIVER_FN=nslink.o
+fi
+
+
+#
+# Handle System V init conventions...
+#
+case $1 in
+start)
+	action="start";
+	;;
+stop)
+	action="stop";
+	;;
+restart)
+        action="restart";
+        ;;
+*)
+	action="start";
+esac
+
+
+if test -d /var/lock/subsys ; then
+  LOCKFILE=/var/lock/subsys/nslink
+elif test -d /var/lock ; then
+  LOCKFILE=/var/lock/nslink
+elif test -d /tmp ; then
+  LOCKFILE=/tmp/nslink.lock
+else
+  echo "Sorry, can't find anyplace for lock file"
+  exit 1
+fi
+
+
+if test $action  = stop -o $action = restart; then
+	module=`grep $MODULE_REGEXP /proc/modules | awk '{print $1}'`
+	if test -z "$module" ; then 
+		echo "The $DRIVER_NAME is not loaded."
+		exit 0
+	fi
+	echo -n "Killing daemon: "
+	if test -f /var/run/nslinkd.pid ; then
+	    pid=`head -1 /var/run/nslinkd.pid`
+	    kill $pid
+	    if [ -x /bin/usleep ]; then
+		/bin/usleep 100000
+	    fi
+	    rm -f /var/run/nslinkd.pid
+	    sleep 1
+	fi
+	echo "done"
+	echo -n "Unloading the $DRIVER_NAME: "
+	if /sbin/rmmod $module ; then :; else 
+		echo "The $DRIVER_NAME could NOT be unloaded."
+		exit 1;
+	fi
+	echo "done"
+	rm -f $LOCKFILE
+        if test $action = stop; then
+		exit 0
+        	fi
+fi
+
+#
+# Do sanity checks before we start..
+#
+if test ! -f /etc/nslink.conf ; then
+    echo "No configuration file found!  Should be in /etc/nslink.conf!"
+    exit 1
+fi
+
+if test ! -x $DAEMON ; then
+    echo "NS-Link daemon not installed!  Should be in $DAEMON"
+    exit 1
+fi
+
+if test -f /var/run/nslinkd.pid ; then
+    pid=`head -1 /var/run/nslinkd.pid`
+    if kill -0 $pid >/dev/null ; then
+       echo "NS-Link daemon already running"
+       exit 1
+    fi
+fi
+
+#
+# If we get this far, we're supposed to load the driver.
+#
+
+# remove any old orphaned temporary device files
+rm -f /dev/nslink.*
+
+if grep $MODULE_REGEXP /proc/modules > /dev/null ; then
+	echo "The $DRIVER_NAME is already loaded!"
+	exit 0
+fi
+
+DIRS="/lib/modules/`uname -r`/misc /lib/modules /usr/lib/modules ."
+PATH=/bin:/sbin:/usr/bin
+
+for i in $DIRS
+do
+	if test -z "$DRIVER_MODULE" -a -f $i/$DRIVER_FN ; then
+		DRIVER_MODULE=$i/$DRIVER_FN
+	fi
+	if test -z "$MOD_DRIVER_MODULE" -a -f $i/mod_$DRIVER_FN ; then
+		MOD_DRIVER_MODULE=$i/mod_$DRIVER_FN
+	fi
+done
+
+if test -z "$DRIVER_MODULE" ; then
+	DRIVER_MODULE=$MOD_DRIVER_MODULE
+elif test -z "$MOD_DRIVER_MODULE" ; then
+	MOD_DRIVER_MODULE=$DRIVER_MODULE
+fi
+
+if test -z "$DRIVER_MODULE" ; then
+	echo "Couldn't find the $DRIVER_NAME loadable kernel module!"
+	exit 1
+fi
+
+if [ -f /tmp/nslink.map ] ; then
+    mv /tmp/nslink.map /tmp/nslink.map.old
+fi
+
+echo -n "Loading the $DRIVER_NAME: "
+if insmod $MOD_DRIVER_MODULE $ROCKET_ARG > /tmp/nslink.map 2> /tmp/moddriver.$$; then :; else
+    if insmod $DRIVER_MODULE $ROCKET_ARG > /tmp/nslink.map 2> /tmp/driver.$$; then :; else
+	echo "Couldn't load $DRIVER_NAME"
+	cat /tmp/driver.$$
+	cat /tmp/moddriver.$$
+#	echo "See error logs in /tmp/driver.$$ and /tmp/moddriver.$$"
+	exit 1
+	fi
+fi
+echo " done"
+
+/bin/rm -f /tmp/driver.$$ /tmp/moddriver.$$
+
+echo -n "Starting nslinkd: "
+$DAEMON
+echo "done"
+
+touch $LOCKFILE
+
+exit 0

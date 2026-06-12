@@ -1,0 +1,171 @@
+GNOME_KEYRING_SOCKET=/tmp/keyring-CWPGff/socket
+SSH_AUTH_SOCK=/tmp/keyring-CWPGff/socket.ssh
+
+(process:8870): GLib-WARNING **: goption.c:2132: ignoring no-arg, optional-arg or filename flags (8) on option of type 0
+
+(process:8870): GLib-WARNING **: goption.c:2132: ignoring no-arg, optional-arg or filename flags (8) on option of type 0
+
+(process:8870): GLib-WARNING **: goption.c:2132: ignoring no-arg, optional-arg or filename flags (8) on option of type 0
+Cleaned 24 files 9 still live
+
+** (nm-applet:8873): WARNING **: <WARN>  request_name(): Could not acquire the NetworkManagerUserSettings service.
+  Error: (9) Connection ":1.329" is not allowed to own the service "org.freedesktop.NetworkManagerUserSettings" due to security policies in the configuration file
+
+Failed to play sound: File or data not found
+
+(polkit-gnome-authentication-agent-1:8902): GLib-GObject-WARNING **: cannot register existing type `_PolkitError'
+
+(polkit-gnome-authentication-agent-1:8902): GLib-CRITICAL **: g_once_init_leave: assertion `initialization_value != 0' failed
+system-config-printer-applet: failed to start NewPrinterNotification service
+Initializing nautilus-open-terminal extension
+Initializing nautilus-gdu extension
+
+(evolution-alarm-notify:8908): evolution-alarm-notify-WARNING **: alarm.c:253: Requested removal of nonexistent alarm!
+Starting a11y dbus service...
+libGL error: failed to open drm device: No such file or directory
+libGL error: failed to load driver: r600
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=4.47841) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+Safe Browsing server returned a 400 during update:request url = https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=AIzaSyBPGXa4AYD4FC3HJK7LnIKxm4fDusVuuco&$httpMethod=POST, payload = ChUKE25hdmNsaWVudC1hdXRvLWZmb3gaJwgFEAIaGwoNCAUQBhgBIgMwMDEwARCj4h4aAhgFXc6l3SICIAIoARonCAEQAhobCg0IARAGGAEiAzAwMTABEKOIFBoCGAVs0xwdIgIgAigBGicIAxACGhsKDQgDEAYYASIDMDAxMAEQjoEUGgIYBXa7DVQiAiACKAEaJwgHEAIaGwoNCAcQBhgBIgMwMDEwARDn_hMaAhgF4Dq4LiICIAIoARolCAkQAhoZCg0ICRAGGAEiAzAwMTABECQaAhgF6_B7aSICIAIoAQ==
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=4.02554) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+Safe Browsing server returned a 400 during update:request url = https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=AIzaSyBPGXa4AYD4FC3HJK7LnIKxm4fDusVuuco&$httpMethod=POST, payload = ChUKE25hdmNsaWVudC1hdXRvLWZmb3gaJwgFEAIaGwoNCAUQBhgBIgMwMDEwARCj4h4aAhgFXc6l3SICIAIoARonCAEQAhobCg0IARAGGAEiAzAwMTABEKOIFBoCGAVs0xwdIgIgAigBGicIAxACGhsKDQgDEAYYASIDMDAxMAEQjoEUGgIYBXa7DVQiAiACKAEaJwgHEAIaGwoNCAcQBhgBIgMwMDEwARDn_hMaAhgF4Dq4LiICIAIoARolCAkQAhoZCg0ICRAGGAEiAzAwMTABECQaAhgF6_B7aSICIAIoAQ==
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=4.09451) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+Safe Browsing server returned a 400 during update:request url = https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=AIzaSyBPGXa4AYD4FC3HJK7LnIKxm4fDusVuuco&$httpMethod=POST, payload = ChUKE25hdmNsaWVudC1hdXRvLWZmb3gaJwgFEAIaGwoNCAUQBhgBIgMwMDEwARCj4h4aAhgFXc6l3SICIAIoARonCAEQAhobCg0IARAGGAEiAzAwMTABEKOIFBoCGAVs0xwdIgIgAigBGicIAxACGhsKDQgDEAYYASIDMDAxMAEQjoEUGgIYBXa7DVQiAiACKAEaJwgHEAIaGwoNCAcQBhgBIgMwMDEwARDn_hMaAhgF4Dq4LiICIAIoARolCAkQAhoZCg0ICRAGGAEiAzAwMTABECQaAhgF6_B7aSICIAIoAQ==
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Window manager warning: Received a _NET_WM_MOVERESIZE message for 0x4200003 (DeviceMast); these messages lack timestamps and therefore suck.
+
+(nautilus:8856): Nautilus-GDU-WARNING **: unable to query info: The specified location is not supported
+
+
+(nautilus:8856): Nautilus-GDU-WARNING **: unable to query info: The specified location is not supported
+
+Connecting to deprecated signal QDBusConnectionInterface::serviceOwnerChanged(QString,QString,QString)
+kbuildsycoca4 running...
+Connecting to deprecated signal QDBusConnectionInterface::serviceOwnerChanged(QString,QString,QString)
+QThreadStorage: Thread 0xf7baf0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0xc10af0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0x1b28af0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0x16f3af0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0x7cfaf0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0x1b61af0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0xe19af0 exited after QThreadStorage 8 destroyed
+Safe Browsing server returned a 400 during update:request url = https://safebrowsing.googleapis.com/v4/threatListUpdates:fetch?$ct=application/x-protobuf&key=AIzaSyBPGXa4AYD4FC3HJK7LnIKxm4fDusVuuco&$httpMethod=POST, payload = ChUKE25hdmNsaWVudC1hdXRvLWZmb3gaJwgFEAIaGwoNCAUQBhgBIgMwMDEwARCj4h4aAhgFXc6l3SICIAIoARonCAEQAhobCg0IARAGGAEiAzAwMTABEKOIFBoCGAVs0xwdIgIgAigBGicIAxACGhsKDQgDEAYYASIDMDAxMAEQjoEUGgIYBXa7DVQiAiACKAEaJwgHEAIaGwoNCAcQBhgBIgMwMDEwARDn_hMaAhgF4Dq4LiICIAIoARolCAkQAhoZCg0ICRAGGAEiAzAwMTABECQaAhgF6_B7aSICIAIoAQ==
+QThreadStorage: Thread 0x850af0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0x1be7af0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0x18edaf0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0x13e3af0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0x1779af0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0x17c6af0 exited after QThreadStorage 8 destroyed
+QThreadStorage: Thread 0xaa3af0 exited after QThreadStorage 8 destroyed
+
+(nautilus:8856): Nautilus-GDU-WARNING **: unable to query info: The specified location is not supported
+
+QThreadStorage: Thread 0x660af0 exited after QThreadStorage 8 destroyed
+
+(nautilus:8856): Nautilus-GDU-WARNING **: unable to query info: The specified location is not supported
+
+
+(nautilus:8856): Nautilus-GDU-WARNING **: unable to query info: The specified location is not supported
+
+
+(nautilus:8856): Nautilus-GDU-WARNING **: unable to query info: The specified location is not supported
+
+
+(nautilus:8856): Nautilus-GDU-WARNING **: unable to query info: The specified location is not supported
+
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Window manager warning: Received a _NET_WM_MOVERESIZE message for 0x4200059 (Server Not); these messages lack timestamps and therefore suck.
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+libGL error: failed to open drm device: No such file or directory
+libGL error: failed to load driver: r600
+ATTENTION: default value of option force_s3tc_enable overridden by environment.
+
+(nautilus:8856): Gdk-CRITICAL **: IA__gdk_window_get_screen: assertion `GDK_IS_WINDOW (window)' failed
+
+(nautilus:8856): Gtk-CRITICAL **: IA__gtk_drag_set_icon_pixmap: assertion `!mask || gdk_window_get_screen (mask) == screen' failed
+
+(nautilus:8856): Nautilus-GDU-WARNING **: unable to query info: The specified location is not supported
+
+
+(nautilus:8856): Gdk-CRITICAL **: IA__gdk_window_get_screen: assertion `GDK_IS_WINDOW (window)' failed
+
+(nautilus:8856): Gtk-CRITICAL **: IA__gtk_drag_set_icon_pixmap: assertion `!mask || gdk_window_get_screen (mask) == screen' failed
+Window manager warning: Received a _NET_WM_MOVERESIZE message for 0x4200059 (pulsato - ); these messages lack timestamps and therefore suck.
+Window manager warning: Received a _NET_WM_MOVERESIZE message for 0x4200059 (pulsato - ); these messages lack timestamps and therefore suck.
+GLib-GIO-Message: Using the 'memory' GSettings backend.  Your settings will not be saved or shared with other applications.
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"
+Gtk-Message: Failed to load module "canberra-gtk-module"
+Gtk-Message: Failed to load module "pk-gtk-module"

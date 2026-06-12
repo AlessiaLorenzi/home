@@ -1,0 +1,8 @@
+/home/alpi/BUNCHER/work/ipcfile
+rm ./kill_local
+ps ax |awk '{print $1, $0}'|grep rf_server|awk '{print "kill ",$1}' > kill_local
+ps ax |awk '{print $1, $0}'|grep mot_server|awk '{print "kill ",$1}' >> kill_local
+ps ax |awk '{print $1, $0}'|grep main-c|awk '{print "kill ",$1}' >> kill_local
+chmod 755  kill_local
+./kill_local >/dev/null
+

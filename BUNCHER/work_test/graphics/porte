@@ -1,0 +1,9 @@
+/usr/sbin/latcp -A -ptty02 -HDS90L -RPORT_1 > /dev/console
+/usr/sbin/latcp -A -ptty03 -HDS90L -RPORT_2 > /dev/console
+/usr/sbin/latcp -A -ptty04 -HDS90L -RPORT_3 > /dev/console
+/usr/sbin/latcp -A -ptty05 -HDS90L -RPORT_4 > /dev/console
+/usr/sbin/latcp -A -ptty06 -HDS90L -RPORT_5 > /dev/console
+/usr/sbin/latcp -A -ptty07 -HDS90L -RPORT_6 > /dev/console
+/usr/sbin/latcp -A -ptty08 -HDS90L -RPORT_7 > /dev/console
+/usr/sbin/latcp -A -ptty09 -HDS90L -RPORT_8 > /dev/console
+/usr/sbin/latcp -A -ptty0a -HDS91L -RPORT_3 > /dev/console

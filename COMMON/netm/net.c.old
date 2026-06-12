@@ -1,0 +1,737 @@
+#define FALSE            0
+#define MSGLEN 1024
+#define BUF_SIZE 1024
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <stdio.h>
+#include "externals.h"
+
+main( argc, argv )
+
+int argc ;
+char **argv ;
+
+{
+int gen_chan , channel_addrlen , main_socket, gen_chan_addrlen, main_channel;
+int counter, trovato;
+int not_error, channel[16], chan_addrlen ;
+char msg_tosend[MSGLEN], msg_torcv[MSGLEN] ;
+struct sockaddr_in chan_addr ;
+struct hostent * hp, * gethostbyname() ;
+struct sockaddr_in gen_chan_addr, channel_addr;
+struct magnet_data magnet[100];
+struct server_data server[100];
+struct button_data button[100];
+struct steerer_server_data steerer_server[100];
+FILE *dbfile;
+char line[200];
+char client_msg[ BUF_SIZE ], device_msg[ BUF_SIZE ] ;
+int number, magnet_server_counter, magnet_counter, alim_counter;
+int read_retval;
+main_socket = atoi( argv[2] ) ;
+
+for ( number = 0 ; number < 100; number++ )
+	{	
+	magnet[number].magnet = 999999;
+	server[number].socket = 999999;
+	for ( alim_counter = 0; alim_counter<16; alim_counter++)
+		server[number].alim[alim_counter] = 999999;
+	}
+
+
+printf ("argc = %d\n", argc);
+
+if ( argc < 2 )
+	{
+	printf ( "netm: network data base file missing\n");
+	fflush ( stdout );
+	exit ( 1 );
+	}
+
+dbfile = fopen ( argv[1], "r" );
+if ( dbfile == NULL )
+	{
+	printf ( "netm: error opening network data base file\n");
+	fflush ( stdout );
+	exit ( 2 );
+	}
+
+printf ("\n");
+while ( fgets ( line, 100, dbfile) != NULL )
+	{
+	if ( strncmp ( line, "MAGNET", 6) == 0)
+		{
+		sscanf ( line, "MAGNET\t=%d", &number);
+		magnet[number].magnet = number;
+		/*printf ( "numero = %d %d \n",number,magnet[number].magnet);*/
+		printf ("magnet         block %d found  \n",number);
+		fscanf ( dbfile,"NAME\t=%s\n\
+				ALIM1\t=%d\n\
+				N_ALIM1\t=%s\n\
+				A_ALIM1\t=%d\n\
+				CU_ALIM1\t=%d\n\
+				VO_ALIM1\t=%d\n\
+				ALIM2\t=%d\n\
+				N_ALIM2\t=%s\n\
+				A_ALIM2\t=%d\n\
+				CU_ALIM2\t=%d\n\
+				VO_ALIM2\t=%d\n",
+				
+				magnet[number].name,
+
+				&(magnet[number].alim1),
+				magnet[number].n_alim1,
+				&(magnet[number].a_alim1),
+				&(magnet[number].cur_alim1),
+				&(magnet[number].volt_alim1),
+
+				&(magnet[number].alim2),
+				magnet[number].n_alim2,
+				&(magnet[number].a_alim2),
+				&(magnet[number].cur_alim2),
+				&(magnet[number].volt_alim2));
+
+
+		}
+/*printf ( 			"MAGNET\t=%d\n\
+				NAME\t=%s\n\
+				ALIM1\t=%d\n\
+				N_ALIM1\t=%s\n\
+				CU_ALIM1\t=%d\n\
+				VO_ALIM1\t=%d\n\
+				ALIM2\t=%d\n\
+				N_ALIM2\t=%s\n\
+				CU_ALIM2\t=%d\n\
+				VO_ALIM2\t=%d\n",
+
+				magnet[number].magnet,
+				magnet[number].name,
+
+				magnet[number].alim1,
+				magnet[number].n_alim1,
+				magnet[number].cur_alim1,
+				magnet[number].volt_alim1,
+
+				magnet[number].alim2,
+				magnet[number].n_alim2,
+				magnet[number].cur_alim2,
+				magnet[number].volt_alim2);*/
+
+
+	}
+fclose ( dbfile );
+magnet_server_counter = 0 ;
+
+
+
+
+
+dbfile = fopen ( argv[1], "r" );
+if ( dbfile == NULL )
+	{
+	printf ( "netm: error opening network data base file\n");
+	fflush ( stdout );
+	exit ( 2 );
+	}
+
+printf ("\n");
+while ( fgets ( line, 100, dbfile) != NULL )
+	{
+	if ( strncmp ( line, "BUTTON", 6) == 0)
+		{
+		sscanf ( line, "BUTTON\t=%d", &number);
+		button[number].button = number;
+		/*printf ( "numero = %d %d \n",number,magnet[number].magnet);*/
+		printf ("button         block %d found  \n",number);
+		fscanf ( dbfile,"TYPE\t=%d\n\
+				OBJ1\t=%d\n\
+				OBJ2\t=%d\n\
+				OBJ3\t=%d\n\
+				OBJ4\t=%d\n",
+				
+				&(button[number].type),
+				&(button[number].obj1),
+				&(button[number].obj2),
+				&(button[number].obj3),
+				&(button[number].obj4));
+
+
+		}
+		/*	printf("\t\t\t\tBUTTON\t=%d\n\
+				TYPE\t=%d\n\
+				OBJ1\t=%d\n\
+				OBJ2\t=%d\n\
+				OBJ3\t=%d\n\
+				OBJ4\t=%d\n",
+				
+				button[number].button,
+				button[number].type,
+				button[number].obj1,
+				button[number].obj2,
+				button[number].obj3,
+				button[number].obj4);*/
+
+	}
+
+
+
+
+
+
+
+
+
+dbfile = fopen ( argv[1], "r" );
+if ( dbfile == NULL )
+	{
+	printf ( "netm: error opening network data base file\n");
+	fflush ( stdout );
+	exit ( 2 );
+	}
+
+
+printf ("\n");
+while ( fgets ( line, 100, dbfile) != NULL )
+	{
+	if ( strncmp ( line, "SERVER", 6) == 0)
+		{
+		sscanf ( line, "SERVER\t=%d", &number);
+		/*printf ( "numero = %d \n", number );*/
+		printf ("magnet  server block %d found  \n",number);
+		magnet_server_counter++;
+		fscanf ( dbfile,"SOCKET\t=%d\n\
+				HOST\t=%s\n\
+				LINE\t=%s\n\
+				TYPE\t=%d\n\
+				MODE\t=%d\n\
+				VERBOSE\t=%d\n\
+				AHOST\t=%s\n\
+				ASOCKET\t=%d\n\
+				ALIM\t=%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d \n",
+				
+
+				&(server[number].socket),
+				server[number].host,
+				server[number].line,
+				&(server[number].type),
+				&(server[number].mode),
+				&(server[number].verbose),
+				server[number].ahost,
+				&(server[number].asocket),
+				&(server[number].alim[0]),
+				&(server[number].alim[1]),
+				&(server[number].alim[2]),
+				&(server[number].alim[3]),
+				&(server[number].alim[4]),
+				&(server[number].alim[5]),
+				&(server[number].alim[6]),
+				&(server[number].alim[7]),
+				&(server[number].alim[8]),
+				&(server[number].alim[9]),
+				&(server[number].alim[10]),
+				&(server[number].alim[11]),
+				&(server[number].alim[12]),
+				&(server[number].alim[13]),
+				&(server[number].alim[14]),
+				&(server[number].alim[15]));
+
+		printf ( "SOCKET\t=%d\n\
+				HOST\t=%s\n\
+				LINE\t=%s\n\
+				TYPE\t=%d\n\
+				MODE\t=%d\n\
+				VERBOSE\t=%d\n\
+				AHOST\t=%s\n\
+				ASOCKET\t=%d\n\
+				ALIM\t=%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d \n",
+				
+
+				server[number].socket,
+				server[number].host,
+				server[number].line,
+				server[number].type,
+				server[number].mode,
+				server[number].verbose,
+				server[number].ahost,
+				server[number].asocket,
+				server[number].alim[0],
+				server[number].alim[1],
+				server[number].alim[2],
+				server[number].alim[3],
+				server[number].alim[4],
+				server[number].alim[5],
+				server[number].alim[6],
+				server[number].alim[7],
+				server[number].alim[8],
+				server[number].alim[9],
+				server[number].alim[10],
+				server[number].alim[11],
+				server[number].alim[12],
+				server[number].alim[13],
+				server[number].alim[14],
+				server[number].alim[15]);
+
+
+		}
+
+	}
+
+fclose ( dbfile );
+
+
+
+
+dbfile = fopen ( argv[1], "r" );
+if ( dbfile == NULL )
+	{
+	printf ( "netm: error opening network data base file\n");
+	fflush ( stdout );
+	exit ( 2 );
+	}
+
+
+printf ("\n");
+while ( fgets ( line, 100, dbfile) != NULL )
+	{
+	if ( strncmp ( line, "STEERER_SERVER", 14) == 0)
+		{
+		sscanf ( line, "STEERER_SERVER\t=%d", &number);
+		/*printf ( "numero = %d \n", number );*/
+		printf ("steerer server block %d found  \n",number);
+		fscanf ( dbfile,"SOCKET\t=%d\n\
+				HOST\t=%s\n\
+				LMVA\t=%s %d %d %d %d %d %d\n\
+				LMVA\t=%s %d %d %d %d %d %d\n\
+				LMVA\t=%s %d %d %d %d %d %d\n\
+				LMVA\t=%s %d %d %d %d %d %d\n\
+				LMVA\t=%s %d %d %d %d %d %d\n\
+				LMVA\t=%s %d %d %d %d %d %d\n\
+				LMVA\t=%s %d %d %d %d %d %d\n\
+				LMVA\t=%s %d %d %d %d %d %d\n",
+
+
+				&(steerer_server[number].socket),
+				steerer_server[number].host,
+
+				steerer_server[number].lines[0],
+				&(steerer_server[number].modes[0]),
+				&(steerer_server[number].verbose[0]),
+				&(steerer_server[number].alim[0][0]),
+				&(steerer_server[number].alim[0][1]),
+				&(steerer_server[number].alim[0][2]),
+				&(steerer_server[number].alim[0][3]),
+
+				steerer_server[number].lines[1],
+				&(steerer_server[number].modes[1]),
+				&(steerer_server[number].verbose[1]),
+				&(steerer_server[number].alim[1][0]),
+				&(steerer_server[number].alim[1][1]),
+				&(steerer_server[number].alim[1][2]),
+				&(steerer_server[number].alim[1][3]),
+
+				steerer_server[number].lines[2],
+				&(steerer_server[number].modes[2]),
+				&(steerer_server[number].verbose[2]),
+				&(steerer_server[number].alim[2][0]),
+				&(steerer_server[number].alim[2][1]),
+				&(steerer_server[number].alim[2][2]),
+				&(steerer_server[number].alim[2][3]),
+
+				steerer_server[number].lines[3],
+				&(steerer_server[number].modes[3]),
+				&(steerer_server[number].verbose[3]),
+				&(steerer_server[number].alim[3][0]),
+				&(steerer_server[number].alim[3][1]),
+				&(steerer_server[number].alim[3][2]),
+				&(steerer_server[number].alim[3][3]),
+
+				steerer_server[number].lines[4],
+				&(steerer_server[number].modes[4]),
+				&(steerer_server[number].verbose[4]),
+				&(steerer_server[number].alim[4][0]),
+				&(steerer_server[number].alim[4][1]),
+				&(steerer_server[number].alim[4][2]),
+				&(steerer_server[number].alim[4][3]),
+
+				steerer_server[number].lines[5],
+				&(steerer_server[number].modes[5]),
+				&(steerer_server[number].verbose[5]),
+				&(steerer_server[number].alim[5][0]),
+				&(steerer_server[number].alim[5][1]),
+				&(steerer_server[number].alim[5][2]),
+				&(steerer_server[number].alim[5][3]),
+
+				steerer_server[number].lines[6],
+				&(steerer_server[number].modes[6]),
+				&(steerer_server[number].verbose[6]),
+				&(steerer_server[number].alim[6][0]),
+				&(steerer_server[number].alim[6][1]),
+				&(steerer_server[number].alim[6][2]),
+				&(steerer_server[number].alim[6][3]),
+
+				steerer_server[number].lines[7],
+				&(steerer_server[number].modes[7]),
+				&(steerer_server[number].verbose[7]),
+				&(steerer_server[number].alim[7][0]),
+				&(steerer_server[number].alim[7][1]),
+				&(steerer_server[number].alim[7][2]),
+				&(steerer_server[number].alim[7][3]));
+
+
+		}
+
+	}
+
+fclose ( dbfile );
+
+
+printf ("\nci sono %d server per i magneti\n", magnet_server_counter);
+
+magnet_server_counter = 0;
+magnet_counter = 0;
+
+for ( number = 0 ; number < 100; number++ )
+	{
+	if ( magnet[number].magnet != 999999 )
+		magnet_counter++;
+	if ( server[number].socket != 999999 )
+		magnet_server_counter++;
+	}
+
+printf ("\nci sono %d magneti\n", magnet_counter);
+printf ("\nci sono %d server per i magneti\n", magnet_server_counter);
+
+
+
+
+/*riempimento struttura*/
+
+
+/*for (counter = 0 ; counter < 16 ;counter++)
+printf ("server[0].alim[%d] = %d\n",counter, server[0].alim[counter]);
+
+for (counter = 0 ; counter < 100 ;counter++)
+printf ("magnet[%d].a_alim1 = %d magnet[%d].a_alim2 = %d\n",counter, magnet[counter].a_alim1,counter, magnet[counter].a_alim2);*/
+
+
+for (counter = 0 ; counter < 100 ;counter++) /*loop sui server */
+    {
+    if ( server[counter].socket != 999999)
+        {
+        for ( alim_counter = 0; alim_counter <16; alim_counter++)
+            {
+            if ( server[counter].alim[alim_counter] != 999999 )
+		{
+		trovato = 0;
+		for ( magnet_counter = 0; magnet_counter <100; magnet_counter++)
+		    {
+		    if ( magnet[magnet_counter].magnet != 999999 )
+			{
+			if ( server[counter].alim[alim_counter] == magnet[magnet_counter].alim1 )
+			    {
+			    server[counter].alim_addr[alim_counter] = magnet[magnet_counter].a_alim1;
+			    printf("l'alimentatore n. %d e' attaccato al server %d ,ed ha indirizzo %d\n",
+			    server[counter].alim[alim_counter], counter,
+			    server[counter].alim_addr[alim_counter] );
+			    trovato++;
+			    }
+    
+			if ( server[counter].alim[alim_counter] == magnet[magnet_counter].alim2 )
+			    {
+			    server[counter].alim_addr[alim_counter] = magnet[magnet_counter].a_alim2;
+			    printf("l'alimentatore n. %d e' attaccato al server %d ed ha indirizzo %d\n",
+			    server[counter].alim[alim_counter], counter,
+			    server[counter].alim_addr[alim_counter] );
+			    trovato++;
+			    }
+    
+			}
+		    }
+		 if ( trovato < 1 ) 
+		 printf ("non ho trovato nessun magnete per l'alimentatore %d\n",
+		 server[counter].alim[alim_counter]);
+		 if ( trovato > 1 ) 
+		 printf ("ho trovato %d magneti per l'alimentatore %d\n",
+		 trovato, server[counter].alim[alim_counter]);
+		}	      
+            }
+        }
+    }
+
+
+for ( magnet_counter = 0; magnet_counter <100; magnet_counter++)
+    {
+    if ( magnet[magnet_counter].magnet != 999999 )
+        {
+       
+
+        trovato = 0;
+        for (counter = 0 ; counter < 100 ;counter++) /*loop sui server */      
+            {
+            for ( alim_counter = 0; alim_counter <16; alim_counter++)
+                {
+                if ( server[counter].alim[alim_counter] == magnet[magnet_counter].alim1 )
+                    trovato++;
+                }
+            }
+        if ( trovato < 1 ) 
+            printf ("\007non ho trovato nessun server per l'alimentatore %d\n",
+            magnet[magnet_counter].alim1);
+        if ( trovato > 1 ) 
+            printf ("\007ho trovato %d server per l'alimentatore %d\n",
+            trovato, magnet[magnet_counter].alim2);
+
+
+        trovato = 0;
+        for (counter = 0 ; counter < 100 ;counter++) /*loop sui server */      
+            {
+            for ( alim_counter = 0; alim_counter <16; alim_counter++)
+                {
+                if ( server[counter].alim[alim_counter] == magnet[magnet_counter].alim2 )
+                    trovato++;
+                }
+            }
+        if ( trovato < 1 ) 
+            printf ("\007non ho trovato nessun server per l'alimentatore %d\n",
+            magnet[magnet_counter].alim2);
+        if ( trovato > 1 ) 
+            printf ("\007ho trovato %d server per l'alimentatore %d\n",
+            trovato, magnet[magnet_counter].alim2);
+        }
+    }
+  
+
+
+    /* Create a socket towards the client ( as a server ) */
+    gen_chan = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ;
+    if ( gen_chan < 0 ) {
+        perror( "error opening socket" ) ;
+        exit( 0 ) ;
+        }
+
+    /* give a name to socket using wildcards */
+    gen_chan_addr.sin_family = AF_INET ;
+    gen_chan_addr.sin_addr.s_addr = INADDR_ANY ;
+    gen_chan_addr.sin_port = htons( main_socket ) ;
+    gen_chan_addrlen = sizeof( gen_chan_addr ) ;
+    channel_addrlen = sizeof( channel_addr ) ;
+    if ( bind( gen_chan, &gen_chan_addr, gen_chan_addrlen ) < 0 ) {
+        perror( "error binding socket" ) ;
+        exit( 0 ) ;
+        }
+
+    /* Find out assigned port number and print it out */
+    if ( getsockname( gen_chan, &gen_chan_addr, &gen_chan_addrlen )
+         < 0 ) {
+        perror( "error getting socket name" ) ;
+        exit( 0 ) ;
+        }
+/*    printf( "\n%s: main socket is %d\n", myname,
+            ntohs( gen_chan_addr.sin_port ) ) ;*/
+
+
+    /* Start accepting connections */
+    if ( listen ( gen_chan, 5 ) < 0 ) {
+        perror( "error listening socket" ) ;
+        exit( 0 ) ;
+        }
+
+
+
+
+
+    do {	/*inizio del main loop */
+printf("inizio loop \n");
+        /* accept connection from client */
+        main_channel = accept( gen_chan, &gen_chan_addr,
+                               &gen_chan_addrlen ) ;
+do {
+
+    read_retval = read( main_channel, client_msg, BUF_SIZE ) ;
+    if ( read_retval <= 0 ) {
+        if ( read_retval < 0 )
+            perror( "error reading main socket" ) ;
+        not_error = FALSE ;
+        }
+
+if ( strcmp ( client_msg, "ma local: send data", 19) == 0 )
+	{
+	printf ("messaggio ricevuto\n");
+
+	for (counter=1 ; counter < 42 ; counter++)
+		{
+		sprintf( device_msg, "%d %d %d %d %d %d",
+		button[counter].button,
+		button[counter].type,
+		button[counter].obj1,
+		button[counter].obj2,
+		button[counter].obj3,
+		button[counter].obj4);
+		printf ("messaggio da trasmettere : %s\n",device_msg);
+       if ( write(main_channel ,device_msg ,BUF_SIZE ) < 0 ) {
+            perror( "\nclient: error writing socket\n" ) ;
+            not_error = FALSE ;
+		}
+printf("trasmesso messaggio n. %d\n",counter);
+    read_retval = read( main_channel, client_msg, BUF_SIZE ) ;
+printf("ricevuto  messaggio n. %d  %s\n",counter,client_msg);
+    if ( read_retval <= 0 ) {
+        if ( read_retval < 0 )
+            perror( "error reading main socket" ) ;
+        not_error = FALSE ;
+	}
+
+if (strncmp(client_msg, "record ricevuto",15)==0)
+	{
+	printf("ho trasmesso il record n. %d \n",counter);
+	}
+		}
+
+}
+
+	} while (1) ;/*end of client loop */
+
+	} while (1) ; /*end of main loop */
+
+
+
+
+
+
+
+/*ora apro i canali verso i server e li inizializzo */
+
+for (counter = 0 ; counter < 100 ;counter++)
+	{
+	if ( server[counter].socket != 999999 )
+	    {
+printf("\n\n\nserver[%d].socket = %d\n\n\n\n",counter,server[counter].socket);
+	    printf ("\n");  
+	    /* Create a socket to/from server ( c is client ) */
+	
+	    channel[counter] = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ;
+	    if ( channel[counter] < 0 ) 
+		    {
+		    perror( "\nclient: error opening socket\n" ) ;
+		    exit( 1 ) ;
+		    }
+    
+    
+    
+    
+	    /* connect socket using name specified by command line */
+	    chan_addr.sin_family = AF_INET ;
+	    printf ("counter = %d server[counter].socket = %d  gethostbyname di %s\n",counter,server[counter].socket,server[counter].host);
+	    hp = gethostbyname( server[counter].host ) ;
+	    bcopy ( hp->h_addr, &( chan_addr.sin_addr.s_addr ), hp->h_length ) ;
+	    chan_addr.sin_port = htons( server[counter].socket ) ;
+	    chan_addrlen = sizeof( chan_addr ) ;
+    
+	    if ( connect( channel[counter], &chan_addr, chan_addrlen ) < 0 ) 
+		    {
+		    close( channel[counter] ) ;
+		    perror( "\nclient: error connecting socket\n" ) ;
+		    exit( 1 ) ;
+		    }
+    
+	    printf( "client: host is %s, port is %d\n",
+	    server[counter].host, ntohs( chan_addr.sin_port ) ) ;
+	    }
+	}
+
+printf ("\n");
+for (counter = 0 ; counter < 100 ;counter++)
+	{
+	if ( server[counter].socket != 999999 )
+	    {
+	    sprintf(msg_tosend, " %s %d %d ", server[counter].ahost,
+	    server[counter].asocket, server[counter].mode);
+    
+    
+	   /* write to server */
+	   if ( write( channel[counter], msg_tosend, MSGLEN ) < 0 ) 
+		    {
+		    perror( "\nclient: error writing socket\n" ) ;
+		    not_error = FALSE ;
+		    }
+    
+	    /* listen to server */
+	    if ( read( channel[counter], msg_torcv, MSGLEN ) < 0 ) 
+		    {
+		    perror( "\nclient: error reading socket\n" ) ;
+		    not_error = FALSE ;
+		    }
+	    if ( strncmp( "DONE", msg_torcv, 4) == 0 )
+		    printf ("trasmissione primo gruppo dati del server %d ok \n",counter);
+    
+		    
+	    if ( server[counter].verbose == 1)
+		    sprintf(msg_tosend," -%c %s",'v',server[counter].line);
+	    if ( server[counter].verbose == 0)
+		    sprintf(msg_tosend," -%c %s",'n',server[counter].line);
+    
+	   /* write to server */
+	   if ( write( channel[counter], msg_tosend, MSGLEN ) < 0 ) 
+		    {
+		    perror( "\nclient: error writing socket\n" ) ;
+		    not_error = FALSE ;
+		    }
+    
+	    /* listen to server */
+	    if ( read( channel[counter], msg_torcv, MSGLEN ) < 0 ) 
+		    {
+		    perror( "\nclient: error reading socket\n" ) ;
+		    not_error = FALSE ;
+		    }
+	    if ( strncmp( "DONE", msg_torcv, 4) == 0 )
+		    printf ("trasmissione secondo gruppo dati del server %d ok \n",counter);
+    
+    
+	    sprintf ( msg_tosend,"%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d ",
+	    server[counter].alim[0], server[counter].alim_addr[0], 
+	    server[counter].alim[1], server[counter].alim_addr[1], 
+	    server[counter].alim[2], server[counter].alim_addr[2], 
+	    server[counter].alim[3], server[counter].alim_addr[3], 
+	    server[counter].alim[4], server[counter].alim_addr[4], 
+	    server[counter].alim[5], server[counter].alim_addr[5], 
+	    server[counter].alim[6], server[counter].alim_addr[6], 
+	    server[counter].alim[7], server[counter].alim_addr[7], 
+	    server[counter].alim[8], server[counter].alim_addr[8], 
+	    server[counter].alim[9], server[counter].alim_addr[9], 
+	    server[counter].alim[10], server[counter].alim_addr[10], 
+	    server[counter].alim[11], server[counter].alim_addr[11], 
+	    server[counter].alim[12], server[counter].alim_addr[12], 
+	    server[counter].alim[13], server[counter].alim_addr[13], 
+	    server[counter].alim[14], server[counter].alim_addr[14], 
+	    server[counter].alim[15], server[counter].alim_addr[15]);
+    
+	  
+    
+     /* write to server */
+	   if ( write( channel[counter], msg_tosend, MSGLEN ) < 0 ) 
+		    {
+		    perror( "\nclient: error writing socket\n" ) ;
+		    not_error = FALSE ;
+		    }
+    
+    
+     
+	    /* listen to server */
+	    if ( read( channel[counter], msg_torcv, MSGLEN ) < 0 ) 
+		    {
+		    perror( "\nclient: error reading socket\n" ) ;
+		    not_error = FALSE ;
+		    }
+	    if ( strncmp( "DONE", msg_torcv, 4) == 0 )
+		    printf ("trasmissione terzo gruppo dati del server %d ok \n",counter);
+    
+    
+	    }
+
+	}
+
+
+
+}

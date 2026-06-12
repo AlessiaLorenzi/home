@@ -1,0 +1,250 @@
+.TH "nslink.conf" "5" "4 June 2009" "(c) Comtrol Corp." "Comtrol"
+.SH "NAME" 
+nslink.conf \- Configuration file for the DeviceMaster.
+
+.SH "DESCRIPTION" 
+.PP
+The \fBnslink.conf\fP file is the source of configuration
+information which is read by the nslinkd daemon and then
+provided to the nslink kernel module.
+.PP
+The file may contain comments. Everything between a '#' and
+the end of the line will be ignored, and empty lines or lines
+containing only whitespace will be ignored. Words on a line
+are separated by whitespace and lines may be indented if desired.
+.PP
+Configuration file lines take the form
+.RS 14
+.PP
+<keyword> <value> [<value> ...] [# comment]
+.RE
+.PP
+The keywords and their value parameters are described below:
+
+.IP "\fBbootfile-DM\fP \fIpath\fP"
+Use \fIpath\fP as the boot file to be downloaded to
+DeviceMasters rather than the default file at
+/etc/devmast.bin. Example:
+.RS 14
+.PP
+bootfile-DM /usr/local/etc/devmast.bin
+.RE
+
+.IP "\fIip-address\fP \fIport-count\fP [\fItimeout\fP [\fIscan-period\fP] [\fIretransmit-timer\fP]]"
+Specifies that the driver is to use TCP/IP communications to
+control a DeviceMaster at IP address \fIip-address\fP, and that
+the DeviceMaster has \fIport-count\fP number of serial ports.
+\fIip-address\fP must be in dotted-quad notation (e.g.
+192.168.1.15). \fIport-count\fP must be 1, 2, 4, 8, 16 or 32.
+.IP ""
+The value for \fItimeout\fP is specified in seconds. A
+connection check command is sent to the DeviceMaster every
+\fItimeout\fP/2 seconds. If more than \fItimeout\fP seconds
+passes between receiving connection check responses, the link
+will timeout and any open ports on that DeviceMaster reports errors.
+A value of 0 disables link timeout.If no value is specified,
+120 seconds is used as the default.
+.IP ""
+The scan-period value controls the scan rate of the serial
+driver code in the DeviceMaster. It is specified in
+milliseconds and defaults to 10. If you wish to reduce latency,
+it's a better idea to use the inter-character timeout value and
+low_latency flag rather than decreasing the scan period.
+.IP ""
+The \fIretransmit-timer\fP value controls the length of time the 
+DeviceMaster waits before retransmitting packets. It is specified 
+in milliseconds and defaults to 200. Changing the retransmit timer,
+will increase CPU usage and network traffic.
+
+.IP "" 
+Examples: 
+.RS 14 
+.PP
+.nf
+192.168.2.57   2 
+10.0.0.6       2   600
+10.0.0.6       2   600 5
+10.0.0.6       2   600 5 80
+.fi
+.RE
+
+.IP "\fIeth-address\fP \fIeth-dev\fP \fIport-count\fP [\fItimeout\fP [\fIscan-period\fP [\fIretransmit-timer]]"
+Specifies that the driver is to use raw Ethernet packet
+communications via Ethernet device \fIeth-dev\fP to control a
+DeviceMaster at Ethernet address \fIeth-address\fP, and that 
+the DeviceMaster has \fIport-count\fP number of serial ports. 
+\fIeth-address\fP must be in colon-separated hexadecimal notation 
+(e.g. 00:c0:4e:10:ff:fe). \fIeth-dev\fP should be the name of the 
+Ethernet device to use. The first Ethernet device is typically named 
+'eth0', the second device 'eth1', etc.  If you only have one Ethernet 
+interface, use 'eth0'. \fIport-count\fP must be 1, 2, 4, 8, 16 or 32.  
+.IP ""
+The value for \fItimeout\fP is specified in seconds. A
+connection check command is sent to the DeviceMaster every
+\fItimeout\fP/2 seconds. If more than \fItimeout\fP seconds
+passes between receiving connection check responses, the link
+will timeout and any open ports on that DeviceMaster reports errors.
+A value of 0 disables link timeout. If no value is specified,
+120 seconds is used as the default.
+.IP ""
+The \fIscan-period\fP value controls the scan rate of the serial
+driver code in the DeviceMaster. It is specified in
+milliseconds and defaults to 10. If you wish to reduce latency,
+it's probably a better idea to use the inter-character timeout
+value rather than decreasing the scan period.
+.IP ""
+The \fIretransmit-timer\fP value controls the length of time the 
+DeviceMaster waits before retransmitting packets. It is specified 
+in milliseconds and defaults to 200. The value is adjustable from 
+40ms to the default value of 200 ms in 20ms intervals. Changing 
+the retransmit timer, will increase CPU usage and network traffic.
+
+.IP ""
+Examples:
+.RS 14
+.PP
+.nf
+00:c0:4e:06:13:07  eth0  4
+00:c0:4e:11:03:f3  eth0  4  200
+00:c0:4e:11:03:f3  eth0  4  200 5
+00:c0:4e:11:03:f3  eth0  4  200 0 80
+.fi
+.RE
+
+
+.IP "\fIport-num\fP \fIinterface-type\fP [\fIinter-char-timeout\fP [\fIoption-flags\fP]]"
+
+Specifies the type of electrical interface, the inter-character
+timeout value, and optionally sets one or more option flags.
+for port number \fIport-num\fP of the DeviceMaster most recently
+specified using either the Ethernet or IP address configuration
+commands described above. \fIport-num\fP is a 1-based value
+(1-2 for 2-port models, 1-4 for 4-ports, 1-8 for 8 ports).
+\fIinterface-type\fP is specified as one of \fB232\fP,
+\fB422\fP, \fB485\fP, \fB485_2-wire\fP, \fB485_4-wire_master\fP, or \fB485_4-wire_slave\fP to 
+specify RS-232, RS-422, RS-485 Half Duplex, RS485 2-wire (Half Duplex), RS485 4-wire Master (Full Duplex Master), 
+or RS485 4-wire Slave (Full Duplex Slave) interfaces, respectively. 
+
+NOTE: RS485 2-wire, RS485 4-wire Master and RS485 4-wire Slave modes are only available on 
+the 2 Port models of the DevicMaster.
+
+The optional \fIoption-flags\fP field is a set of
+comma-separated flag names. The available flags are describe
+below.
+.RS 8
+.IP "\fBlow_latency\fP"
+Enable low-latency operation for received data. Rather than
+buffering receive data and transferring it to the
+line-discipline layer once every 10ms, receive data will be
+transferred immediately upon arrival.
+.IP "\fBrx_fifo_disable\fP" 8
+Disable the use of the UART's receive FIFO. This is currently
+only implemented for the 1-port models. When the 1-port models
+have the receive FIFO enabled, data bytes received with invalid
+parity bits may be discarded. Disabling the receive FIFO on
+the 1-port models will cause bytes received with invalid parity
+to be passed to the line discipline layer. Not recommended at
+baud rates above 19200.
+.RE
+.IP ""
+Examples:
+.RS 14
+.PP
+.nf
+1 232
+2 422 5
+3 232 5 low_latency
+4 232
+.fi
+.RE
+
+.SH SETSERIAL
+.PP
+The inter-character timeout and low_latency values for 
+DeviceMaster ports may also be set using the \fIsetserial\fP(8)
+utility or the TIOCSSERIAL and TIOCGSERIAL ioctl() calls.
+
+.SH NOTES
+.PP
+You must configure either TCP/IP or Ethernet communications for
+each DeviceMaster you wish to use. If you have multiple 
+DeviceMasters, you may use TCP/IP for one DeviceMaster and 
+Ethernet for another. Do not configure both IP and Ethernet 
+addresses for a particular DeviceMaster.
+.PP
+Before TCP/IP communications may be used with a DeviceMaster, it's IP
+addressing information must be configured use the
+\fInslinkadmin\fP(8) utility.
+
+.SH "COMPLETE EXAMPLES"
+.RS 4
+.nf
+
+# sample configuration file for the NS-Link driver
+# 8-port DeviceMaster using TCP/IP
+
+192.168.2.57 8
+
+  1 232
+  2 232
+  3 232
+  4 422
+  5 422
+  6 422
+  7 485
+  8 232
+  
+# 4-port DeviceMaster using raw Ethernet with 10 minute link timeout,
+# 5ms inter-character timeout and low_latency flag set
+
+00:c0:4e:10:03:19  eth0 4 600
+
+  1 232 5 low_latency
+  2 232 5 low_latency
+  3 232 5 low_latency
+  4 232 5 low_latency
+
+# 4-port DeviceMaster using raw Ethernet with 10 minute link timeout,
+# 5ms scan-period and 80ms retransmit timer
+# 5ms inter-character timeout and low_latency flag set
+
+00:c0:4e:10:03:19  eth0 4 600 5 80
+
+  1 232 5 low_latency
+  2 232 5 low_latency
+  3 232 5 low_latency
+  4 232 5 low_latency
+
+# 2-port DeviceMaster using raw Ethernet using all default values
+
+00:c0:4e:29:03:19  eth0 2
+
+  1 485_4-wire_master
+  2 485_4-wire_slave
+.fi
+
+.SH "FILES" 
+.PP 
+.IP "\fB/etc/nslink.conf\fP"
+The "\fBnslink.conf\fP" configuration file must be installed in
+/etc.
+.IP "\fBdevmast.bin\fP"
+Application binary file downloaded to DeviceMaster
+by the load operation. Search path: current directory, /etc.
+.PP 
+.SH "SEE ALSO" 
+.PP 
+\fInslinkd\fP(8), \fInslinkadmin\fP(8), \fInslink\fP(8),
+\fInslinktool\fP(8)
+.PP 
+.SH "BUGS" 
+.PP 
+Check the release notes file for an up-to-date list\&.
+.PP 
+.SH "FTP LOCATION"
+.PP 
+ftp://ftp\&.comtrol\&.com/
+
+
+
+

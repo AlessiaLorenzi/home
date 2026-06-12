@@ -1,0 +1,9 @@
+#
+ps -ax|awk '{print $1, $5}'|grep rf_server |awk '{print "kill ",$1}' >  kill_local
+chmod 755  kill_local
+kill_local
+rm kill_local
+echo "done"
+sleep 1
+start
+#

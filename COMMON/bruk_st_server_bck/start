@@ -1,0 +1,3 @@
+#
+st_server 3200 &
+st_server 3201 &

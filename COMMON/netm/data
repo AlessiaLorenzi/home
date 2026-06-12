@@ -1,0 +1,195 @@
+MAGNET	= 	1
+NAME	=	ID1
+
+ALIM1	=	1
+N_ALIM1	=	ID1
+A_ALIM1	=	1
+CU_ALIM1=	150
+VO_ALIM1=	150
+
+ALIM2	=	9999
+N_ALIM2	=	NULL
+A_ALIM2	=	9999
+CU_ALIM2=	9999
+VO_ALIM2=	9999
+
+STEERER_SERVER	=	1
+SOCKET	=	2000
+HOST	=	sysv68
+LMVA	=	/dev/tty00 0 0 1 2 3 4
+LMVA	=	/dev/tty01 0 0 1 2 3 4
+LMVA	=	/dev/tty02 0 0 1 2 3 4
+LMVA	=	/dev/tty03 0 0 1 2 3 4
+LMVA	=	/dev/tty04 0 0 1 2 3 4
+LMVA	=	/dev/tty05 0 0 1 2 3 4
+LMVA	=	/dev/tty06 0 0 1 2 3 4
+LMVA	=	/dev/tty07 0 0 1 2 3 4
+
+
+STEERER_SERVER	=	2
+SOCKET	=	2000
+HOST	=	sysv68
+LMVA	=	/dev/tty00 0 0 1 2 3 4
+LMVA	=	/dev/tty01 0 0 1 2 3 4
+LMVA	=	/dev/tty02 0 0 1 2 3 4
+LMVA	=	/dev/tty03 0 0 1 2 3 4
+LMVA	=	/dev/tty04 0 0 1 2 3 4
+LMVA	=	/dev/tty05 0 0 1 2 3 4
+LMVA	=	/dev/tty06 0 0 1 2 3 4
+LMVA	=	/dev/tty07 0 0 1 2 3 4
+
+
+
+
+
+MAGNET	= 	2
+NAME	=	ID1
+
+ALIM1	=	1
+N_ALIM1	=	ID1
+A_ALIM1	=	2
+CU_ALIM1=	150
+VO_ALIM1=	150
+
+ALIM2	=	3
+N_ALIM2	=	NULL
+A_ALIM2	=	3
+CU_ALIM2=	9999
+VO_ALIM2=	9999
+
+
+MAGNET	= 	3
+NAME	=	ID1
+
+ALIM1	=	4
+N_ALIM1	=	ID1
+A_ALIM1	=	4
+CU_ALIM1=	150
+VO_ALIM1=	150
+
+ALIM2	=	5
+N_ALIM2	=	NULL
+A_ALIM2	=	5
+CU_ALIM2=	9999
+VO_ALIM2=	9999
+
+
+STEERER_SERVER	=	3
+SOCKET	=	2000
+HOST	=	sysv68
+LMVA	=	/dev/tty00 0 0 1 2 3 4
+LMVA	=	/dev/tty01 0 0 1 2 3 4
+LMVA	=	/dev/tty02 0 0 1 2 3 4
+LMVA	=	/dev/tty03 0 0 1 2 3 4
+LMVA	=	/dev/tty04 0 0 1 2 3 4
+LMVA	=	/dev/tty05 0 0 1 2 3 4
+LMVA	=	/dev/tty06 0 0 1 2 3 4
+LMVA	=	/dev/tty07 0 0 1 2 3 4
+
+
+
+
+SERVER	=	0
+SOCKET	=	2000
+HOST	=	console4
+LINE	=	/dev/tty15
+TYPE	=	1
+MODE	=	1
+VERBOSE	=	1
+AHOST	=	console4
+ASOCKET	=	20000
+ALIM	=	1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+
+MAGNET	= 	4
+NAME	=	ID1
+
+ALIM1	=	1
+N_ALIM1	=	ID1
+A_ALIM1	=	1
+CU_ALIM1=	150
+VO_ALIM1=	150
+
+ALIM2	=	9999
+N_ALIM2	=	NULL
+A_ALIM2	=	1
+CU_ALIM2=	9999
+VO_ALIM2=	9999
+
+
+MAGNET	= 	5
+NAME	=	ID1
+
+ALIM1	=	1
+N_ALIM1	=	ID1
+A_ALIM1	=	1
+CU_ALIM1=	150
+VO_ALIM1=	150
+
+ALIM2	=	9999
+N_ALIM2	=	NULL
+A_ALIM2	=	1
+CU_ALIM2=	9999
+VO_ALIM2=	9999
+
+STEERER_SERVER	=	4
+SOCKET	=	2000
+HOST	=	sysv68
+LMVA	=	/dev/tty00 0 0 1 2 3 4
+LMVA	=	/dev/tty01 0 0 1 2 3 4
+LMVA	=	/dev/tty02 0 0 1 2 3 4
+LMVA	=	/dev/tty03 0 0 1 2 3 4
+LMVA	=	/dev/tty04 0 0 1 2 3 4
+LMVA	=	/dev/tty05 0 0 1 2 3 4
+LMVA	=	/dev/tty06 0 0 1 2 3 4
+LMVA	=	/dev/tty07 0 0 1 2 3 4
+
+
+
+
+#SERVER	=	1
+SOCKET	=	2001
+HOST	=	console4
+LINE	=	/dev/tty00
+TYPE	=	1
+MODE	=	2
+VERBOSE	=	1
+AHOST	=	console4
+ASOCKET	=	20000
+ALIM	=	1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+
+
+#SERVER	=	2
+SOCKET	=	2002
+HOST	=	console4
+LINE	=	/dev/tty00
+TYPE	=	1
+MODE	=	3
+VERBOSE	=	1
+AHOST	=	console4
+ASOCKET	=	20000
+ALIM	=	1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+
+STEERER_SERVER	=	5
+SOCKET	=	2000
+HOST	=	sysv68
+LMVA	=	/dev/tty00 0 0 1 2 3 4
+LMVA	=	/dev/tty01 0 0 1 2 3 4
+LMVA	=	/dev/tty02 0 0 1 2 3 4
+LMVA	=	/dev/tty03 0 0 1 2 3 4
+LMVA	=	/dev/tty04 0 0 1 2 3 4
+LMVA	=	/dev/tty05 0 0 1 2 3 4
+LMVA	=	/dev/tty06 0 0 1 2 3 4
+LMVA	=	/dev/tty07 0 0 1 2 3 4
+
+
+STEERER_SERVER	=	6
+SOCKET	=	2000
+HOST	=	sysv68
+LMVA	=	/dev/tty00 0 0 1 2 3 4
+LMVA	=	/dev/tty01 0 0 1 2 3 4
+LMVA	=	/dev/tty02 0 0 1 2 3 4
+LMVA	=	/dev/tty03 0 0 1 2 3 4
+LMVA	=	/dev/tty04 0 0 1 2 3 4
+LMVA	=	/dev/tty05 0 0 1 2 3 4
+LMVA	=	/dev/tty06 0 0 1 2 3 4
+LMVA	=	/dev/tt

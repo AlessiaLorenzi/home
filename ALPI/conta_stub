@@ -1,0 +1,1 @@
+grep "S T U B" timeout_file | awk '{print $8}' | sort -n | uniq --count | sort -r -g 
