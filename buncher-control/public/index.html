@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BUNCHER — Controllo</title>
+<style>
+  :root{
+    --navy:#0f2a43; --navy2:#163b5c; --teal:#0e9aa7; --tealD:#0b7a85;
+    --ink:#1e2a38; --muted:#5b6b7b; --line:#e2eaf0; --bg:#f1f6f9; --card:#ffffff;
+    --ok:#2e7d32; --okbg:#e7f3ea; --warn:#c0392b; --warnbg:#fbe9e7; --amber:#e08a2b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',Calibri,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  .app{display:flex;min-height:100vh}
+  /* sidebar */
+  .side{width:240px;background:var(--navy);color:#cfe0ec;flex-shrink:0;display:flex;flex-direction:column}
+  .brand{padding:18px 18px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .brand h1{margin:0;font-size:20px;color:#fff;letter-spacing:.5px}
+  .brand small{color:#7f9bb0}
+  .nav{padding:8px;overflow:auto;flex:1}
+  .nav .grp{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#6f8aa0;margin:14px 10px 4px}
+  .nav a{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;margin:2px 0;border-radius:6px;color:#cfe0ec;text-decoration:none;cursor:pointer;font-size:14px}
+  .nav a:hover{background:var(--navy2)}
+  .nav a.active{background:var(--teal);color:#fff;font-weight:600}
+  .dot{width:9px;height:9px;border-radius:50%;background:#557;flex-shrink:0}
+  .dot.on{background:#39d98a}.dot.err{background:#ff6b6b}
+  .side .foot{padding:10px 16px;font-size:11px;color:#7f9bb0;border-top:1px solid rgba(255,255,255,.08)}
+  /* main */
+  .main{flex:1;padding:22px 26px;overflow:auto}
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .top h2{margin:0;color:var(--navy);font-size:24px}
+  .badge{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px}
+  .badge.sim{background:#fff4e5;color:#a5650f}
+  .badge.hw{background:var(--okbg);color:var(--ok)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(20,40,60,.05)}
+  .card h3{margin:0 0 2px;font-size:16px;color:var(--navy)}
+  .card .sub{font-size:12px;color:var(--muted);margin-bottom:12px}
+  .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .row label{flex:0 0 130px;font-size:13px;color:var(--ink)}
+  .row input[type=range]{flex:1;accent-color:var(--teal)}
+  .row .val{flex:0 0 56px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;font-size:13px;color:var(--tealD)}
+  .toggles{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .tg{border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:12.5px;cursor:pointer;user-select:none;background:#fff;color:var(--muted)}
+  .tg.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600}
+  .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  button.act{border:1px solid var(--line);background:#fff;border-radius:7px;padding:8px 12px;font-size:13px;cursor:pointer;color:var(--ink)}
+  button.act:hover{border-color:var(--teal);color:var(--tealD)}
+  button.act.primary{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600}
+  button.act.danger:hover{border-color:var(--warn);color:var(--warn)}
+  .pill{display:inline-block;font-size:11px;padding:2px 9px;border-radius:12px;font-weight:600}
+  .pill.ok{background:var(--okbg);color:var(--ok)}.pill.err{background:var(--warnbg);color:var(--warn)}.pill.off{background:#eef1f4;color:#8696a5}
+  .meter{height:6px;background:#eef3f7;border-radius:4px;overflow:hidden;margin-top:6px}
+  .meter > i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--tealD))}
+  .hint{font-size:12px;color:var(--muted);background:#f5f9fb;border-left:3px solid var(--teal);padding:8px 12px;border-radius:0 6px 6px 0;margin:6px 0}
+  .syn{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+  .syn .c{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;cursor:pointer}
+  .syn .c:hover{border-color:var(--teal)}
+  .syn .c .nm{font-weight:600;color:var(--navy);display:flex;justify-content:space-between;align-items:center}
+  .syn .c .pt{font-size:11px;color:var(--muted)}
+  .big{font-size:30px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums}
+  .log{font-family:Consolas,monospace;font-size:12px;background:#0f2a43;color:#9fe6d8;border-radius:8px;padding:10px 12px;height:130px;overflow:auto;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><h1>BUNCHER</h1><small>Controllo acceleratore</small></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="foot" id="foot">connessione…</div>
+  </aside>
+  <main class="main">
+    <div class="top"><h2 id="title">Sinottico</h2><span id="badge" class="badge sim">SIMULAZIONE</span></div>
+    <div id="view"></div>
+  </main>
+</div>
+
+<script>
+"use strict";
+// ----------------------------------------------------------------------------
+//  Stato globale dell'interfaccia
+// ----------------------------------------------------------------------------
+var CFG = null;          // configurazione (canali.json)
+var STATO = {};          // ultimo stato ricevuto dal server
+var MODO = "simulazione";
+var corrente = "sinottico";
+var CANALI = [];         // elenco unito RF + motori
+
+function api(path, opts){ return fetch(path, opts).then(function(r){ return r.json(); }); }
+
+function comando(body){
+  return api("/api/command", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) })
+    .then(function(out){ logga((out.inviato? "→ ":"⚠ ")+ (body.canale||"") + "  " + (out.comando||out.errore||"")); return out; });
+}
+
+var LOG = [];
+function logga(s){ LOG.unshift(new Date().toLocaleTimeString()+"  "+s); LOG=LOG.slice(0,200); var el=document.getElementById("logbox"); if(el) el.textContent=LOG.join("\n"); }
+
+// ----------------------------------------------------------------------------
+//  Avvio: carica config, costruisci nav, apri stream
+// ----------------------------------------------------------------------------
+api("/api/config").then(function(cfg){
+  CFG = cfg;
+  CANALI = cfg.canaliRF.concat(cfg.serverMotori);
+  buildNav();
+  apriStream();
+  render();
+});
+
+function apriStream(){
+  var es = new EventSource("/api/stream");
+  es.onmessage = function(ev){
+    var d = JSON.parse(ev.data);
+    STATO = d.stato; MODO = d.modo;
+    var b = document.getElementById("badge");
+    b.textContent = MODO.toUpperCase(); b.className = "badge " + (MODO==="hardware"?"hw":"sim");
+    document.getElementById("foot").textContent = "● in linea — " + Object.keys(STATO).length + " canali";
+    aggiornaDinamici();
+  };
+  es.onerror = function(){ document.getElementById("foot").textContent = "○ stream interrotto…"; };
+}
+
+// ----------------------------------------------------------------------------
+//  Navigazione
+// ----------------------------------------------------------------------------
+function buildNav(){
+  var nav = document.getElementById("nav");
+  var html = '<a data-id="sinottico" onclick="vai(\'sinottico\')">Sinottico</a>';
+  html += '<div class="grp">Cavità RF</div>';
+  CFG.canaliRF.forEach(function(c){
+    if(c.abilitato===false) return;
+    html += navLink(c);
+  });
+  html += '<div class="grp">Fase & Motori</div>';
+  html += '<a data-id="fase" onclick="vai(\'fase\')">Selettore di fase</a>';
+  CFG.serverMotori.forEach(function(c){ html += navLink(c); });
+  html += '<div class="grp">Procedure</div>';
+  html += '<a data-id="automagico" onclick="vai(\'automagico\')">Automagico</a>';
+  html += '<a data-id="diagnostica" onclick="vai(\'diagnostica\')">Diagnostica / Log</a>';
+  nav.innerHTML = html;
+  marca();
+}
+function navLink(c){
+  return '<a data-id="'+c.id+'" onclick="vai(\''+c.id+'\')"><span>'+c.nome+'</span><span class="dot" id="dot-'+c.id+'"></span></a>';
+}
+function vai(id){ corrente = id; marca(); render(); }
+function marca(){
+  document.querySelectorAll(".nav a").forEach(function(a){ a.classList.toggle("active", a.getAttribute("data-id")===corrente); });
+}
+
+// ----------------------------------------------------------------------------
+//  Rendering delle pagine
+// ----------------------------------------------------------------------------
+function render(){
+  var v = document.getElementById("view");
+  var t = document.getElementById("title");
+  if(corrente==="sinottico"){ t.textContent="Sinottico"; v.innerHTML = renderSinottico(); return; }
+  if(corrente==="fase"){ t.textContent="Selettore di fase"; v.innerHTML = renderFase(); return; }
+  if(corrente==="automagico"){ t.textContent="Automagico"; v.innerHTML = renderAutomagico(); return; }
+  if(corrente==="diagnostica"){ t.textContent="Diagnostica / Log"; v.innerHTML = renderDiagnostica(); aggiornaLog(); return; }
+  var c = byId(corrente);
+  if(!c){ v.innerHTML="<p>Pagina non trovata.</p>"; return; }
+  t.textContent = c.nome;
+  if(c.tipo==="motore") v.innerHTML = renderMotore(c);
+  else if(c.tipo==="chopper") v.innerHTML = renderChopper(c);
+  else v.innerHTML = renderRF(c);
+}
+
+function byId(id){ for(var i=0;i<CANALI.length;i++) if(CANALI[i].id===id) return CANALI[i]; return null; }
+function st(id){ return STATO[id] || {valori:{},toggle:{},connesso:false,errore:false}; }
+
+// --- Sinottico ---
+function renderSinottico(){
+  var h = '<div class="syn">';
+  CANALI.forEach(function(c){
+    if(c.abilitato===false) return;
+    var s = st(c.id);
+    var stato = s.errore? '<span class="pill err">errore</span>' : (s.connesso? '<span class="pill ok">in linea</span>':'<span class="pill off">offline</span>');
+    var lettura = c.tipo==="motore" ? ("pos. "+ (s.valori&&s.valori.posizione||0)) : Math.round(s.letturaCampo||(s.valori&&s.valori.campo)||0)+" DAC";
+    h += '<div class="c" onclick="vai(\''+c.id+'\')">'
+       + '<div class="nm">'+c.nome+' '+stato+'</div>'
+       + '<div class="pt">porta '+c.porta+' · ttySI'+c.ttySI+'</div>'
+       + '<div class="big" id="syn-'+c.id+'">'+lettura+'</div>'
+       + '</div>';
+  });
+  h += '</div>';
+  h += '<div class="hint">Modalità <b>'+MODO+'</b>. In simulazione i valori sono generati internamente per dimostrazione: nessun hardware è necessario. In modalità hardware il sistema si collega ai server reali alle porte indicate.</div>';
+  return h;
+}
+
+// --- Canale RF ---
+function renderRF(c){
+  var p = CFG.parametriRF;
+  var h = '<div class="card" style="max-width:560px">';
+  h += '<h3>'+c.nome+' <span id="pill-'+c.id+'"></span></h3><div class="sub">porta '+c.porta+' · ttySI'+c.ttySI+' · flag “'+c.flag+'”</div>';
+  Object.keys(p).forEach(function(k){ if(k[0]==="_") return; h += sliderRow(c.id, k, p[k]); });
+  h += '<div class="toggles">';
+  CFG.toggleRF.forEach(function(tg){ h += toggleEl(c.id, tg.id, tg.label); });
+  h += '</div>';
+  h += '<div class="btns"><button class="act danger" onclick="comando({canale:\''+c.id+'\',azione:\'reset\'})">Reset linea</button>';
+  h += '<button class="act" onclick="comando({canale:\''+c.id+'\',azione:\'toggle\',param:\'reconnect\',attivo:true})">Riconnect RF</button></div>';
+  h += '<div class="meter"><i id="meter-'+c.id+'" style="width:0%"></i></div>';
+  h += '</div>';
+  return h;
+}
+
+// --- Chopper ---
+function renderChopper(c){
+  var pc = CFG.parametriChopper;
+  var h = '<div class="card" style="max-width:560px">';
+  h += '<h3>'+c.nome+' <span id="pill-'+c.id+'"></span></h3><div class="sub">porta '+c.porta+' · ttySI'+c.ttySI+'</div>';
+  h += '<div class="toggles">';
+  CFG.toggleChopper.forEach(function(tg){ h += toggleEl(c.id, tg.id, tg.label); });
+  h += '</div>';
+  h += '<div class="hint" id="periodo-'+c.id+'">Periodo pulsazione: —</div>';
+  h += sliderRow(c.id, "denominatore", pc.denominatore, "onChopperDenom");
+  // i parametri p_w / d_c sono mostrati solo in modalità interna (Esterno = tutto)
+  h += '<div id="chop-int-'+c.id+'">';
+  h += sliderRow(c.id, "p_w", pc.p_w);
+  h += sliderRow(c.id, "d_c", pc.d_c);
+  h += '</div>';
+  h += sliderRow(c.id, "m_d", pc.m_d);
+  h += sliderRow(c.id, "fase", pc.fase);
+  h += '<div class="btns"><button class="act danger" onclick="comando({canale:\''+c.id+'\',azione:\'reset\'})">Reset</button>';
+  h += '<button class="act" onclick="comando({canale:\''+c.id+'\',azione:\'toggle\',param:\'reconnect\',attivo:true})">Chopper Riconnect</button></div>';
+  h += '</div>';
+  return h;
+}
+
+// --- Motore ---
+function renderMotore(c){
+  var h = '<div class="card" style="max-width:560px">';
+  h += '<h3>'+c.nome+' <span id="pill-'+c.id+'"></span></h3><div class="sub">porta '+c.porta+' · ttySI'+c.ttySI+' · controllo motori di accordo</div>';
+  h += '<div class="hint">Posizione stimata: <b id="pos-'+c.id+'">0</b> passi. Comando inviato: «!motore passi velocità».</div>';
+  for(var m=1;m<=4;m++){
+    h += '<div class="row"><label>Motore '+m+'</label>'
+       + '<button class="act" onclick="muovi(\''+c.id+'\','+m+',\'su\',\'lento\')">▲ lento</button>'
+       + '<button class="act" onclick="muovi(\''+c.id+'\','+m+',\'su\',\'veloce\')">▲▲ veloce</button>'
+       + '<button class="act" onclick="muovi(\''+c.id+'\','+m+',\'giu\',\'lento\')">▼ lento</button>'
+       + '<button class="act" onclick="muovi(\''+c.id+'\','+m+',\'giu\',\'veloce\')">▼▼ veloce</button></div>';
+  }
+  if(c.id==="mot_postch"){
+    h += '<div class="toggles" style="margin-top:12px">'+toggleEl(c.id,"intext_ref","Reference INT / EXT")+'</div>';
+    h += '<div class="hint">'+(c.noteIO||"")+'</div>';
+  }
+  h += '<div class="btns"><button class="act danger" onclick="comando({canale:\''+c.id+'\',azione:\'reset\'})">Reset</button></div>';
+  h += '</div>';
+  return h;
+}
+
+// --- Selettore di fase ---
+function renderFase(){
+  var h = '<div class="card" style="max-width:560px"><h3>Selettore / rivelatore di fase</h3>'
+    + '<div class="sub">regolazione e lettura dello sfasamento</div>'
+    + '<div class="row"><label>Offset di fase</label><input type="range" min="0" max="4095" value="2048" oninput="this.nextElementSibling.textContent=this.value"><span class="val">2048</span></div>'
+    + '<div class="toggles">'
+    + '<span class="tg" onclick="this.classList.toggle(\'on\')">Sorgente errore INT</span>'
+    + '<span class="tg" onclick="this.classList.toggle(\'on\')">Sorgente errore EXT</span>'
+    + '</div>'
+    + '<div class="btns"><button class="act">◄ Fase −</button><button class="act">Fase + ►</button>'
+    + '<button class="act">Get phase offset</button></div>'
+    + '<div class="hint">Pagina del selettore di fase (finestraFH). I comandi di fase verranno collegati al canale corretto in fase di test sull’hardware.</div>'
+    + '</div>';
+  return h;
+}
+
+function renderAutomagico(){
+  return '<div class="card" style="max-width:620px"><h3>Automagico — procedure automatiche</h3>'
+    + '<div class="sub">sequenze guidate ereditate dal sistema originale</div>'
+    + '<div class="btns">'
+    + '<button class="act primary">A → C (automagico)</button>'
+    + '<button class="act">Riconnect RF (tutti)</button>'
+    + '<button class="act">Riconnect Tuner (tutti)</button>'
+    + '<button class="act">Display Errors ON/OFF</button>'
+    + '</div>'
+    + '<div class="hint">L’analisi sistematica di automagico (automagico.c) è in corso: questa pagina è il contenitore in cui collegare i singoli passi una volta confermati sul sorgente e sull’hardware.</div>'
+    + '</div>';
+}
+
+function renderDiagnostica(){
+  return '<div class="card"><h3>Log comandi</h3><div class="sub">ultimi comandi inviati ai server</div>'
+    + '<div class="log" id="logbox"></div>'
+    + '<div class="hint">Questa schermata mostra cosa l’interfaccia invierebbe ai server. Utile per verificare il comportamento prima del collegamento all’hardware reale.</div></div>';
+}
+function aggiornaLog(){ var el=document.getElementById("logbox"); if(el) el.textContent=LOG.join("\n"); }
+
+// ----------------------------------------------------------------------------
+//  Elementi riutilizzabili
+// ----------------------------------------------------------------------------
+function sliderRow(canale, key, def, onInput){
+  var v = (st(canale).valori && st(canale).valori[key] != null) ? st(canale).valori[key] : Math.round((def.min+def.max)/2);
+  var extra = onInput ? ' '+onInput+'(this,\''+canale+'\')' : '';
+  return '<div class="row"><label>'+def.label+'</label>'
+    + '<input type="range" min="'+def.min+'" max="'+def.max+'" step="'+(def.step||1)+'" value="'+v+'" '
+    + 'oninput="this.nextElementSibling.textContent=this.value'+(extra?';'+extra:'')+'" '
+    + 'onchange="comando({canale:\''+canale+'\',azione:\'setParam\',param:\''+key+'\',valore:Number(this.value)})">'
+    + '<span class="val">'+v+'</span></div>';
+}
+function toggleEl(canale, id, label){
+  var on = st(canale).toggle && st(canale).toggle[id];
+  return '<span class="tg'+(on?' on':'')+'" onclick="tog(this,\''+canale+'\',\''+id+'\')">'+label+'</span>';
+}
+function tog(el, canale, id){
+  var attivo = !el.classList.contains("on");
+  el.classList.toggle("on", attivo);
+  if(id==="intext_ref"){ comando({canale:canale,azione:"referenceIntExt",attivo:attivo}); }
+  else { comando({canale:canale,azione:"toggle",param:id,attivo:attivo}); }
+  if(id==="intext") aggiornaVisibilitaChopper(canale, attivo);
+}
+function muovi(canale, motore, direzione, modo){
+  comando({canale:canale,azione:"muoviMotore",motore:motore,direzione:direzione,modo:modo});
+}
+function onChopperDenom(input, canale){
+  var d = Number(input.value);
+  var periodo = (5/Math.pow(2,d));
+  var el = document.getElementById("periodo-"+canale);
+  if(el) el.innerHTML = "Periodo pulsazione = 5 / 2<sup>"+d+"</sup> = <b>"+periodo.toFixed(4)+" ms</b>";
+}
+function aggiornaVisibilitaChopper(canale, esterno){
+  // In modalità Esterno la centralina gestisce tutto: p_w e d_c non si impostano.
+  var box = document.getElementById("chop-int-"+canale);
+  if(box) box.style.display = esterno ? "none" : "block";
+}
+
+// ----------------------------------------------------------------------------
+//  Aggiornamenti dinamici (su ogni messaggio dello stream)
+// ----------------------------------------------------------------------------
+function aggiornaDinamici(){
+  // pallini di stato nella nav
+  CANALI.forEach(function(c){
+    var dot = document.getElementById("dot-"+c.id);
+    if(dot){ var s=st(c.id); dot.className = "dot " + (s.errore?"err":(s.connesso?"on":"")); }
+  });
+  // sinottico live
+  if(corrente==="sinottico"){
+    CANALI.forEach(function(c){
+      var el = document.getElementById("syn-"+c.id);
+      if(el){ var s=st(c.id); el.textContent = c.tipo==="motore"? ("pos. "+(s.valori&&s.valori.posizione||0)) : Math.round(s.letturaCampo||(s.valori&&s.valori.campo)||0)+" DAC"; }
+    });
+  }
+  // pillola stato e meter nella pagina del canale
+  var c = byId(corrente);
+  if(c){
+    var s = st(c.id);
+    var pill = document.getElementById("pill-"+c.id);
+    if(pill) pill.innerHTML = s.errore?'<span class="pill err">errore</span>':(s.connesso?'<span class="pill ok">in linea</span>':'<span class="pill off">offline</span>');
+    var meter = document.getElementById("meter-"+c.id);
+    if(meter){ var mx=CFG.parametriRF.campo.max; meter.style.width = Math.min(100,(s.letturaCampo||s.valori.campo||0)/mx*100)+"%"; }
+    var pos = document.getElementById("pos-"+c.id);
+    if(pos && s.valori) pos.textContent = s.valori.posizione||0;
+  }
+}
+</script>
+</body>
+</html>
