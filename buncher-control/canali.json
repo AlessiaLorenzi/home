@@ -1,0 +1,58 @@
+{
+  "_descrizione": "Configurazione dei canali del sistema BUNCHER. Ricavata dai file originali BUNCHER/porte e BUNCHER/work/start_servers_nuovi del repository. Ogni canale RF e ogni server motori corrisponde a un programma 'server' che, nel sistema originale Linux, espone una porta TCP e la collega a una porta seriale del device master Comtrol RTS (IP 10.20.1.26).",
+  "deviceMaster": {
+    "ip": "10.20.1.26",
+    "descrizione": "Comtrol DeviceMaster RTS 16 porte seriali. Le porte ttySIxx sono i nomi Linux delle porte seriali esposte in rete. Ricordarsi di abilitare (Enable=1) le 8 porte in uso dalla pagina web del dispositivo.",
+    "porteInUso": 8
+  },
+  "host": {
+    "_nota": "Indirizzo su cui sono in ascolto i programmi server (rf_server / mot_server). Nel sistema originale girano sulla macchina Linux. In modalita 'simulazione' questo valore viene ignorato.",
+    "indirizzo": "127.0.0.1"
+  },
+  "canaliRF": [
+    { "id": "postchopper_lin", "nome": "Postchopper 1 LIN", "porta": 6100, "ttySI": 64, "flag": "f", "tipo": "rf" },
+    { "id": "buncher_10",      "nome": "Buncher 10 MHz",    "porta": 6101, "ttySI": 65, "flag": "t", "tipo": "rf" },
+    { "id": "buncher_5",       "nome": "Buncher 5 MHz",     "porta": 6102, "ttySI": 67, "flag": "t", "tipo": "rf" },
+    { "id": "postchopper_tan", "nome": "Postchopper 1 TAN", "porta": 6103, "ttySI": 70, "flag": "f", "tipo": "rf" },
+    { "id": "buttafuori",      "nome": "Buttafuori (Chopper)", "porta": 6104, "ttySI": 71, "flag": "t", "tipo": "chopper" },
+    { "id": "riserva_6105",    "nome": "Riserva",           "porta": 6105, "ttySI": 69, "flag": "f", "tipo": "rf", "abilitato": false },
+    { "id": "passiva",         "nome": "Cavità Passiva",    "porta": 6108, "ttySI": 72, "flag": "f", "tipo": "passiva" }
+  ],
+  "serverMotori": [
+    { "id": "mot_pretandem", "nome": "CEST Pre-Tandem",  "porta": 6200, "ttySI": 66, "flag": "t", "tipo": "motore" },
+    { "id": "mot_postch",    "nome": "CEST Postchopper", "porta": 6201, "ttySI": 68, "flag": "f", "tipo": "motore",
+      "noteIO": "Su questo server agisce anche il segnale Reference INT/EXT: bit 7 della porta I/O numero 7 (verificato nel codice sorgente originale)." }
+  ],
+  "parametriRF": {
+    "_nota": "Parametri tipici di un canale RF. min/max sono i fondo-scala del valore numerico inviato al convertitore (DAC). 'conversione' descrive come il cursore mostrato all'operatore viene tradotto nel valore inviato.",
+    "campo":        { "label": "Campo RF",            "min": 0, "max": 4311, "step": 1, "unita": "DAC", "conversione": "cursore(dbm) -> volt -> dbm -> DAC" },
+    "fase_anello":  { "label": "Fase d'anello",       "min": 0, "max": 4095, "step": 1, "unita": "DAC" },
+    "potenza":      { "label": "Potenza (quiescent)", "min": 0, "max": 4095, "step": 1, "unita": "DAC" },
+    "attenuazione": { "label": "Attenuazione",        "min": 0, "max": 255,  "step": 1, "unita": "" },
+    "guad_ampiezza":{ "label": "Guadagno ampiezza",   "min": 0, "max": 255,  "step": 1, "unita": "" },
+    "guad_fase":    { "label": "Guadagno fase",       "min": 0, "max": 255,  "step": 1, "unita": "" }
+  },
+  "toggleRF": [
+    { "id": "loop_power",     "label": "Loop Power" },
+    { "id": "fb_ampiezza",    "label": "Feedback Ampiezza" },
+    { "id": "fb_fase",        "label": "Feedback Fase" }
+  ],
+  "parametriChopper": {
+    "_nota": "Il periodo della pulsazione segue la relazione periodo = 5 / 2^denominatore (ms), con denominatore tra 1 e 31 (verificato nel codice originale).",
+    "denominatore": { "label": "Denominatore pulsazione", "min": 1, "max": 31, "step": 1 },
+    "m_d":          { "label": "m_d", "min": 0, "max": 255, "step": 1 },
+    "p_w":          { "label": "p_w (larghezza impulso)", "min": 0, "max": 255, "step": 1 },
+    "d_c":          { "label": "d_c (duty)", "min": 0, "max": 255, "step": 1 },
+    "fase":         { "label": "Fase chopper", "min": 0, "max": 4095, "step": 1 }
+  },
+  "toggleChopper": [
+    { "id": "onoff",   "label": "Chopper ON/OFF" },
+    { "id": "intext",  "label": "Interno / Esterno" }
+  ],
+  "parametriMotore": {
+    "_nota": "I motori si muovono con il comando ASCII '!<motore> <passi> <velocita>' (es. '!4 500 100'). I tuner usano passi positivi/negativi e velocita lenta/veloce.",
+    "passi_lento":  { "passi": 50,  "velocita": 40 },
+    "passi_veloce": { "passi": 500, "velocita": 120 },
+    "nMotori": 8
+  }
+}

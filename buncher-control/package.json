@@ -1,0 +1,13 @@
+{
+  "name": "buncher-control",
+  "version": "0.1.0",
+  "description": "Interfaccia di controllo BUNCHER — porting moderno e portatile del sistema di controllo acceleratore (RF + motori) verso Windows. Nessuna dipendenza esterna.",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "hardware": "node server/index.js"
+  },
+  "engines": { "node": ">=16" },
+  "license": "UNLICENSED",
+  "private": true
+}
